@@ -2,8 +2,10 @@ package com.zero.web;
 
 import com.zero.common.Result;
 import com.zero.common.utils.SessionUtils;
+import com.zero.model.Menu;
 import com.zero.model.User;
 import com.zero.model.verify.LoginUser;
+import com.zero.service.IMenuService;
 import com.zero.service.IUserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -12,6 +14,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Objects;
@@ -24,12 +27,14 @@ public class UserController {
 
 	@Autowired
 	IUserService userService;
+	@Resource
+	IMenuService menuService;
 
 	@GetMapping("/findUser")
-	public Result<List<User>> findUser(String phone, String email, String realName,
-                                       @RequestParam("page") int pageNum,
-									   @RequestParam("limit") int pageSize){
-		return Result.resultSuccess(userService.findRowNum(phone, email, realName), userService.findUserPage(phone, email, realName, pageNum, pageSize));
+	public Result<List<User>> findUser(String phone, String loginName, String realName,
+                                       @RequestParam(value = "page", defaultValue = "1") int pageNum,
+									   @RequestParam(value = "limit", defaultValue = "10") int pageSize){
+		return Result.resultSuccess(userService.findRowNum(phone, loginName, realName), userService.findUserPage(phone, loginName, realName, pageNum, pageSize));
 	}
 
 	@PostMapping("/insertUser")
@@ -97,4 +102,22 @@ public class UserController {
         SessionUtils.removeCurrentUser(request);
         return Result.resultSuccess("退出登录成功");
     }
+
+    @GetMapping("/findUserByRole/{roleId}")
+    public Result<List<User>> findUserByRole(@PathVariable("roleId") int roleId){
+		return Result.resultSuccess(userService.findUserByRole(roleId));
+	}
+
+	@GetMapping("/auth")
+	public Result<String> auth(HttpServletRequest request){
+		if(Objects.isNull(SessionUtils.getCurrentUser(request))){
+			return Result.resultFailure("未登录");
+		}
+		return Result.resultSuccess("");
+	}
+
+	@GetMapping("/findMenus")
+	public Result<List<Menu>> findMenus(HttpServletRequest request){
+		return Result.resultSuccess(menuService.findMenus(SessionUtils.getCurrentUserId(request)));
+	}
 }

@@ -273,4 +273,19 @@
       remarks = #{remarks,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="findMenus" resultMap="BaseResultMap">
+    SELECT DISTINCT
+        m.*
+    FROM
+        t_user u
+    LEFT JOIN t_user_role ur ON (ur.u_id = u.id)
+    LEFT JOIN t_role_menu rm ON (rm.r_id = ur.r_id)
+    LEFT JOIN t_menu m ON (rm.m_id = m.id)
+    WHERE
+        u.is_deleted = 0
+    AND m.is_valid = 0
+    AND u.id = #{userId,jdbcType=INTEGER}
+    ORDER by sort asc
+  </select>
 </mapper>

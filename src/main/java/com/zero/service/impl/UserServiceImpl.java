@@ -1,5 +1,6 @@
 package com.zero.service.impl;
 
+import com.google.common.collect.Lists;
 import com.zero.common.enmu.DeletedEnum;
 import com.zero.common.utils.BeanUtils;
 import com.zero.common.utils.Md5;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements IUserService{
@@ -22,7 +24,7 @@ public class UserServiceImpl implements IUserService{
     private UserMapper userMapper;
 
     @Override
-    public List<User> findUserPage(String phone, String email, String realName, int pageNum, int pageSize) {
+    public List<User> findUserPage(String phone, String loginName, String realName, int pageNum, int pageSize) {
         UserExample example = new UserExample();
         example.setPage(pageNum);
         example.setLimit(pageSize);
@@ -31,8 +33,8 @@ public class UserServiceImpl implements IUserService{
         if(StringUtils.isNotEmpty(realName)){
             criteria.andRealNameLike("%" + realName + "%");
         }
-        if(StringUtils.isNotEmpty(email)){
-            criteria.andEmailLike("%" + email + "%");
+        if(StringUtils.isNotEmpty(loginName)){
+            criteria.andLoginNameLike("%" + loginName + "%");
         }
         if(StringUtils.isNotEmpty(phone)){
             criteria.andPhoneLike("%" + phone + "%");
@@ -41,15 +43,15 @@ public class UserServiceImpl implements IUserService{
     }
 
     @Override
-    public long findRowNum(String phone, String email, String realName) {
+    public long findRowNum(String phone, String loginName, String realName) {
         UserExample example = new UserExample();
         UserExample.Criteria criteria = example.createCriteria();
         criteria.andIsDeletedEqualTo(DeletedEnum.NO.getKey());
         if(StringUtils.isNotEmpty(realName)){
             criteria.andRealNameLike("%" + realName + "%");
         }
-        if(StringUtils.isNotEmpty(email)){
-            criteria.andEmailLike("%" + email + "%");
+        if(StringUtils.isNotEmpty(loginName)){
+            criteria.andLoginNameLike("%" + loginName + "%");
         }
         if(StringUtils.isNotEmpty(phone)){
             criteria.andPhoneLike("%" + phone + "%");
@@ -59,7 +61,6 @@ public class UserServiceImpl implements IUserService{
 
     @Override
     public int insert(User user) {
-        user.setLoginName(user.getPhone());
         user.setCreateTime(new Date());
         user.setPassword(Md5.digest("123456"));
         return userMapper.insertSelective(user);
@@ -120,5 +121,10 @@ public class UserServiceImpl implements IUserService{
     @Override
     public int batchDeleteUser(List<Integer> list, int modifier) {
         return userMapper.batchDeleteUser(list, modifier);
+    }
+
+    @Override
+    public List<User> findUserByRole(int roleId) {
+        return Optional.ofNullable(userMapper.findUserByRole(roleId)).orElse(Lists.newArrayList());
     }
 }

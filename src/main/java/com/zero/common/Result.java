@@ -85,4 +85,8 @@ public class Result<T> {
     public static Result resultFailure(String msg) {
         return new Result(-1, msg);
     }
+
+    public static Result resultAuth() {
+        return new Result(401, "未登录");
+    }
 }

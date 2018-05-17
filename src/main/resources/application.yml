@@ -9,6 +9,8 @@ spring:
     username: root
     password: Hh123!456
     driver-class-name: com.mysql.cj.jdbc.Driver
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
 
 mybatis:
   type-aliases-package: com.zero

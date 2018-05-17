@@ -31,4 +31,6 @@ public interface UserMapper {
     User login(@Param("loginName") String loginName);
 
     int batchDeleteUser(@Param("list") List<Integer> list, @Param("modifier") int modifier);
+
+    List<User> findUserByRole(int roleId);
 }

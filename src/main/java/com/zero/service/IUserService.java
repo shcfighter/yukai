@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface IUserService {
 
-	List<User> findUserPage(String phone, String email, String realName, int pageNum, int pageSize);
+	List<User> findUserPage(String phone, String loginName, String realName, int pageNum, int pageSize);
 
-	long findRowNum(String phone, String email, String realName);
+	long findRowNum(String phone, String loginName, String realName);
 
 	int insert(User user);
 
@@ -22,4 +22,6 @@ public interface IUserService {
 	User login(String loginName, String pwd);
 
     int batchDeleteUser(List<Integer> list, int modifier);
+
+    List<User> findUserByRole(int roleId);
 }

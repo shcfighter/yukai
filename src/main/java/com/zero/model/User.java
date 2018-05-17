@@ -23,6 +23,10 @@ public class User {
     @JsonIgnore
     private String password;
 
+    private Integer deptId;
+
+    private String deptName;
+
     private Integer isDeleted;
 
     private Date createTime;
@@ -89,6 +93,22 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password == null ? null : password.trim();
+    }
+
+    public Integer getDeptId() {
+        return deptId;
+    }
+
+    public void setDeptId(Integer deptId) {
+        this.deptId = deptId;
+    }
+
+    public String getDeptName() {
+        return deptName;
+    }
+
+    public void setDeptName(String deptName) {
+        this.deptName = deptName == null ? null : deptName.trim();
     }
 
     public Integer getIsDeleted() {
