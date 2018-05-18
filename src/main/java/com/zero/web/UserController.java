@@ -1,12 +1,14 @@
 package com.zero.web;
 
 import com.zero.common.Result;
+import com.zero.common.utils.Md5;
 import com.zero.common.utils.SessionUtils;
 import com.zero.model.Menu;
 import com.zero.model.User;
 import com.zero.model.verify.LoginUser;
 import com.zero.service.IMenuService;
 import com.zero.service.IUserService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,5 +121,32 @@ public class UserController {
 	@GetMapping("/findMenus")
 	public Result<List<Menu>> findMenus(HttpServletRequest request){
 		return Result.resultSuccess(menuService.findMenus(SessionUtils.getCurrentUserId(request)));
+	}
+
+	@GetMapping("/getUserBySelf")
+	public Result<User> getUserBySelf(HttpServletRequest request){
+		return Result.resultSuccess(userService.getUserById(SessionUtils.getCurrentUserId(request)));
+	}
+
+	@PostMapping("/changePwdBySelf")
+	public Result<String> changePwdBySelf(HttpServletRequest request,
+										  @RequestParam(value = "currentPwd", required = true) String currentPwd,
+										  @RequestParam(value = "pwd", required = true) String pwd,
+										  @RequestParam(value = "comfirmPwd", required = true) String comfirmPwd){
+		User user = userService.getUserById(SessionUtils.getCurrentUserId(request));
+		if(Objects.isNull(user)){
+			return Result.resultFailure("获取用户信息失败！");
+		}
+		if(!StringUtils.equals(pwd, comfirmPwd)){
+			return Result.resultFailure("两次密码不一致！");
+		}
+		if(!StringUtils.equals(Md5.digest(currentPwd), user.getPassword())){
+			return Result.resultFailure("原密码错误！");
+		}
+		user.setPassword(Md5.digest(pwd));
+		if(userService.update(user, SessionUtils.getCurrentUserId(request)) <= 0){
+			return Result.resultFailure("修改密码失败！");
+		}
+		return Result.resultSuccess("修改密码成功！");
 	}
 }

@@ -16,3 +16,5 @@ mybatis:
   type-aliases-package: com.zero
   mapper-locations: classpath*:mybatis/*Mapper.xml
 
+
+
