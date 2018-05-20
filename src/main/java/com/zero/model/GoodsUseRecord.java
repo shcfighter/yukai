@@ -15,6 +15,8 @@ public class GoodsUseRecord {
 
     private Integer goodsNum;
 
+    private Integer originalNum;
+
     private String user;
 
     private Integer isDeleted;
@@ -24,6 +26,8 @@ public class GoodsUseRecord {
     private Integer creater;
 
     private String remarks;
+
+    private Integer type;
 
     public Integer getId() {
         return id;
@@ -73,6 +77,14 @@ public class GoodsUseRecord {
         this.goodsNum = goodsNum;
     }
 
+    public Integer getOriginalNum() {
+        return originalNum;
+    }
+
+    public void setOriginalNum(Integer originalNum) {
+        this.originalNum = originalNum;
+    }
+
     public String getUser() {
         return user;
     }
@@ -111,5 +123,13 @@ public class GoodsUseRecord {
 
     public void setRemarks(String remarks) {
         this.remarks = remarks == null ? null : remarks.trim();
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
     }
 }

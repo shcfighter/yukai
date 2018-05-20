@@ -8,11 +8,13 @@
     <result column="goods_model" jdbcType="VARCHAR" property="goodsModel" />
     <result column="batch_no" jdbcType="VARCHAR" property="batchNo" />
     <result column="goods_num" jdbcType="INTEGER" property="goodsNum" />
+    <result column="original_num" jdbcType="INTEGER" property="originalNum" />
     <result column="user" jdbcType="VARCHAR" property="user" />
     <result column="is_deleted" jdbcType="INTEGER" property="isDeleted" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="creater" jdbcType="INTEGER" property="creater" />
     <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="type" jdbcType="INTEGER" property="type" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -73,8 +75,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, goods_id, goods_name, goods_model, batch_no, goods_num, user, is_deleted, create_time, 
-    creater, remarks
+    id, goods_id, goods_name, goods_model, batch_no, goods_num, original_num, user, is_deleted, 
+    create_time, creater, remarks, type
   </sql>
   <select id="selectByExample" parameterType="com.zero.model.example.GoodsUseRecordExample" resultMap="BaseResultMap">
     select
@@ -110,12 +112,14 @@
   <insert id="insert" parameterType="com.zero.model.GoodsUseRecord">
     insert into t_goods_use_record (id, goods_id, goods_name, 
       goods_model, batch_no, goods_num, 
-      user, is_deleted, create_time, 
-      creater, remarks)
+      original_num, user, is_deleted, 
+      create_time, creater, remarks, 
+      type)
     values (#{id,jdbcType=INTEGER}, #{goodsId,jdbcType=INTEGER}, #{goodsName,jdbcType=VARCHAR}, 
       #{goodsModel,jdbcType=VARCHAR}, #{batchNo,jdbcType=VARCHAR}, #{goodsNum,jdbcType=INTEGER}, 
-      #{user,jdbcType=VARCHAR}, #{isDeleted,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{creater,jdbcType=INTEGER}, #{remarks,jdbcType=VARCHAR})
+      #{originalNum,jdbcType=INTEGER}, #{user,jdbcType=VARCHAR}, #{isDeleted,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{creater,jdbcType=INTEGER}, #{remarks,jdbcType=VARCHAR}, 
+      #{type,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.zero.model.GoodsUseRecord">
     insert into t_goods_use_record
@@ -138,6 +142,9 @@
       <if test="goodsNum != null">
         goods_num,
       </if>
+      <if test="originalNum != null">
+        original_num,
+      </if>
       <if test="user != null">
         user,
       </if>
@@ -152,6 +159,9 @@
       </if>
       <if test="remarks != null">
         remarks,
+      </if>
+      <if test="type != null">
+        type,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -173,6 +183,9 @@
       <if test="goodsNum != null">
         #{goodsNum,jdbcType=INTEGER},
       </if>
+      <if test="originalNum != null">
+        #{originalNum,jdbcType=INTEGER},
+      </if>
       <if test="user != null">
         #{user,jdbcType=VARCHAR},
       </if>
@@ -187,6 +200,9 @@
       </if>
       <if test="remarks != null">
         #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -217,6 +233,9 @@
       <if test="record.goodsNum != null">
         goods_num = #{record.goodsNum,jdbcType=INTEGER},
       </if>
+      <if test="record.originalNum != null">
+        original_num = #{record.originalNum,jdbcType=INTEGER},
+      </if>
       <if test="record.user != null">
         user = #{record.user,jdbcType=VARCHAR},
       </if>
@@ -232,6 +251,9 @@
       <if test="record.remarks != null">
         remarks = #{record.remarks,jdbcType=VARCHAR},
       </if>
+      <if test="record.type != null">
+        type = #{record.type,jdbcType=INTEGER},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -245,11 +267,13 @@
       goods_model = #{record.goodsModel,jdbcType=VARCHAR},
       batch_no = #{record.batchNo,jdbcType=VARCHAR},
       goods_num = #{record.goodsNum,jdbcType=INTEGER},
+      original_num = #{record.originalNum,jdbcType=INTEGER},
       user = #{record.user,jdbcType=VARCHAR},
       is_deleted = #{record.isDeleted,jdbcType=INTEGER},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       creater = #{record.creater,jdbcType=INTEGER},
-      remarks = #{record.remarks,jdbcType=VARCHAR}
+      remarks = #{record.remarks,jdbcType=VARCHAR},
+      type = #{record.type,jdbcType=INTEGER}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -272,6 +296,9 @@
       <if test="goodsNum != null">
         goods_num = #{goodsNum,jdbcType=INTEGER},
       </if>
+      <if test="originalNum != null">
+        original_num = #{originalNum,jdbcType=INTEGER},
+      </if>
       <if test="user != null">
         user = #{user,jdbcType=VARCHAR},
       </if>
@@ -287,6 +314,9 @@
       <if test="remarks != null">
         remarks = #{remarks,jdbcType=VARCHAR},
       </if>
+      <if test="type != null">
+        type = #{type,jdbcType=INTEGER},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -297,11 +327,13 @@
       goods_model = #{goodsModel,jdbcType=VARCHAR},
       batch_no = #{batchNo,jdbcType=VARCHAR},
       goods_num = #{goodsNum,jdbcType=INTEGER},
+      original_num = #{originalNum,jdbcType=INTEGER},
       user = #{user,jdbcType=VARCHAR},
       is_deleted = #{isDeleted,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       creater = #{creater,jdbcType=INTEGER},
-      remarks = #{remarks,jdbcType=VARCHAR}
+      remarks = #{remarks,jdbcType=VARCHAR},
+      type = #{type,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

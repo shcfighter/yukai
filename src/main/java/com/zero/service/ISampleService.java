@@ -17,4 +17,6 @@ public interface ISampleService {
     long findSampleRowNum(String sampleName, String sampleCode, String company, Date beginDate, Date endDate);
 
     int updateStatus(int id, int status, int loginId);
+
+    Map<String, Object> findSampleById(int id);
 }

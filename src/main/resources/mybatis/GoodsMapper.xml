@@ -115,7 +115,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.zero.model.Goods">
+  <insert id="insert" parameterType="com.zero.model.Goods" useGeneratedKeys="true" keyProperty="id">
     insert into t_goods (id, goods_name, goods_model, 
       type, color, num, unit, 
       batch_no, unit_price, total_price, 
@@ -129,7 +129,7 @@
       #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{creater,jdbcType=INTEGER}, 
       #{modifier,jdbcType=INTEGER}, #{remarks,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.zero.model.Goods">
+  <insert id="insertSelective" parameterType="com.zero.model.Goods" useGeneratedKeys="true" keyProperty="id">
     insert into t_goods
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

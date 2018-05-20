@@ -1,12 +1,14 @@
 package com.zero.model.example;
 
+import com.zero.common.BaseExample;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-public class GoodsExample {
+public class GoodsExample extends BaseExample {
     protected String orderByClause;
 
     protected boolean distinct;

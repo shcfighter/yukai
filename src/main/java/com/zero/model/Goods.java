@@ -1,5 +1,7 @@
 package com.zero.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -24,8 +26,10 @@ public class Goods {
 
     private BigDecimal totalPrice;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date produceDate;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date expiredDate;
 
     private Integer isDeleted;

@@ -386,4 +386,20 @@
       status = #{status,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER} and status != #{status,jdbcType=INTEGER}
   </update>
+
+  <select id="findSampleById" parameterType="java.lang.Integer" resultType="map">
+    SELECT
+    s.id,
+    s.sample_name,
+    s.sample_code,
+    s.photo_url,
+    o.cooperation_company,
+    o.deliver_date,
+    s.status,
+    s.remarks
+    FROM
+    t_sample s
+    LEFT JOIN t_order o ON (s.order_id = o.id)
+    where s.id = #{id, jdbcType=INTEGER}
+  </select>
 </mapper>

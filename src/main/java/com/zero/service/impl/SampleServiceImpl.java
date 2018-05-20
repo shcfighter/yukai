@@ -79,13 +79,13 @@ public class SampleServiceImpl implements ISampleService {
         condition.put("limit", pageSize);
         condition.put("offset", (page - 1) * pageSize);
         if(StringUtils.isNotEmpty(sampleName)){
-            condition.put("sampleName", sampleName);
+            condition.put("sampleName", "%" + sampleName + "%");
         }
         if(StringUtils.isNotEmpty(sampleCode)){
-            condition.put("sampleCode", sampleCode);
+            condition.put("sampleCode", "%" + sampleCode + "%");
         }
         if(StringUtils.isNotEmpty(company)){
-            condition.put("company", company);
+            condition.put("company", "%" + company + "%");
         }
         if(Objects.nonNull(beginDate) && Objects.nonNull(endDate)){
             condition.put("beginDate", beginDate);
@@ -99,13 +99,13 @@ public class SampleServiceImpl implements ISampleService {
         Map<String, Object> condition = Maps.newHashMap();
         condition.put("status", SampleStatus.FINISHED.getKey());
         if(StringUtils.isNotEmpty(sampleName)){
-            condition.put("sampleName", sampleName);
+            condition.put("sampleName", "%" + sampleName + "%");
         }
         if(StringUtils.isNotEmpty(sampleCode)){
-            condition.put("sampleCode", sampleCode);
+            condition.put("sampleCode", "%" + sampleCode + "%");
         }
         if(StringUtils.isNotEmpty(company)){
-            condition.put("company", company);
+            condition.put("company", "%" + company + "%");
         }
         if(Objects.nonNull(beginDate) && Objects.nonNull(endDate)){
             condition.put("beginDate", beginDate);
@@ -144,5 +144,10 @@ public class SampleServiceImpl implements ISampleService {
         condition.put("status", status);
         condition.put("modifier", loginId);
         return sampleMapper.updateStatus(condition);
+    }
+
+    @Override
+    public Map<String, Object> findSampleById(int id) {
+        return Optional.ofNullable(sampleMapper.findSampleById(id)).orElse(Maps.newHashMap());
     }
 }

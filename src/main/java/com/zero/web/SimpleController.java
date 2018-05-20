@@ -9,7 +9,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
@@ -30,8 +29,13 @@ public class SimpleController {
 		return Result.resultSuccess(sampleService.findSample(orderId));
 	}
 
+	@GetMapping("/findSampleDetail/{sampleId}")
+	public Result<Map<String, Object>> findSampleDetail(@PathVariable("sampleId") int sampleId){
+		return Result.resultSuccess(sampleService.findSampleById(sampleId));
+	}
+
 	@PostMapping("/insertSample")
-	public Result<String> insertRole(HttpServletRequest request, Sample simple,
+	public Result<String> insertSample(HttpServletRequest request, Sample simple,
 									 BindingResult bindingResult){
 		if(bindingResult.hasErrors()){
 			LOGGER.error("新增样品信息错误：{}", bindingResult.getFieldError().getDefaultMessage());

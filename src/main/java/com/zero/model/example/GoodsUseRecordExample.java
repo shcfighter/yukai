@@ -497,6 +497,66 @@ public class GoodsUseRecordExample extends BaseExample {
             return (Criteria) this;
         }
 
+        public Criteria andOriginalNumIsNull() {
+            addCriterion("original_num is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginalNumIsNotNull() {
+            addCriterion("original_num is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginalNumEqualTo(Integer value) {
+            addCriterion("original_num =", value, "originalNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginalNumNotEqualTo(Integer value) {
+            addCriterion("original_num <>", value, "originalNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginalNumGreaterThan(Integer value) {
+            addCriterion("original_num >", value, "originalNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginalNumGreaterThanOrEqualTo(Integer value) {
+            addCriterion("original_num >=", value, "originalNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginalNumLessThan(Integer value) {
+            addCriterion("original_num <", value, "originalNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginalNumLessThanOrEqualTo(Integer value) {
+            addCriterion("original_num <=", value, "originalNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginalNumIn(List<Integer> values) {
+            addCriterion("original_num in", values, "originalNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginalNumNotIn(List<Integer> values) {
+            addCriterion("original_num not in", values, "originalNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginalNumBetween(Integer value1, Integer value2) {
+            addCriterion("original_num between", value1, value2, "originalNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andOriginalNumNotBetween(Integer value1, Integer value2) {
+            addCriterion("original_num not between", value1, value2, "originalNum");
+            return (Criteria) this;
+        }
+
         public Criteria andUserIsNull() {
             addCriterion("user is null");
             return (Criteria) this;
@@ -814,6 +874,66 @@ public class GoodsUseRecordExample extends BaseExample {
 
         public Criteria andRemarksNotBetween(String value1, String value2) {
             addCriterion("remarks not between", value1, value2, "remarks");
+            return (Criteria) this;
+        }
+
+        public Criteria andTypeIsNull() {
+            addCriterion("type is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTypeIsNotNull() {
+            addCriterion("type is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTypeEqualTo(Integer value) {
+            addCriterion("type =", value, "type");
+            return (Criteria) this;
+        }
+
+        public Criteria andTypeNotEqualTo(Integer value) {
+            addCriterion("type <>", value, "type");
+            return (Criteria) this;
+        }
+
+        public Criteria andTypeGreaterThan(Integer value) {
+            addCriterion("type >", value, "type");
+            return (Criteria) this;
+        }
+
+        public Criteria andTypeGreaterThanOrEqualTo(Integer value) {
+            addCriterion("type >=", value, "type");
+            return (Criteria) this;
+        }
+
+        public Criteria andTypeLessThan(Integer value) {
+            addCriterion("type <", value, "type");
+            return (Criteria) this;
+        }
+
+        public Criteria andTypeLessThanOrEqualTo(Integer value) {
+            addCriterion("type <=", value, "type");
+            return (Criteria) this;
+        }
+
+        public Criteria andTypeIn(List<Integer> values) {
+            addCriterion("type in", values, "type");
+            return (Criteria) this;
+        }
+
+        public Criteria andTypeNotIn(List<Integer> values) {
+            addCriterion("type not in", values, "type");
+            return (Criteria) this;
+        }
+
+        public Criteria andTypeBetween(Integer value1, Integer value2) {
+            addCriterion("type between", value1, value2, "type");
+            return (Criteria) this;
+        }
+
+        public Criteria andTypeNotBetween(Integer value1, Integer value2) {
+            addCriterion("type not between", value1, value2, "type");
             return (Criteria) this;
         }
     }

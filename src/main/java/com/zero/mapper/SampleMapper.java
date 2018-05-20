@@ -35,4 +35,6 @@ public interface SampleMapper {
     List<Map<String, Object>> findSamplePage(Map<String, Object> condition);
 
     int updateStatus(Map<String, Object> condition);
+
+    Map<String, Object> findSampleById(int id);
 }
