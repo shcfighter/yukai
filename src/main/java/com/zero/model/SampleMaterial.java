@@ -11,6 +11,14 @@ public class SampleMaterial {
 
     private String goodsName;
 
+    private String goodsModel;
+
+    private Integer num;
+
+    private String color;
+
+    private String unit;
+
     private Integer isDeleted;
 
     private Date createTime;
@@ -53,6 +61,38 @@ public class SampleMaterial {
 
     public void setGoodsName(String goodsName) {
         this.goodsName = goodsName == null ? null : goodsName.trim();
+    }
+
+    public String getGoodsModel() {
+        return goodsModel;
+    }
+
+    public void setGoodsModel(String goodsModel) {
+        this.goodsModel = goodsModel == null ? null : goodsModel.trim();
+    }
+
+    public Integer getNum() {
+        return num;
+    }
+
+    public void setNum(Integer num) {
+        this.num = num;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color == null ? null : color.trim();
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit == null ? null : unit.trim();
     }
 
     public Integer getIsDeleted() {

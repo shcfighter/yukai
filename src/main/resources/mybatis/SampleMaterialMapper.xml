@@ -6,6 +6,10 @@
     <result column="simple_id" jdbcType="INTEGER" property="simpleId" />
     <result column="goods_id" jdbcType="INTEGER" property="goodsId" />
     <result column="goods_name" jdbcType="VARCHAR" property="goodsName" />
+    <result column="goods_model" jdbcType="VARCHAR" property="goodsModel" />
+    <result column="num" jdbcType="INTEGER" property="num" />
+    <result column="color" jdbcType="VARCHAR" property="color" />
+    <result column="unit" jdbcType="VARCHAR" property="unit" />
     <result column="is_deleted" jdbcType="INTEGER" property="isDeleted" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
@@ -72,8 +76,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, simple_id, goods_id, goods_name, is_deleted, create_time, update_time, creater, 
-    modifier, remarks
+    id, simple_id, goods_id, goods_name, goods_model, num, color, unit, is_deleted, create_time, 
+    update_time, creater, modifier, remarks
   </sql>
   <select id="selectByExample" parameterType="com.zero.model.example.SampleMaterialExample" resultMap="BaseResultMap">
     select
@@ -88,6 +92,9 @@
     </if>
     <if test="orderByClause != null">
       order by ${orderByClause}
+    </if>
+    <if test="limit != null and offset != null">
+      limit #{limit} offset #{offset}
     </if>
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
@@ -108,13 +115,15 @@
   </delete>
   <insert id="insert" parameterType="com.zero.model.SampleMaterial">
     insert into t_sample_material (id, simple_id, goods_id, 
-      goods_name, is_deleted, create_time, 
-      update_time, creater, modifier, 
-      remarks)
+      goods_name, goods_model, num, 
+      color, unit, is_deleted, 
+      create_time, update_time, creater, 
+      modifier, remarks)
     values (#{id,jdbcType=INTEGER}, #{simpleId,jdbcType=INTEGER}, #{goodsId,jdbcType=INTEGER}, 
-      #{goodsName,jdbcType=VARCHAR}, #{isDeleted,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP}, #{creater,jdbcType=INTEGER}, #{modifier,jdbcType=INTEGER}, 
-      #{remarks,jdbcType=VARCHAR})
+      #{goodsName,jdbcType=VARCHAR}, #{goodsModel,jdbcType=VARCHAR}, #{num,jdbcType=INTEGER}, 
+      #{color,jdbcType=VARCHAR}, #{unit,jdbcType=VARCHAR}, #{isDeleted,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{creater,jdbcType=INTEGER}, 
+      #{modifier,jdbcType=INTEGER}, #{remarks,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.zero.model.SampleMaterial">
     insert into t_sample_material
@@ -130,6 +139,18 @@
       </if>
       <if test="goodsName != null">
         goods_name,
+      </if>
+      <if test="goodsModel != null">
+        goods_model,
+      </if>
+      <if test="num != null">
+        num,
+      </if>
+      <if test="color != null">
+        color,
+      </if>
+      <if test="unit != null">
+        unit,
       </if>
       <if test="isDeleted != null">
         is_deleted,
@@ -162,6 +183,18 @@
       </if>
       <if test="goodsName != null">
         #{goodsName,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsModel != null">
+        #{goodsModel,jdbcType=VARCHAR},
+      </if>
+      <if test="num != null">
+        #{num,jdbcType=INTEGER},
+      </if>
+      <if test="color != null">
+        #{color,jdbcType=VARCHAR},
+      </if>
+      <if test="unit != null">
+        #{unit,jdbcType=VARCHAR},
       </if>
       <if test="isDeleted != null">
         #{isDeleted,jdbcType=INTEGER},
@@ -204,6 +237,18 @@
       <if test="record.goodsName != null">
         goods_name = #{record.goodsName,jdbcType=VARCHAR},
       </if>
+      <if test="record.goodsModel != null">
+        goods_model = #{record.goodsModel,jdbcType=VARCHAR},
+      </if>
+      <if test="record.num != null">
+        num = #{record.num,jdbcType=INTEGER},
+      </if>
+      <if test="record.color != null">
+        color = #{record.color,jdbcType=VARCHAR},
+      </if>
+      <if test="record.unit != null">
+        unit = #{record.unit,jdbcType=VARCHAR},
+      </if>
       <if test="record.isDeleted != null">
         is_deleted = #{record.isDeleted,jdbcType=INTEGER},
       </if>
@@ -233,6 +278,10 @@
       simple_id = #{record.simpleId,jdbcType=INTEGER},
       goods_id = #{record.goodsId,jdbcType=INTEGER},
       goods_name = #{record.goodsName,jdbcType=VARCHAR},
+      goods_model = #{record.goodsModel,jdbcType=VARCHAR},
+      num = #{record.num,jdbcType=INTEGER},
+      color = #{record.color,jdbcType=VARCHAR},
+      unit = #{record.unit,jdbcType=VARCHAR},
       is_deleted = #{record.isDeleted,jdbcType=INTEGER},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP},
@@ -254,6 +303,18 @@
       </if>
       <if test="goodsName != null">
         goods_name = #{goodsName,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsModel != null">
+        goods_model = #{goodsModel,jdbcType=VARCHAR},
+      </if>
+      <if test="num != null">
+        num = #{num,jdbcType=INTEGER},
+      </if>
+      <if test="color != null">
+        color = #{color,jdbcType=VARCHAR},
+      </if>
+      <if test="unit != null">
+        unit = #{unit,jdbcType=VARCHAR},
       </if>
       <if test="isDeleted != null">
         is_deleted = #{isDeleted,jdbcType=INTEGER},
@@ -281,6 +342,10 @@
     set simple_id = #{simpleId,jdbcType=INTEGER},
       goods_id = #{goodsId,jdbcType=INTEGER},
       goods_name = #{goodsName,jdbcType=VARCHAR},
+      goods_model = #{goodsModel,jdbcType=VARCHAR},
+      num = #{num,jdbcType=INTEGER},
+      color = #{color,jdbcType=VARCHAR},
+      unit = #{unit,jdbcType=VARCHAR},
       is_deleted = #{isDeleted,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
