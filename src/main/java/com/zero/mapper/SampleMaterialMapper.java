@@ -3,6 +3,8 @@ package com.zero.mapper;
 import com.zero.model.SampleMaterial;
 
 import java.util.List;
+
+import com.zero.model.example.SampleMaterialExample;
 import org.apache.ibatis.annotations.Param;
 
 public interface SampleMaterialMapper {

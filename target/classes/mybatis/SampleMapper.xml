@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zero.mapper.SampleMapper">
+  <resultMap id="BaseResultMap" type="com.zero.model.Sample">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="order_id" jdbcType="INTEGER" property="orderId" />
+    <result column="sample_name" jdbcType="VARCHAR" property="sampleName" />
+    <result column="sample_code" jdbcType="VARCHAR" property="sampleCode" />
+    <result column="photo_url" jdbcType="VARCHAR" property="photoUrl" />
+    <result column="is_deleted" jdbcType="INTEGER" property="isDeleted" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="creater" jdbcType="INTEGER" property="creater" />
+    <result column="modifier" jdbcType="INTEGER" property="modifier" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, order_id, sample_name, sample_code, photo_url, is_deleted, create_time, update_time, 
+    creater, modifier, remarks, status
+  </sql>
+  <select id="selectByExample" parameterType="com.zero.model.example.SampleExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from t_sample
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_sample
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_sample
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.zero.model.example.SampleExample">
+    delete from t_sample
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.zero.model.Sample">
+    insert into t_sample (id, order_id, sample_name, 
+      sample_code, photo_url, is_deleted, 
+      create_time, update_time, creater, 
+      modifier, remarks, status
+      )
+    values (#{id,jdbcType=INTEGER}, #{orderId,jdbcType=INTEGER}, #{sampleName,jdbcType=VARCHAR}, 
+      #{sampleCode,jdbcType=VARCHAR}, #{photoUrl,jdbcType=VARCHAR}, #{isDeleted,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{creater,jdbcType=INTEGER}, 
+      #{modifier,jdbcType=INTEGER}, #{remarks,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.zero.model.Sample">
+    insert into t_sample
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="orderId != null">
+        order_id,
+      </if>
+      <if test="sampleName != null">
+        sample_name,
+      </if>
+      <if test="sampleCode != null">
+        sample_code,
+      </if>
+      <if test="photoUrl != null">
+        photo_url,
+      </if>
+      <if test="isDeleted != null">
+        is_deleted,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="creater != null">
+        creater,
+      </if>
+      <if test="modifier != null">
+        modifier,
+      </if>
+      <if test="remarks != null">
+        remarks,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="orderId != null">
+        #{orderId,jdbcType=INTEGER},
+      </if>
+      <if test="sampleName != null">
+        #{sampleName,jdbcType=VARCHAR},
+      </if>
+      <if test="sampleCode != null">
+        #{sampleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="photoUrl != null">
+        #{photoUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="isDeleted != null">
+        #{isDeleted,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creater != null">
+        #{creater,jdbcType=INTEGER},
+      </if>
+      <if test="modifier != null">
+        #{modifier,jdbcType=INTEGER},
+      </if>
+      <if test="remarks != null">
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.zero.model.example.SampleExample" resultType="java.lang.Long">
+    select count(*) from t_sample
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update t_sample
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.orderId != null">
+        order_id = #{record.orderId,jdbcType=INTEGER},
+      </if>
+      <if test="record.sampleName != null">
+        sample_name = #{record.sampleName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sampleCode != null">
+        sample_code = #{record.sampleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.photoUrl != null">
+        photo_url = #{record.photoUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isDeleted != null">
+        is_deleted = #{record.isDeleted,jdbcType=INTEGER},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null">
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.creater != null">
+        creater = #{record.creater,jdbcType=INTEGER},
+      </if>
+      <if test="record.modifier != null">
+        modifier = #{record.modifier,jdbcType=INTEGER},
+      </if>
+      <if test="record.remarks != null">
+        remarks = #{record.remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null">
+        status = #{record.status,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update t_sample
+    set id = #{record.id,jdbcType=INTEGER},
+      order_id = #{record.orderId,jdbcType=INTEGER},
+      sample_name = #{record.sampleName,jdbcType=VARCHAR},
+      sample_code = #{record.sampleCode,jdbcType=VARCHAR},
+      photo_url = #{record.photoUrl,jdbcType=VARCHAR},
+      is_deleted = #{record.isDeleted,jdbcType=INTEGER},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      creater = #{record.creater,jdbcType=INTEGER},
+      modifier = #{record.modifier,jdbcType=INTEGER},
+      remarks = #{record.remarks,jdbcType=VARCHAR},
+      status = #{record.status,jdbcType=INTEGER}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zero.model.Sample">
+    update t_sample
+    <set>
+      <if test="orderId != null">
+        order_id = #{orderId,jdbcType=INTEGER},
+      </if>
+      <if test="sampleName != null">
+        sample_name = #{sampleName,jdbcType=VARCHAR},
+      </if>
+      <if test="sampleCode != null">
+        sample_code = #{sampleCode,jdbcType=VARCHAR},
+      </if>
+      <if test="photoUrl != null">
+        photo_url = #{photoUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="isDeleted != null">
+        is_deleted = #{isDeleted,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creater != null">
+        creater = #{creater,jdbcType=INTEGER},
+      </if>
+      <if test="modifier != null">
+        modifier = #{modifier,jdbcType=INTEGER},
+      </if>
+      <if test="remarks != null">
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zero.model.Sample">
+    update t_sample
+    set order_id = #{orderId,jdbcType=INTEGER},
+      sample_name = #{sampleName,jdbcType=VARCHAR},
+      sample_code = #{sampleCode,jdbcType=VARCHAR},
+      photo_url = #{photoUrl,jdbcType=VARCHAR},
+      is_deleted = #{isDeleted,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      creater = #{creater,jdbcType=INTEGER},
+      modifier = #{modifier,jdbcType=INTEGER},
+      remarks = #{remarks,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="findSamplePage" parameterType="map" resultType="map">
+    SELECT
+        s.id,
+        s.sample_name,
+        s.sample_code,
+        s.photo_url,
+        o.cooperation_company,
+        o.deliver_date,
+        s.status
+    FROM
+        t_sample s
+    LEFT JOIN t_order o ON (s.order_id = o.id)
+    <where>
+      <if test="status != null">
+        and s.status = #{status, jdbcType=INTEGER}
+      </if>
+      <if test="sampleName != null">
+        and sample_name = #{sampleName, jdbcType=VARCHAR}
+      </if>
+      <if test="sampleCode != null">
+        and sample_code = #{sampleCode, jdbcType=VARCHAR}
+      </if>
+      <if test="company != null">
+        and cooperation_company = #{company, jdbcType=VARCHAR}
+      </if>
+      <if test="beginDate != null and endDate != null">
+        and deliver_date between #{beginDate, jdbcType=DATE} and #{endDate, jdbcType=DATE}
+      </if>
+    </where>
+    order by o.deliver_date asc
+    <if test="limit != null and offset != null">
+      limit #{limit} offset #{offset}
+    </if>
+  </select>
+
+  <select id="findSampleRowNum" parameterType="map" resultType="java.lang.Long">
+    select count(*) from t_sample s
+    LEFT JOIN t_order o ON (s.order_id = o.id)
+    <where>
+      <if test="status != null">
+        and s.status = #{status, jdbcType=INTEGER}
+      </if>
+      <if test="sampleName != null">
+        and sample_name = #{sampleName, jdbcType=VARCHAR}
+      </if>
+      <if test="sampleCode != null">
+        and sample_code = #{sampleCode, jdbcType=VARCHAR}
+      </if>
+      <if test="company != null">
+        and cooperation_company = #{company, jdbcType=VARCHAR}
+      </if>
+      <if test="beginDate != null and endDate != null">
+        and deliver_date between #{beginDate, jdbcType=DATE} and #{endDate, jdbcType=DATE}
+      </if>
+    </where>
+  </select>
+
+  <update id="updateStatus" parameterType="map">
+    update t_sample
+    set update_time = now(),
+      modifier = #{modifier,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER} and status != #{status,jdbcType=INTEGER}
+  </update>
+
+  <select id="findSampleById" parameterType="java.lang.Integer" resultType="map">
+    SELECT
+    s.id,
+    s.sample_name,
+    s.sample_code,
+    s.photo_url,
+    o.cooperation_company,
+    o.deliver_date,
+    s.status,
+    s.remarks
+    FROM
+    t_sample s
+    LEFT JOIN t_order o ON (s.order_id = o.id)
+    where s.id = #{id, jdbcType=INTEGER}
+  </select>
+</mapper>

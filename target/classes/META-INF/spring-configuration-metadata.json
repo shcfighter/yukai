@@ -1,0 +1,22 @@
+{
+  "hints": [],
+  "groups": [
+    {
+      "sourceType": "com.zero.web.UploadController",
+      "name": "file.upload",
+      "type": "com.zero.web.UploadController"
+    }
+  ],
+  "properties": [
+    {
+      "sourceType": "com.zero.web.UploadController",
+      "name": "file.upload.path",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.zero.web.UploadController",
+      "name": "file.upload.path-url",
+      "type": "java.lang.String"
+    }
+  ]
+}
