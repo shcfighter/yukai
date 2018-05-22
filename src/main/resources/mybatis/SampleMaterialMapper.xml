@@ -93,9 +93,6 @@
     <if test="orderByClause != null">
       order by ${orderByClause}
     </if>
-    <if test="limit != null and offset != null">
-      limit #{limit} offset #{offset}
-    </if>
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -354,4 +351,14 @@
       remarks = #{remarks,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <insert id="insertBatch" parameterType="list">
+    insert into t_sample_material (simple_id, goods_name, goods_model, num,
+      color, unit, create_time, creater,remarks)
+    values
+    <foreach collection="list" item="material" separator=",">
+      (#{material.simpleId,jdbcType=INTEGER}, #{material.goodsName,jdbcType=VARCHAR}, #{material.goodsModel,jdbcType=VARCHAR}, #{material.num,jdbcType=INTEGER},
+        #{material.color,jdbcType=VARCHAR}, #{material.unit,jdbcType=VARCHAR}, now(), #{loginId,jdbcType=INTEGER}, #{material.remarks,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
 </mapper>

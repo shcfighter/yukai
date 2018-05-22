@@ -1,6 +1,6 @@
 package com.zero.service.impl;
 
-import com.zero.BusinessException;
+import com.zero.common.BusinessException;
 import com.zero.common.enmu.DeletedEnum;
 import com.zero.common.enmu.RecordType;
 import com.zero.common.utils.BeanUtils;

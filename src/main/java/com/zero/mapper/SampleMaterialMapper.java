@@ -29,4 +29,6 @@ public interface SampleMaterialMapper {
     int updateByPrimaryKeySelective(SampleMaterial record);
 
     int updateByPrimaryKey(SampleMaterial record);
+
+    int insertBatch(@Param("list") List<SampleMaterial> list, @Param("loginId") int loginId);
 }

@@ -1,5 +1,6 @@
 package com.zero.model;
 
+import java.util.Arrays;
 import java.util.Date;
 
 public class Sample {
@@ -24,8 +25,6 @@ public class Sample {
     private Integer modifier;
 
     private String remarks;
-
-    private String[] photoUrls;
 
     private Integer status;
 
@@ -117,19 +116,29 @@ public class Sample {
         this.remarks = remarks == null ? null : remarks.trim();
     }
 
-    public String[] getPhotoUrls() {
-        return photoUrls;
-    }
-
-    public void setPhotoUrls(String[] photoUrls) {
-        this.photoUrls = photoUrls;
-    }
-
     public Integer getStatus() {
         return status;
     }
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "Sample{" +
+                "id=" + id +
+                ", orderId=" + orderId +
+                ", sampleName='" + sampleName + '\'' +
+                ", sampleCode='" + sampleCode + '\'' +
+                ", photoUrl='" + photoUrl + '\'' +
+                ", isDeleted=" + isDeleted +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                ", creater=" + creater +
+                ", modifier=" + modifier +
+                ", remarks='" + remarks + '\'' +
+                ", status=" + status +
+                '}';
     }
 }

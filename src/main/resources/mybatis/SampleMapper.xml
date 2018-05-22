@@ -108,7 +108,7 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.zero.model.Sample">
+  <insert id="insert" parameterType="com.zero.model.Sample" useGeneratedKeys="true" keyProperty="id">
     insert into t_sample (id, order_id, sample_name, 
       sample_code, photo_url, is_deleted, 
       create_time, update_time, creater, 
@@ -120,7 +120,7 @@
       #{modifier,jdbcType=INTEGER}, #{remarks,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.zero.model.Sample">
+  <insert id="insertSelective" parameterType="com.zero.model.Sample" useGeneratedKeys="true" keyProperty="id">
     insert into t_sample
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -328,15 +328,18 @@
         s.sample_name,
         s.sample_code,
         s.photo_url,
+        s.status sample_status,
         o.cooperation_company,
         o.deliver_date,
-        s.status
+        o.id order_id,
+        o.order_num order_num,
+        o.status order_status
     FROM
         t_sample s
     LEFT JOIN t_order o ON (s.order_id = o.id)
     <where>
       <if test="status != null">
-        and s.status = #{status, jdbcType=INTEGER}
+        and o.status = #{status, jdbcType=INTEGER}
       </if>
       <if test="sampleName != null">
         and sample_name = #{sampleName, jdbcType=VARCHAR}
@@ -362,7 +365,7 @@
     LEFT JOIN t_order o ON (s.order_id = o.id)
     <where>
       <if test="status != null">
-        and s.status = #{status, jdbcType=INTEGER}
+        and o.status = #{status, jdbcType=INTEGER}
       </if>
       <if test="sampleName != null">
         and sample_name = #{sampleName, jdbcType=VARCHAR}
@@ -392,10 +395,13 @@
     s.id,
     s.sample_name,
     s.sample_code,
+    s.status sample_status,
     s.photo_url,
     o.cooperation_company,
     o.deliver_date,
-    s.status,
+    o.id order_id,
+    o.status order_status,
+    o.order_num,
     s.remarks
     FROM
     t_sample s

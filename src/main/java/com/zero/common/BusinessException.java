@@ -1,4 +1,4 @@
-package com.zero;
+package com.zero.common;
 
 public class BusinessException extends RuntimeException {
 

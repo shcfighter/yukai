@@ -28,7 +28,7 @@ public class GoodsRecordServiceImpl implements IGoodsRecordService {
     public List<GoodsUseRecord> findGoodsRecordPage(String goodsName, String goodsModel, String batchNo, String user, int pageNum, int pageSize) {
         GoodsUseRecordExample example = new GoodsUseRecordExample();
         example.setLimit(pageNum);
-        example.setPage(pageNum);
+        example.setPage(pageSize);
         GoodsUseRecordExample.Criteria criteria = example.createCriteria();
         if(StringUtils.isNotEmpty(goodsName)){
             criteria.andGoodsNameLike("%" + goodsName + "%");

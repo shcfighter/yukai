@@ -1,0 +1,200 @@
+CREATE TABLE `t_dept` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `p_id` int(11) DEFAULT NULL COMMENT '父节点',
+  `dept_name` varchar(50) DEFAULT NULL COMMENT '部门名称',
+  `dept_code` varchar(50) DEFAULT NULL COMMENT '部门code',
+  `is_deleted` int(2) DEFAULT '0',
+  `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `update_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `creater` int(11) DEFAULT NULL,
+  `modifier` int(11) DEFAULT NULL,
+  `remarks` varchar(512) CHARACTER SET latin1 DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `t_goods` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `goods_name` varchar(50) DEFAULT NULL COMMENT '货物名称',
+  `goods_model` varchar(50) DEFAULT NULL COMMENT '货物型号',
+  `type` int(2) DEFAULT NULL COMMENT '1-原材料；2-成品；',
+  `color` varchar(10) DEFAULT NULL COMMENT '货物颜色',
+  `num` int(11) DEFAULT NULL COMMENT '货物数量',
+  `unit` varchar(10) DEFAULT NULL COMMENT '货物单位',
+  `batch_no` varchar(50) DEFAULT NULL COMMENT '批号',
+  `unit_price` decimal(10,2) DEFAULT NULL COMMENT '单价',
+  `total_price` decimal(15,2) DEFAULT NULL,
+  `produce_date` date DEFAULT NULL COMMENT '生产日期',
+  `expired_date` date DEFAULT NULL COMMENT '过期日期',
+  `is_deleted` int(2) DEFAULT '0',
+  `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `update_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `creater` int(11) DEFAULT NULL,
+  `modifier` int(255) DEFAULT NULL,
+  `remarks` varchar(512) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='货物 库存';
+
+CREATE TABLE `t_goods_use_record` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `goods_id` int(11) DEFAULT NULL,
+  `goods_name` varchar(50) DEFAULT NULL,
+  `goods_model` varchar(50) DEFAULT NULL,
+  `batch_no` varchar(50) DEFAULT NULL,
+  `goods_num` int(11) DEFAULT NULL COMMENT '更改后数量',
+  `original_num` int(11) DEFAULT '0' COMMENT '原始数量',
+  `user` varchar(50) DEFAULT NULL COMMENT '使用人',
+  `is_deleted` int(2) DEFAULT '0',
+  `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `creater` int(11) DEFAULT NULL,
+  `remarks` varchar(512) DEFAULT NULL,
+  `type` int(2) DEFAULT NULL COMMENT '1-新增；2-修改；3-入库；4-出库；5-删除;',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COMMENT='货物使用情况';
+
+CREATE TABLE `t_menu` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `p_id` int(11) DEFAULT NULL,
+  `menu_name` varchar(50) DEFAULT NULL,
+  `menu_url` varchar(255) CHARACTER SET latin1 DEFAULT NULL,
+  `menu_icon` varchar(50) CHARACTER SET latin1 DEFAULT NULL,
+  `is_menu` int(2) DEFAULT NULL,
+  `sort` int(11) DEFAULT NULL,
+  `is_valid` int(11) DEFAULT '0' COMMENT '0-正常；1-禁用',
+  `remarks` varchar(512) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `t_order` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `order_num` int(11) DEFAULT NULL COMMENT '订单数据',
+  `product_name` varchar(100) DEFAULT NULL COMMENT '产品名称',
+  `product_unit` varchar(10) DEFAULT NULL COMMENT '产品单位',
+  `deliver_date` date DEFAULT NULL COMMENT '交付时间',
+  `unit_price` decimal(8,2) DEFAULT NULL COMMENT '单价',
+  `total_price` decimal(15,2) DEFAULT NULL COMMENT '总价',
+  `cooperation_company` varchar(50) DEFAULT NULL COMMENT '合作公司',
+  `contact_name` varchar(50) DEFAULT NULL COMMENT '合作人',
+  `contact_phone` varchar(11) DEFAULT NULL COMMENT '联系方式',
+  `status` int(11) DEFAULT '0' COMMENT '0-接单、录单；1-打样；2-采购；3-排单；4-生产；5-入库；-1-作废',
+  `is_deleted` int(2) DEFAULT NULL,
+  `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `update_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `creater` int(11) DEFAULT NULL,
+  `modifier` int(11) DEFAULT NULL,
+  `remarks` varchar(1024) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COMMENT='入单 业务员接单';
+
+CREATE TABLE `t_plan` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `order_id` int(11) DEFAULT NULL COMMENT '订单id',
+  `plan_name` varchar(50) DEFAULT NULL COMMENT '计划代号',
+  `dept_name` varchar(50) DEFAULT NULL COMMENT '生产部门',
+  `product_name` varchar(50) DEFAULT NULL COMMENT '产品名称',
+  `batch_no` varchar(50) DEFAULT NULL COMMENT '生产批次',
+  `begin_date` datetime DEFAULT NULL COMMENT '开始生产时间',
+  `end_date` datetime DEFAULT NULL COMMENT '结束生产时间',
+  `num` int(11) DEFAULT NULL COMMENT '生产数量',
+  `status` int(2) DEFAULT '0' COMMENT '0-新增；1-生产；2-完成；',
+  `is_deleted` int(2) DEFAULT '0',
+  `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `update_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `creater` int(11) DEFAULT NULL,
+  `modifier` int(255) DEFAULT NULL,
+  `remarks` varchar(512) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `t_role` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `role_name` varchar(50) DEFAULT NULL COMMENT '角色名称',
+  `role_code` varchar(50) CHARACTER SET latin1 DEFAULT NULL COMMENT '角色code',
+  `is_deleted` int(2) DEFAULT '0' COMMENT '0',
+  `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `update_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `creater` int(11) DEFAULT NULL,
+  `modifier` int(11) DEFAULT NULL,
+  `remarks` varchar(512) CHARACTER SET latin1 DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `t_role_menu` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `r_id` int(11) DEFAULT NULL COMMENT '角色id',
+  `m_id` int(11) DEFAULT NULL COMMENT '菜单id',
+  `is_deleted` int(2) DEFAULT '0',
+  `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `update_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `creater` int(11) DEFAULT NULL,
+  `modifier` int(11) DEFAULT NULL,
+  `remarks` varchar(512) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=105 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `t_sample` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `order_id` int(11) DEFAULT NULL COMMENT '订单id',
+  `sample_name` varchar(50) DEFAULT NULL,
+  `sample_code` varchar(20) DEFAULT NULL COMMENT '样品型号',
+  `photo_url` varchar(5000) DEFAULT NULL COMMENT '照片 以逗号分隔',
+  `status` int(2) DEFAULT '0' COMMENT '0-新建；1-完成；2-计划生产阶段',
+  `is_deleted` int(255) DEFAULT NULL,
+  `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `update_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `creater` int(11) DEFAULT NULL,
+  `modifier` int(11) DEFAULT NULL,
+  `remarks` varchar(1024) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COMMENT='样品表 打样';
+
+CREATE TABLE `t_sample_material` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `simple_id` int(11) DEFAULT NULL,
+  `goods_id` int(11) DEFAULT NULL,
+  `goods_name` varchar(255) DEFAULT NULL,
+  `goods_model` varchar(50) DEFAULT NULL COMMENT '货物型号',
+  `num` int(11) DEFAULT NULL COMMENT '货物数量',
+  `color` varchar(10) DEFAULT NULL COMMENT '货物颜色',
+  `unit` varchar(10) DEFAULT NULL COMMENT '货物单位',
+  `is_deleted` int(2) DEFAULT '0',
+  `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `update_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `creater` int(11) DEFAULT NULL,
+  `modifier` int(255) DEFAULT NULL,
+  `remarks` varchar(512) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `t_user` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `login_name` varchar(50) DEFAULT NULL COMMENT '员工id',
+  `real_name` varchar(50) DEFAULT NULL COMMENT '真实姓名',
+  `password` varchar(64) DEFAULT NULL COMMENT '密码',
+  `phone` varchar(11) DEFAULT NULL COMMENT '手机号',
+  `email` varchar(50) DEFAULT NULL COMMENT '邮箱',
+  `sex` int(2) DEFAULT NULL COMMENT '性别 0-未知；1-男；2-女',
+  `dept_id` int(11) DEFAULT NULL COMMENT '部门id',
+  `dept_name` varchar(50) DEFAULT NULL COMMENT '部门名称',
+  `is_deleted` int(2) DEFAULT '0' COMMENT '0-未删除;1-删除',
+  `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `update_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `creater` int(11) DEFAULT NULL,
+  `modifier` int(11) DEFAULT NULL,
+  `remarks` varchar(512) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `login_name` (`login_name`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `t_user_role` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `u_id` int(11) DEFAULT NULL COMMENT '用户id',
+  `r_id` int(11) DEFAULT NULL COMMENT '角色id',
+  `is_deleted` int(2) DEFAULT '0',
+  `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `update_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `creater` int(11) DEFAULT NULL,
+  `modifier` int(11) DEFAULT NULL,
+  `remarks` varchar(512) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
+

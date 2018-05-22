@@ -2,6 +2,7 @@ package com.zero.service.impl;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.zero.common.BusinessException;
 import com.zero.common.enmu.DeletedEnum;
 import com.zero.common.enmu.OrderStatus;
 import com.zero.common.enmu.SampleStatus;
@@ -9,7 +10,9 @@ import com.zero.common.utils.BeanUtils;
 import com.zero.mapper.SampleMapper;
 import com.zero.model.Order;
 import com.zero.model.Sample;
+import com.zero.model.SampleMaterial;
 import com.zero.model.example.SampleExample;
+import com.zero.service.IMaterialService;
 import com.zero.service.IOrderService;
 import com.zero.service.ISampleService;
 import org.apache.commons.lang3.StringUtils;
@@ -33,16 +36,27 @@ public class SampleServiceImpl implements ISampleService {
     private SampleMapper sampleMapper;
     @Resource
     private IOrderService orderService;
+    @Resource
+    private IMaterialService materialService;
 
+    @Transactional
     @Override
-    public int insertOrUpdate(Sample sample, int loginId) {
+    public int insertOrUpdate(Sample sample, List<SampleMaterial> list, int loginId) {
         if(Objects.isNull(sample.getId())){
             sample.setCreater(loginId);
             sample.setCreateTime(new Date());
-            if(Objects.nonNull(sample.getPhotoUrls())){
-                sample.setPhotoUrl(Stream.of(sample.getPhotoUrls()).collect(Collectors.joining(",")));
+            int num = sampleMapper.insertSelective(sample);
+            if(num <= 0){
+                throw new BusinessException("保存样品失败！");
             }
-            return sampleMapper.insertSelective(sample);
+            LOGGER.info("sample.getId():{}", sample.getId());
+            list.stream().forEach(m -> {m.setSimpleId(sample.getId());});
+            materialService.insertBatch(list, loginId);
+            if(orderService.updateStatus(sample.getOrderId(), OrderStatus.SAMPLE.getKey(), OrderStatus.SAVE.getKey(), loginId) <= 0){
+                LOGGER.error("修改订单【{}】状态失败，{} --> {}", sample.getOrderId(), OrderStatus.SAVE.getDesc(), OrderStatus.SAMPLE.getDesc());
+                return 0;
+            }
+            return 1;
         }
         Sample sampleDb = sampleMapper.selectByPrimaryKey(sample.getId());
         if(Objects.isNull(sampleDb)){
@@ -52,12 +66,16 @@ public class SampleServiceImpl implements ISampleService {
             LOGGER.error("样品【{}】已经进入计划科无法进行更改！", sampleDb.getId());
             return -1;
         }
-        if(Objects.nonNull(sample.getPhotoUrls())){
-            sample.setPhotoUrl(Stream.of(sample.getPhotoUrls()).collect(Collectors.joining(",")));
-        }
+
         BeanUtils.copyProperties(sample, sampleDb);
         sampleDb.setModifier(loginId);
         sampleDb.setUpdateTime(new Date());
+        list.forEach(m -> {
+            if(Objects.isNull(m.getId())){
+                m.setSimpleId(sampleDb.getId());
+                materialService.insert(m, loginId);
+            }
+        });
         return sampleMapper.updateByPrimaryKeySelective(sampleDb);
     }
 
@@ -73,11 +91,13 @@ public class SampleServiceImpl implements ISampleService {
     }
 
     @Override
-    public List<Map<String, Object>> findSamplePage(String sampleName, String sampleCode, String company, Date beginDate, Date endDate, int page, int pageSize) {
+    public List<Map<String, Object>> findSamplePage(String sampleName, String sampleCode, String company, Integer status, Date beginDate, Date endDate, int page, int pageSize) {
         Map<String, Object> condition = Maps.newHashMap();
-        condition.put("status", SampleStatus.FINISHED.getKey());
         condition.put("limit", pageSize);
         condition.put("offset", (page - 1) * pageSize);
+        if(Objects.nonNull(status)){
+            condition.put("status", status);
+        }
         if(StringUtils.isNotEmpty(sampleName)){
             condition.put("sampleName", "%" + sampleName + "%");
         }
@@ -95,9 +115,11 @@ public class SampleServiceImpl implements ISampleService {
     }
 
     @Override
-    public long findSampleRowNum(String sampleName, String sampleCode, String company, Date beginDate, Date endDate) {
+    public long findSampleRowNum(String sampleName, String sampleCode, String company, Integer status, Date beginDate, Date endDate) {
         Map<String, Object> condition = Maps.newHashMap();
-        condition.put("status", SampleStatus.FINISHED.getKey());
+        if(Objects.nonNull(status)){
+            condition.put("status", status);
+        }
         if(StringUtils.isNotEmpty(sampleName)){
             condition.put("sampleName", "%" + sampleName + "%");
         }
@@ -128,14 +150,14 @@ public class SampleServiceImpl implements ISampleService {
             return 0;
         }
         if(SampleStatus.FINISHED.getKey() == status){
-            if(orderService.updateStatus(orderId, OrderStatus.SAMPLE.getKey(), OrderStatus.SAVE.getKey(), loginId) <= 0){
-                LOGGER.error("修改订单【{}】状态失败，{} --> {}", orderId, OrderStatus.SAVE.getDesc(), OrderStatus.SAMPLE.getDesc());
+            if(orderService.updateStatus(orderId, OrderStatus.PURCHASE.getKey(), OrderStatus.SAMPLE.getKey(), loginId) <= 0){
+                LOGGER.error("修改订单【{}】状态失败，{} --> {}", orderId, OrderStatus.SAMPLE.getDesc(), OrderStatus.PURCHASE.getDesc());
                 return 0;
             }
         }
         if(SampleStatus.PRODUCE.getKey() == status){
-            if(orderService.updateStatus(orderId, OrderStatus.PLAN.getKey(), OrderStatus.SAMPLE.getKey(), loginId) <= 0){
-                LOGGER.error("修改订单【{}】状态失败，{} --> {}", orderId, OrderStatus.SAVE.getDesc(), OrderStatus.SAMPLE.getDesc());
+            if(orderService.updateStatus(orderId, OrderStatus.PLAN.getKey(), OrderStatus.PURCHASE.getKey(), loginId) <= 0){
+                LOGGER.error("修改订单【{}】状态失败，{} --> {}", orderId, OrderStatus.PURCHASE.getDesc(), OrderStatus.PLAN.getDesc());
                 return 0;
             }
         }
