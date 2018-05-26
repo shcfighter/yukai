@@ -25,8 +25,8 @@ public class RecordController {
 
     @GetMapping("/findRecordPage")
     public Result<List<Goods>> findGoodsPage(String goodsName, String goodsModel, String batchNo, String user,
-                                       @RequestParam(value = "page", defaultValue = "1") int pageNum,
-                                       @RequestParam(value = "limit", defaultValue = "10") int pageSize){
+                                       @RequestParam(value = "page", defaultValue = "1") int pageSize,
+                                       @RequestParam(value = "limit", defaultValue = "10") int pageNum){
         return Result.resultSuccess(goodsRecordService.findRowNum(goodsName, null, batchNo, user),
                 goodsRecordService.findGoodsRecordPage(goodsName, null, batchNo, user, pageNum, pageSize));
     }

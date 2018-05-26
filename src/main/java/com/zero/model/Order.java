@@ -1,36 +1,49 @@
 package com.zero.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.zero.common.utils.excel.ExportConfig;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
+@ExportConfig.SheetName
 public class Order {
+    @ExportConfig.ColumnName(value = "id", order = 0)
     private Integer id;
-
+    @ExportConfig.ColumnName(value = "订单数量", order = 2)
     private Integer orderNum;
 
+    @ExportConfig.ColumnName(value = "产品名称", order = 1)
     private String productName;
 
+    @ExportConfig.ColumnName(value = "单位", order = 3)
     private String productUnit;
 
+    @ExportConfig.ColumnName(value = "交付时间", order = 4, dateFormat = "yyyy-MM-dd")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date deliverDate;
 
+    @ExportConfig.ColumnName(value = "单价", order = 5)
     private BigDecimal unitPrice;
 
+    @ExportConfig.ColumnName(value = "总价", order = 6)
     private BigDecimal totalPrice;
 
+    @ExportConfig.ColumnName(value = "合作公司", order = 7)
     private String cooperationCompany;
 
+    @ExportConfig.ColumnName(value = "合作人", order = 8)
     private String contactName;
 
+    @ExportConfig.ColumnName(value = "联系电话", order = 9)
     private String contactPhone;
 
+    @ExportConfig.ColumnName(value = "状态", order = 10, codeName = "com.zero.common.enmu.OrderStatus")
     private Integer status;
 
     private Integer isDeleted;
 
+    @ExportConfig.ColumnName(value = "创建时间", order = 11, dateFormat = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
     private Date updateTime;

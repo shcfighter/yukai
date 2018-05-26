@@ -23,10 +23,12 @@ public class OrderServiceImpl implements IOrderService {
     private OrderMapper orderMapper;
 
     @Override
-    public List<Order> findOrderByPage(String productName, String cooperationCompany, Integer status, int pageNum, int pageSize) {
+    public List<Order> findOrderByPage(String productName, String cooperationCompany, Integer status, Integer pageNum, Integer pageSize) {
         OrderExample example = new OrderExample();
-        example.setLimit(pageSize);
-        example.setPage(pageNum);
+        if(Objects.nonNull(pageNum) && Objects.nonNull(pageSize)){
+            example.setLimit(pageSize);
+            example.setPage(pageNum);
+        }
         example.setOrderByClause(" create_time desc");
         OrderExample.Criteria criteria = example.createCriteria();
         if(StringUtils.isNotEmpty(productName)){

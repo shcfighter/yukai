@@ -1,6 +1,7 @@
 package com.zero.web;
 
 import com.zero.common.Result;
+import com.zero.common.enmu.PlanStatus;
 import com.zero.common.utils.SessionUtils;
 import com.zero.model.Plan;
 import com.zero.service.IPlanService;
@@ -21,7 +22,7 @@ public class PlanController {
     @Resource
     private IPlanService planService;
 
-    @PostMapping("/insertPlan")
+    @PostMapping("insertPlan")
     public Result<String> insertPlan(HttpServletRequest request,
                                  @RequestBody Plan plan, BindingResult bindingResult){
         if(bindingResult.hasErrors()){
@@ -34,7 +35,7 @@ public class PlanController {
         return Result.resultSuccess("新增生产计划成功！");
     }
 
-    @PostMapping("/updatePlan")
+    @PostMapping("updatePlan")
     public Result<String> updatePlan(HttpServletRequest request, @RequestBody Plan plan, BindingResult bindingResult){
         if(bindingResult.hasErrors()){
             LOGGER.error("修改生产计划信息错误：{}", bindingResult.getFieldError().getDefaultMessage());
@@ -46,7 +47,7 @@ public class PlanController {
         return Result.resultSuccess("修改生产计划成功！");
     }
 
-    @DeleteMapping("/deletePlan/{id}")
+    @DeleteMapping("deletePlan/{id}")
     public Result<String> deletePlan(HttpServletRequest request, @PathVariable("id") int id){
         if(planService.delete(id, SessionUtils.getCurrentUserId(request)) <= 0){
             return Result.resultFailure("删除生产计划失败！");
@@ -58,5 +59,21 @@ public class PlanController {
     @GetMapping("findPlan/{orderId}")
     public Result<List<Plan>> findPlan(@PathVariable("orderId") int orderId, String batchNo){
         return Result.resultSuccess(planService.findPlan(orderId, batchNo));
+    }
+
+    @PutMapping("updateToProduce/{orderId}")
+    public Result<String> updateToProduce(HttpServletRequest request, @PathVariable("orderId") int orderId){
+        if(planService.updateToProduce(orderId, PlanStatus.PRODUCE.getKey(), SessionUtils.getCurrentUserId(request)) <= 0){
+            return Result.resultFailure("操作生产计划失败！");
+        }
+        return Result.resultSuccess("操作生产计划成功！");
+    }
+
+    @PutMapping("updateToFinish/{id}")
+    public Result<String> updateToFinish(HttpServletRequest request, @PathVariable("id") int id){
+        if(planService.updateToFinish(id, SessionUtils.getCurrentUserId(request)) <= 0){
+            return Result.resultFailure("操作生产计划失败！");
+        }
+        return Result.resultSuccess("操作生产计划成功！");
     }
 }

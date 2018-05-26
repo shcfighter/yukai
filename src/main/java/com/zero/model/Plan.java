@@ -1,5 +1,7 @@
 package com.zero.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.Date;
 
 public class Plan {
@@ -15,8 +17,10 @@ public class Plan {
 
     private String batchNo;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date beginDate;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date endDate;
 
     private Integer num;

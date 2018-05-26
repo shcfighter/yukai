@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface IOrderService {
 
-    List<Order> findOrderByPage(String productName, String cooperationCompany, Integer status, int pageNum, int pageSize);
+    List<Order> findOrderByPage(String productName, String cooperationCompany, Integer status, Integer pageNum, Integer pageSize);
 
     long findOrderRowNum(String productName, String cooperationCompany, Integer status);
 

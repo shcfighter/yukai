@@ -25,6 +25,11 @@ public class DeptController {
 		return Result.resultSuccess(deptService.findDeptTree());
 	}
 
+	@GetMapping("/findDeptTree2")
+	public List<Dept> findDeptTree2(){
+		return deptService.findDeptTree();
+	}
+
 	@GetMapping("/findDeptPage")
 	public Result<List<Dept>> findDeptPage(String deptName, String deptCode,
 										   @RequestParam(value = "page", defaultValue = "1") int pageNum,

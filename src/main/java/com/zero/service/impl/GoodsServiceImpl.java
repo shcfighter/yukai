@@ -28,10 +28,12 @@ public class GoodsServiceImpl implements IGoodsService {
     private IGoodsRecordService goodsRecordService;
 
     @Override
-    public List<Goods> findGoodsPage(String goodsName, String goodsModel, String batchNo, Integer type, int pageNum, int pageSize) {
+    public List<Goods> findGoodsPage(String goodsName, String goodsModel, String batchNo, Integer type, Integer pageNum, Integer pageSize) {
         GoodsExample example = new GoodsExample();
-        example.setLimit(pageNum);
-        example.setPage(pageNum);
+        if(Objects.nonNull(pageNum) && Objects.nonNull(pageSize)){
+            example.setLimit(pageNum);
+            example.setPage(pageSize);
+        }
         GoodsExample.Criteria criteria = example.createCriteria();
         criteria.andIsDeletedEqualTo(DeletedEnum.NO.getKey());
         if(StringUtils.isNotEmpty(goodsName)){

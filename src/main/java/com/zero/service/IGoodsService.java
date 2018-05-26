@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface IGoodsService {
 
-	List<Goods> findGoodsPage(String goodsName, String goodsModel, String batchNo, Integer type, int pageNum, int pageSize);
+	List<Goods> findGoodsPage(String goodsName, String goodsModel, String batchNo, Integer type, Integer pageNum, Integer pageSize);
 
 	long findRowNum(String goodsName, String goodsModel, String batchNo, Integer type);
 

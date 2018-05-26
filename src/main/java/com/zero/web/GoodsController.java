@@ -1,8 +1,11 @@
 package com.zero.web;
 
 import com.zero.common.Result;
+import com.zero.common.utils.DateUtils;
 import com.zero.common.utils.SessionUtils;
+import com.zero.common.utils.excel.SimpleExcelExporter;
 import com.zero.model.Goods;
+import com.zero.model.Order;
 import com.zero.model.User;
 import com.zero.service.IGoodsService;
 import org.apache.logging.log4j.LogManager;
@@ -12,6 +15,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -89,5 +96,28 @@ public class GoodsController {
             return Result.resultFailure("物品出库失败，请重试");
         }
         return Result.resultSuccess("物品出库成功！");
+    }
+
+    @GetMapping("/goodsExport")
+    public void goodsExport(HttpServletResponse response, HttpServletRequest request,
+                            String goodsName, String goodsModel, String batchNo, Integer type){
+        List<Goods> list = goodsService.findGoodsPage(goodsName, goodsModel, batchNo, type, null, null);
+        try (OutputStream os = response.getOutputStream()) {
+            SimpleExcelExporter excelExporter = new SimpleExcelExporter(list, Goods.class);
+            String filename = "库存列表_" + com.zero.common.utils.DateUtils.getStringFormat(new Date(), DateUtils.DATEFORMAT2) + ".xlsx";
+            String header = request.getHeader("User-Agent").toUpperCase();
+            if (header.contains("MSIE") || header.contains("TRIDENT") || header.contains("EDGE")) {
+                filename = URLEncoder.encode(filename, "UTF-8");
+            } else {
+                filename = new String(filename.getBytes(), "ISO8859-1");
+            }
+            response.reset();
+            response.setContentType("application/octet-stream; charset=UTF-8");
+            response.setHeader("Content-Disposition", "attachment; filename=" +  filename);
+            excelExporter.export(os);
+        } catch (Exception ex) {
+            LOGGER.error("库存导出失败:", ex);
+            Result.resultFailure("导出错误");
+        }
     }
 }

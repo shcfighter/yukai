@@ -15,4 +15,8 @@ public interface IPlanService {
     Plan getPlanById(int id);
 
     List<Plan> findPlan(int orderId, String batchNo);
+
+    int updateToProduce(int orderId, int status, int loginId);
+
+    int updateToFinish(int id, int loginId);
 }
