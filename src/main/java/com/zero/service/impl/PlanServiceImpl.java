@@ -44,6 +44,9 @@ public class PlanServiceImpl implements IPlanService {
         if(Objects.isNull(planDb)){
             return 0;
         }
+        if(PlanStatus.SAVE.getKey() != plan.getStatus().intValue()){
+            return -1;
+        }
         BeanUtils.copyProperties(plan, planDb);
         planDb.setUpdateTime(new Date());
         planDb.setModifier(loginId);
@@ -110,25 +113,18 @@ public class PlanServiceImpl implements IPlanService {
 
     @Transactional
     @Override
-    public int updateToProduce (int orderId, int status, int loginId) {
-        if(status != PlanStatus.PRODUCE.getKey()){
+    public int updateToProduce (int id, int loginId) {
+        Plan plan = this.getPlanById(id);
+        if(Objects.isNull(plan)){
             return 0;
         }
-        if(orderService.updateStatus(orderId, OrderStatus.PRODUCE.getKey(), OrderStatus.PLAN.getKey(), loginId) <= 0){
-            LOGGER.error("修改订单【{}】状态失败，{} --> {}", orderId, OrderStatus.PLAN.getDesc(), OrderStatus.PRODUCE.getDesc());
-            return 0;
+        if(PlanStatus.SAVE.getKey() != plan.getStatus().intValue()){
+            return -1;
         }
-        Plan plan = new Plan();
-        plan.setStatus(status);
+        plan.setStatus(PlanStatus.PRODUCE.getKey());
         plan.setUpdateTime(new Date());
         plan.setModifier(loginId);
-
-        PlanExample example = new PlanExample();
-        PlanExample.Criteria criteria = example.createCriteria();
-        criteria.andOrderIdEqualTo(orderId);
-        criteria.andIsDeletedEqualTo(DeletedEnum.NO.getKey());
-
-        return planMapper.updateByExampleSelective(plan, example);
+        return planMapper.updateByPrimaryKeySelective(plan);
     }
 
     @Override

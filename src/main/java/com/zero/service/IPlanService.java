@@ -18,7 +18,7 @@ public interface IPlanService {
 
     long findPlanRowNum(String productName, String batchNo, Integer status);
 
-    int updateToProduce(int orderId, int status, int loginId);
+    int updateToProduce(int id, int loginId);
 
     int updateToFinish(int id, int loginId);
 }

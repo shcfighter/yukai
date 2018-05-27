@@ -64,9 +64,9 @@ public class PlanController {
                 planService.findPlanPage(productName, batchNo, status, pageNum, pageSize));
     }
 
-    @PutMapping("updateToProduce/{orderId}")
-    public Result<String> updateToProduce(HttpServletRequest request, @PathVariable("orderId") int orderId){
-        if(planService.updateToProduce(orderId, PlanStatus.PRODUCE.getKey(), SessionUtils.getCurrentUserId(request)) <= 0){
+    @PutMapping("updateToProduce/{id}")
+    public Result<String> updateToProduce(HttpServletRequest request, @PathVariable("id") int id){
+        if(planService.updateToProduce(id, SessionUtils.getCurrentUserId(request)) <= 0){
             return Result.resultFailure("操作生产计划失败！");
         }
         return Result.resultSuccess("操作生产计划成功！");
