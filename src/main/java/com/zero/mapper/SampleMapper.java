@@ -30,11 +30,4 @@ public interface SampleMapper {
 
     int updateByPrimaryKey(Sample record);
 
-    long findSampleRowNum(Map<String, Object> condition);
-
-    List<Map<String, Object>> findSamplePage(Map<String, Object> condition);
-
-    int updateStatus(Map<String, Object> condition);
-
-    Map<String, Object> findSampleById(int id);
 }

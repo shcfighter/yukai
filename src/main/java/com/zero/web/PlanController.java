@@ -56,9 +56,12 @@ public class PlanController {
         return Result.resultSuccess("删除生产计划成功！");
     }
 
-    @GetMapping("findPlan/{orderId}")
-    public Result<List<Plan>> findPlan(@PathVariable("orderId") int orderId, String batchNo){
-        return Result.resultSuccess(planService.findPlan(orderId, batchNo));
+    @GetMapping("findPlanPage")
+    public Result<List<Plan>> findPlanPage(String productName, String batchNo, Integer status,
+                                           @RequestParam(value = "page", defaultValue = "1") int pageNum,
+                                           @RequestParam(value = "limit", defaultValue = "10") int pageSize){
+        return Result.resultSuccess(planService.findPlanRowNum(productName, batchNo, status),
+                planService.findPlanPage(productName, batchNo, status, pageNum, pageSize));
     }
 
     @PutMapping("updateToProduce/{orderId}")

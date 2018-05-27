@@ -1,14 +1,14 @@
 package com.zero.web;
 
+import com.google.common.collect.Maps;
 import com.zero.common.Result;
 import com.zero.common.enmu.OrderStatus;
-import com.zero.common.enmu.PlanStatus;
 import com.zero.common.utils.DateUtils;
 import com.zero.common.utils.SessionUtils;
 import com.zero.common.utils.excel.SimpleExcelExporter;
 import com.zero.model.Order;
 import com.zero.service.IOrderService;
-import com.zero.service.IPlanService;
+import com.zero.service.ISampleService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.validation.BindingResult;
@@ -21,7 +21,8 @@ import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.Map;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/order")
@@ -31,7 +32,18 @@ public class OrderController {
 	@Resource
 	IOrderService orderService;
 	@Resource
-	private IPlanService planService;
+	private ISampleService sampleService;
+
+	@GetMapping("/getOrder/{id}")
+	public Result<Order> getOrder(@PathVariable("id") int id){
+		Map<String, Object> resultMap = Maps.newHashMap();
+		Order order = orderService.getOrderById(id);
+		resultMap.put("order", order);
+		if(Objects.nonNull(order) && Objects.nonNull(order.getSampleId())){
+			resultMap.put("sample", sampleService.findSampleById(order.getSampleId()));
+		}
+		return Result.resultSuccess(resultMap);
+	}
 
 	@GetMapping("/findOrderPage")
 	public Result<List<Order>> findOrderPage(String productName, String cooperationCompany, Integer status,
@@ -54,6 +66,19 @@ public class OrderController {
 		return Result.resultSuccess("新增订单成功！");
 	}
 
+	@PostMapping("/updateOrder")
+	public Result<String> updateOrder(HttpServletRequest request, @RequestBody Order order,
+									  BindingResult bindingResult){
+		if(bindingResult.hasErrors()){
+			LOGGER.error("修改订单信息错误：{}", bindingResult.getFieldError().getDefaultMessage());
+			return Result.resultFailure(bindingResult.getFieldError().getDefaultMessage());
+		}
+		if(orderService.update(order, SessionUtils.getCurrentUserId(request)) <= 0){
+			return Result.resultFailure("修改订单失败！");
+		}
+		return Result.resultSuccess("修改订单成功！");
+	}
+
 	/*@PostMapping("/updateStatus/{orderId}")
 	public Result<String> updateStatus(HttpServletRequest request,
 									   @PathVariable("orderId") int orderId,
@@ -67,15 +92,6 @@ public class OrderController {
 	@PutMapping("/updateToFinish/{orderId}")
 	public Result<String> updateToFinish(HttpServletRequest request,
 									   @PathVariable("orderId") int orderId){
-		AtomicBoolean isFinish = new AtomicBoolean(true);
-		planService.findPlan(orderId, null).forEach(p -> {
-			if(p.getStatus().intValue() != PlanStatus.FINISHED.getKey()){
-				isFinish.set(false);
-			}
-		});
-		if(!isFinish.get()){
-			return Result.resultFailure("订单入库失败，还有未完成的生产计划！");
-		}
 		if(orderService.updateStatus(orderId, OrderStatus.STORAGE.getKey(), OrderStatus.PRODUCE.getKey(), SessionUtils.getCurrentUserId(request)) <= 0){
 			return Result.resultFailure("订单入库失败！");
 		}

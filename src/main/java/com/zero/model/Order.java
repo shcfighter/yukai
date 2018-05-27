@@ -38,12 +38,18 @@ public class Order {
     @ExportConfig.ColumnName(value = "联系电话", order = 9)
     private String contactPhone;
 
-    @ExportConfig.ColumnName(value = "状态", order = 10, codeName = "com.zero.common.enmu.OrderStatus")
+    @ExportConfig.ColumnName(value = "下单时间", order = 10, dateFormat = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Date orderTime;
+
+    private Integer sampleId;
+
+    @ExportConfig.ColumnName(value = "状态", order = 11, codeName = "com.zero.common.enmu.OrderStatus")
     private Integer status;
 
     private Integer isDeleted;
 
-    @ExportConfig.ColumnName(value = "创建时间", order = 11, dateFormat = "yyyy-MM-dd HH:mm:ss")
+    @ExportConfig.ColumnName(value = "创建时间", order = 12, dateFormat = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
     private Date updateTime;
@@ -188,5 +194,21 @@ public class Order {
 
     public void setRemarks(String remarks) {
         this.remarks = remarks == null ? null : remarks.trim();
+    }
+
+    public Date getOrderTime() {
+        return orderTime;
+    }
+
+    public void setOrderTime(Date orderTime) {
+        this.orderTime = orderTime;
+    }
+
+    public Integer getSampleId() {
+        return sampleId;
+    }
+
+    public void setSampleId(Integer sampleId) {
+        this.sampleId = sampleId;
     }
 }

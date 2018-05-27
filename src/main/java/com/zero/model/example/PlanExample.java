@@ -1,10 +1,12 @@
 package com.zero.model.example;
 
+import com.zero.common.BaseExample;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class PlanExample {
+public class PlanExample extends BaseExample {
     protected String orderByClause;
 
     protected boolean distinct;

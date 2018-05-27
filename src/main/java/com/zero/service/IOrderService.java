@@ -12,6 +12,8 @@ public interface IOrderService {
 
     int insert(Order order, int loginId);
 
+    int update(Order order, int loginId);
+
     int updateStatus(int orderId, int newStatus, int oldStatus, int loginId);
 
     Order getOrderById(int id);

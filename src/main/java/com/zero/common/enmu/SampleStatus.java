@@ -14,8 +14,7 @@ import java.util.stream.Stream;
 public enum SampleStatus implements EnumDict {
 
     NEW(0, "新增"),
-    FINISHED(1, "完成"),
-    PRODUCE(2, "计划生产");
+    FINISHED(1, "完成");
 
     int key;
     String desc;

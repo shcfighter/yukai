@@ -11,7 +11,9 @@
     <result column="total_price" jdbcType="DECIMAL" property="totalPrice" />
     <result column="cooperation_company" jdbcType="VARCHAR" property="cooperationCompany" />
     <result column="contact_name" jdbcType="VARCHAR" property="contactName" />
+    <result column="order_time" jdbcType="TIMESTAMP" property="orderTime" />
     <result column="contact_phone" jdbcType="VARCHAR" property="contactPhone" />
+    <result column="sample_id" jdbcType="INTEGER" property="sampleId" />
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="is_deleted" jdbcType="INTEGER" property="isDeleted" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -79,9 +81,9 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, order_num, product_name, product_unit, deliver_date, unit_price, total_price, 
-    cooperation_company, contact_name, contact_phone, status, is_deleted, create_time, 
-    update_time, creater, modifier, remarks
+    id, order_num, product_name, product_unit, deliver_date, unit_price, total_price,
+    cooperation_company, contact_name, order_time, contact_phone, sample_id, status,
+    is_deleted, create_time, update_time, creater, modifier, remarks
   </sql>
   <select id="selectByExample" parameterType="com.zero.model.example.OrderExample" resultMap="BaseResultMap">
     select
@@ -102,7 +104,7 @@
     </if>
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from t_order
     where id = #{id,jdbcType=INTEGER}
@@ -118,18 +120,20 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.zero.model.Order">
-    insert into t_order (id, order_num, product_name, 
-      product_unit, deliver_date, unit_price, 
-      total_price, cooperation_company, contact_name, 
-      contact_phone, status, is_deleted, 
-      create_time, update_time, creater, 
-      modifier, remarks)
-    values (#{id,jdbcType=INTEGER}, #{orderNum,jdbcType=INTEGER}, #{productName,jdbcType=VARCHAR}, 
-      #{productUnit,jdbcType=VARCHAR}, #{deliverDate,jdbcType=DATE}, #{unitPrice,jdbcType=DECIMAL}, 
-      #{totalPrice,jdbcType=DECIMAL}, #{cooperationCompany,jdbcType=VARCHAR}, #{contactName,jdbcType=VARCHAR}, 
-      #{contactPhone,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{isDeleted,jdbcType=INTEGER}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{creater,jdbcType=INTEGER}, 
-      #{modifier,jdbcType=INTEGER}, #{remarks,jdbcType=VARCHAR})
+    insert into t_order (id, order_num, product_name,
+    product_unit, deliver_date, unit_price,
+    total_price, cooperation_company, contact_name,
+    order_time, contact_phone, sample_id,
+    status, is_deleted, create_time,
+    update_time, creater, modifier,
+    remarks)
+    values (#{id,jdbcType=INTEGER}, #{orderNum,jdbcType=INTEGER}, #{productName,jdbcType=VARCHAR},
+    #{productUnit,jdbcType=VARCHAR}, #{deliverDate,jdbcType=DATE}, #{unitPrice,jdbcType=DECIMAL},
+    #{totalPrice,jdbcType=DECIMAL}, #{cooperationCompany,jdbcType=VARCHAR}, #{contactName,jdbcType=VARCHAR},
+    #{orderTime,jdbcType=TIMESTAMP}, #{contactPhone,jdbcType=VARCHAR}, #{sampleId,jdbcType=INTEGER},
+    #{status,jdbcType=INTEGER}, #{isDeleted,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},
+    #{updateTime,jdbcType=TIMESTAMP}, #{creater,jdbcType=INTEGER}, #{modifier,jdbcType=INTEGER},
+    #{remarks,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.zero.model.Order">
     insert into t_order
@@ -161,8 +165,14 @@
       <if test="contactName != null">
         contact_name,
       </if>
+      <if test="orderTime != null">
+        order_time,
+      </if>
       <if test="contactPhone != null">
         contact_phone,
+      </if>
+      <if test="sampleId != null">
+        sample_id,
       </if>
       <if test="status != null">
         status,
@@ -214,8 +224,14 @@
       <if test="contactName != null">
         #{contactName,jdbcType=VARCHAR},
       </if>
+      <if test="orderTime != null">
+        #{orderTime,jdbcType=TIMESTAMP},
+      </if>
       <if test="contactPhone != null">
         #{contactPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="sampleId != null">
+        #{sampleId,jdbcType=INTEGER},
       </if>
       <if test="status != null">
         #{status,jdbcType=INTEGER},
@@ -276,8 +292,14 @@
       <if test="record.contactName != null">
         contact_name = #{record.contactName,jdbcType=VARCHAR},
       </if>
+      <if test="record.orderTime != null">
+        order_time = #{record.orderTime,jdbcType=TIMESTAMP},
+      </if>
       <if test="record.contactPhone != null">
         contact_phone = #{record.contactPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sampleId != null">
+        sample_id = #{record.sampleId,jdbcType=INTEGER},
       </if>
       <if test="record.status != null">
         status = #{record.status,jdbcType=INTEGER},
@@ -308,22 +330,24 @@
   <update id="updateByExample" parameterType="map">
     update t_order
     set id = #{record.id,jdbcType=INTEGER},
-      order_num = #{record.orderNum,jdbcType=INTEGER},
-      product_name = #{record.productName,jdbcType=VARCHAR},
-      product_unit = #{record.productUnit,jdbcType=VARCHAR},
-      deliver_date = #{record.deliverDate,jdbcType=DATE},
-      unit_price = #{record.unitPrice,jdbcType=DECIMAL},
-      total_price = #{record.totalPrice,jdbcType=DECIMAL},
-      cooperation_company = #{record.cooperationCompany,jdbcType=VARCHAR},
-      contact_name = #{record.contactName,jdbcType=VARCHAR},
-      contact_phone = #{record.contactPhone,jdbcType=VARCHAR},
-      status = #{record.status,jdbcType=INTEGER},
-      is_deleted = #{record.isDeleted,jdbcType=INTEGER},
-      create_time = #{record.createTime,jdbcType=TIMESTAMP},
-      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
-      creater = #{record.creater,jdbcType=INTEGER},
-      modifier = #{record.modifier,jdbcType=INTEGER},
-      remarks = #{record.remarks,jdbcType=VARCHAR}
+    order_num = #{record.orderNum,jdbcType=INTEGER},
+    product_name = #{record.productName,jdbcType=VARCHAR},
+    product_unit = #{record.productUnit,jdbcType=VARCHAR},
+    deliver_date = #{record.deliverDate,jdbcType=DATE},
+    unit_price = #{record.unitPrice,jdbcType=DECIMAL},
+    total_price = #{record.totalPrice,jdbcType=DECIMAL},
+    cooperation_company = #{record.cooperationCompany,jdbcType=VARCHAR},
+    contact_name = #{record.contactName,jdbcType=VARCHAR},
+    order_time = #{record.orderTime,jdbcType=TIMESTAMP},
+    contact_phone = #{record.contactPhone,jdbcType=VARCHAR},
+    sample_id = #{record.sampleId,jdbcType=INTEGER},
+    status = #{record.status,jdbcType=INTEGER},
+    is_deleted = #{record.isDeleted,jdbcType=INTEGER},
+    create_time = #{record.createTime,jdbcType=TIMESTAMP},
+    update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+    creater = #{record.creater,jdbcType=INTEGER},
+    modifier = #{record.modifier,jdbcType=INTEGER},
+    remarks = #{record.remarks,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -355,8 +379,14 @@
       <if test="contactName != null">
         contact_name = #{contactName,jdbcType=VARCHAR},
       </if>
+      <if test="orderTime != null">
+        order_time = #{orderTime,jdbcType=TIMESTAMP},
+      </if>
       <if test="contactPhone != null">
         contact_phone = #{contactPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="sampleId != null">
+        sample_id = #{sampleId,jdbcType=INTEGER},
       </if>
       <if test="status != null">
         status = #{status,jdbcType=INTEGER},
@@ -392,7 +422,9 @@
       total_price = #{totalPrice,jdbcType=DECIMAL},
       cooperation_company = #{cooperationCompany,jdbcType=VARCHAR},
       contact_name = #{contactName,jdbcType=VARCHAR},
+      order_time = #{orderTime,jdbcType=TIMESTAMP},
       contact_phone = #{contactPhone,jdbcType=VARCHAR},
+      sample_id = #{sampleId,jdbcType=INTEGER},
       status = #{status,jdbcType=INTEGER},
       is_deleted = #{isDeleted,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},

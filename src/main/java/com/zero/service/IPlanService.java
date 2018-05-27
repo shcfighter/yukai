@@ -14,7 +14,9 @@ public interface IPlanService {
 
     Plan getPlanById(int id);
 
-    List<Plan> findPlan(int orderId, String batchNo);
+    List<Plan> findPlanPage(String productName, String batchNo, Integer status, Integer pageNum, Integer pageSize);
+
+    long findPlanRowNum(String productName, String batchNo, Integer status);
 
     int updateToProduce(int orderId, int status, int loginId);
 

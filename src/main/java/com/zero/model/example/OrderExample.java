@@ -1214,6 +1214,126 @@ public class OrderExample extends BaseExample {
             addCriterion("remarks not between", value1, value2, "remarks");
             return (Criteria) this;
         }
+
+        public Criteria andOrderTimeIsNull() {
+            addCriterion("order_time is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderTimeIsNotNull() {
+            addCriterion("order_time is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderTimeEqualTo(Date value) {
+            addCriterion("order_time =", value, "orderTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderTimeNotEqualTo(Date value) {
+            addCriterion("order_time <>", value, "orderTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderTimeGreaterThan(Date value) {
+            addCriterion("order_time >", value, "orderTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderTimeGreaterThanOrEqualTo(Date value) {
+            addCriterion("order_time >=", value, "orderTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderTimeLessThan(Date value) {
+            addCriterion("order_time <", value, "orderTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderTimeLessThanOrEqualTo(Date value) {
+            addCriterion("order_time <=", value, "orderTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderTimeIn(List<Date> values) {
+            addCriterion("order_time in", values, "orderTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderTimeNotIn(List<Date> values) {
+            addCriterion("order_time not in", values, "orderTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderTimeBetween(Date value1, Date value2) {
+            addCriterion("order_time between", value1, value2, "orderTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andOrderTimeNotBetween(Date value1, Date value2) {
+            addCriterion("order_time not between", value1, value2, "orderTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andSampleIdIsNull() {
+            addCriterion("sample_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSampleIdIsNotNull() {
+            addCriterion("sample_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andSampleIdEqualTo(Integer value) {
+            addCriterion("sample_id =", value, "sampleId");
+            return (Criteria) this;
+        }
+
+        public Criteria andSampleIdNotEqualTo(Integer value) {
+            addCriterion("sample_id <>", value, "sampleId");
+            return (Criteria) this;
+        }
+
+        public Criteria andSampleIdGreaterThan(Integer value) {
+            addCriterion("sample_id >", value, "sampleId");
+            return (Criteria) this;
+        }
+
+        public Criteria andSampleIdGreaterThanOrEqualTo(Integer value) {
+            addCriterion("sample_id >=", value, "sampleId");
+            return (Criteria) this;
+        }
+
+        public Criteria andSampleIdLessThan(Integer value) {
+            addCriterion("sample_id <", value, "sampleId");
+            return (Criteria) this;
+        }
+
+        public Criteria andSampleIdLessThanOrEqualTo(Integer value) {
+            addCriterion("sample_id <=", value, "sampleId");
+            return (Criteria) this;
+        }
+
+        public Criteria andSampleIdIn(List<Integer> values) {
+            addCriterion("sample_id in", values, "sampleId");
+            return (Criteria) this;
+        }
+
+        public Criteria andSampleIdNotIn(List<Integer> values) {
+            addCriterion("sample_id not in", values, "sampleId");
+            return (Criteria) this;
+        }
+
+        public Criteria andSampleIdBetween(Integer value1, Integer value2) {
+            addCriterion("sample_id between", value1, value2, "sampleId");
+            return (Criteria) this;
+        }
+
+        public Criteria andSampleIdNotBetween(Integer value1, Integer value2) {
+            addCriterion("sample_id not between", value1, value2, "sampleId");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

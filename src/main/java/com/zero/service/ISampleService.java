@@ -11,13 +11,11 @@ public interface ISampleService {
 
     int insertOrUpdate(Sample sample, List<SampleMaterial> list, int loginId);
 
-    Sample findSample(int orderId);
+    List<Sample> findSamplePage(String sampleName, String sampleCode, Integer status, int page, int pageSize);
 
-    List<Map<String, Object>> findSamplePage(String sampleName, String sampleCode, String company, Integer status, Date beginDate, Date endDate, int page, int pageSize);
+    long findSampleRowNum(String sampleName, String sampleCode, Integer status);
 
-    long findSampleRowNum(String sampleName, String sampleCode, String company, Integer status, Date beginDate, Date endDate);
+    Sample findSampleById(int id);
 
-    int updateStatus(int id, int status, int loginId);
-
-    Map<String, Object> findSampleById(int id);
+    int deleteSample(int id, int loginId);
 }

@@ -56,6 +56,9 @@ public class PlanServiceImpl implements IPlanService {
         if(Objects.isNull(plan)){
             return 0;
         }
+        if(PlanStatus.SAVE.getKey() != plan.getStatus().intValue()){
+            return -1;
+        }
         plan.setIsDeleted(DeletedEnum.YES.getKey());
         plan.setUpdateTime(new Date());
         plan.setModifier(loginId);
@@ -68,15 +71,41 @@ public class PlanServiceImpl implements IPlanService {
     }
 
     @Override
-    public List<Plan> findPlan(int orderId, String batchNo) {
+    public List<Plan> findPlanPage(String productName, String batchNo, Integer status, Integer pageNum, Integer pageSize) {
         PlanExample example = new PlanExample();
+        if(Objects.nonNull(pageNum) && Objects.nonNull(pageSize)){
+            example.setPage(pageNum);
+            example.setLimit(pageSize);
+        }
         PlanExample.Criteria criteria = example.createCriteria();
         criteria.andIsDeletedEqualTo(DeletedEnum.NO.getKey());
-        criteria.andOrderIdEqualTo(orderId);
+        if (Objects.nonNull(status)) {
+            criteria.andStatusEqualTo(status);
+        }
+        if(StringUtils.isNotEmpty(productName)){
+            criteria.andProductNameLike("%" + productName + "%");
+        }
         if(StringUtils.isNotEmpty(batchNo)){
             criteria.andBatchNoLike("%" + batchNo + "%");
         }
         return Optional.ofNullable(planMapper.selectByExample(example)).orElse(Lists.newArrayList());
+    }
+
+    @Override
+    public long findPlanRowNum(String productName, String batchNo, Integer status) {
+        PlanExample example = new PlanExample();
+        PlanExample.Criteria criteria = example.createCriteria();
+        criteria.andIsDeletedEqualTo(DeletedEnum.NO.getKey());
+        if (Objects.nonNull(status)) {
+            criteria.andStatusEqualTo(status);
+        }
+        if(StringUtils.isNotEmpty(productName)){
+            criteria.andProductNameLike("%" + productName + "%");
+        }
+        if(StringUtils.isNotEmpty(batchNo)){
+            criteria.andBatchNoLike("%" + batchNo + "%");
+        }
+        return planMapper.countByExample(example);
     }
 
     @Transactional

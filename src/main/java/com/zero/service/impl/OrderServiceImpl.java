@@ -1,7 +1,9 @@
 package com.zero.service.impl;
 
+import com.zero.common.utils.BeanUtils;
 import com.zero.mapper.OrderMapper;
 import com.zero.model.Order;
+import com.zero.model.User;
 import com.zero.model.example.OrderExample;
 import com.zero.service.IOrderService;
 import org.apache.commons.lang3.StringUtils;
@@ -64,6 +66,21 @@ public class OrderServiceImpl implements IOrderService {
         order.setCreater(loginId);
         order.setCreateTime(new Date());
         return orderMapper.insertSelective(order);
+    }
+
+    @Override
+    public int update(Order order, int loginId) {
+        if(Objects.isNull(order) || Objects.isNull(order.getId())){
+            return 0;
+        }
+        Order orderDb = this.getOrderById(order.getId());
+        if (Objects.isNull(order)) {
+            return 0;
+        }
+        BeanUtils.copyProperties(order, orderDb);
+        orderDb.setModifier(loginId);
+        orderDb.setUpdateTime(new Date());
+        return orderMapper.updateByPrimaryKey(orderDb);
     }
 
     @Override
