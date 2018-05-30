@@ -2,8 +2,12 @@ package com.zero.model;
 
 import java.util.Date;
 
-public class Goods {
+public class OutBound {
     private Integer id;
+
+    private Integer goodId;
+
+    private Integer outboundType;
 
     private String goodsName;
 
@@ -16,6 +20,8 @@ public class Goods {
     private Integer num;
 
     private String unit;
+
+    private Integer status;
 
     private Integer isDeleted;
 
@@ -35,6 +41,22 @@ public class Goods {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getGoodId() {
+        return goodId;
+    }
+
+    public void setGoodId(Integer goodId) {
+        this.goodId = goodId;
+    }
+
+    public Integer getOutboundType() {
+        return outboundType;
+    }
+
+    public void setOutboundType(Integer outboundType) {
+        this.outboundType = outboundType;
     }
 
     public String getGoodsName() {
@@ -83,6 +105,14 @@ public class Goods {
 
     public void setUnit(String unit) {
         this.unit = unit == null ? null : unit.trim();
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public Integer getIsDeleted() {

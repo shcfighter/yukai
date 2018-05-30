@@ -5,8 +5,6 @@ import com.zero.common.utils.DateUtils;
 import com.zero.common.utils.SessionUtils;
 import com.zero.common.utils.excel.SimpleExcelExporter;
 import com.zero.model.Goods;
-import com.zero.model.Order;
-import com.zero.model.User;
 import com.zero.service.IGoodsService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -66,15 +64,10 @@ public class GoodsController {
         return Result.resultSuccess("修改物品成功！");
     }
 
-    @PostMapping("/inbound/{id}")
+    @PostMapping("/inbound/{purchaseOrderId}")
     public Result<String> inbound(HttpServletRequest request,
-                                  @PathVariable int id, int num){
-        Goods goods = goodsService.getGoodsById(id);
-        if(Objects.isNull(goods)){
-            LOGGER.error("物品【{}】不存在！", id);
-            return Result.resultFailure("该物品不存在！");
-        }
-        if(goodsService.inbound(id, num, SessionUtils.getCurrentUserId(request), SessionUtils.getCurrentUserName(request)) <= 0){
+                                  @PathVariable int purchaseOrderId){
+        if(goodsService.inbound(purchaseOrderId, SessionUtils.getCurrentUserId(request), SessionUtils.getCurrentUserName(request)) <= 0){
             return Result.resultFailure("物品入库失败，请重试");
         }
         return Result.resultSuccess("物品入库成功！");

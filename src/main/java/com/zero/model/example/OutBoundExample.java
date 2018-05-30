@@ -6,14 +6,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class GoodsExample extends BaseExample {
+public class OutBoundExample extends BaseExample {
     protected String orderByClause;
 
     protected boolean distinct;
 
     protected List<Criteria> oredCriteria;
 
-    public GoodsExample() {
+    public OutBoundExample() {
         oredCriteria = new ArrayList<Criteria>();
     }
 
@@ -164,6 +164,126 @@ public class GoodsExample extends BaseExample {
 
         public Criteria andIdNotBetween(Integer value1, Integer value2) {
             addCriterion("id not between", value1, value2, "id");
+            return (Criteria) this;
+        }
+
+        public Criteria andGoodIdIsNull() {
+            addCriterion("good_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andGoodIdIsNotNull() {
+            addCriterion("good_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andGoodIdEqualTo(Integer value) {
+            addCriterion("good_id =", value, "goodId");
+            return (Criteria) this;
+        }
+
+        public Criteria andGoodIdNotEqualTo(Integer value) {
+            addCriterion("good_id <>", value, "goodId");
+            return (Criteria) this;
+        }
+
+        public Criteria andGoodIdGreaterThan(Integer value) {
+            addCriterion("good_id >", value, "goodId");
+            return (Criteria) this;
+        }
+
+        public Criteria andGoodIdGreaterThanOrEqualTo(Integer value) {
+            addCriterion("good_id >=", value, "goodId");
+            return (Criteria) this;
+        }
+
+        public Criteria andGoodIdLessThan(Integer value) {
+            addCriterion("good_id <", value, "goodId");
+            return (Criteria) this;
+        }
+
+        public Criteria andGoodIdLessThanOrEqualTo(Integer value) {
+            addCriterion("good_id <=", value, "goodId");
+            return (Criteria) this;
+        }
+
+        public Criteria andGoodIdIn(List<Integer> values) {
+            addCriterion("good_id in", values, "goodId");
+            return (Criteria) this;
+        }
+
+        public Criteria andGoodIdNotIn(List<Integer> values) {
+            addCriterion("good_id not in", values, "goodId");
+            return (Criteria) this;
+        }
+
+        public Criteria andGoodIdBetween(Integer value1, Integer value2) {
+            addCriterion("good_id between", value1, value2, "goodId");
+            return (Criteria) this;
+        }
+
+        public Criteria andGoodIdNotBetween(Integer value1, Integer value2) {
+            addCriterion("good_id not between", value1, value2, "goodId");
+            return (Criteria) this;
+        }
+
+        public Criteria andOutboundTypeIsNull() {
+            addCriterion("outbound_type is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andOutboundTypeIsNotNull() {
+            addCriterion("outbound_type is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andOutboundTypeEqualTo(Integer value) {
+            addCriterion("outbound_type =", value, "outboundType");
+            return (Criteria) this;
+        }
+
+        public Criteria andOutboundTypeNotEqualTo(Integer value) {
+            addCriterion("outbound_type <>", value, "outboundType");
+            return (Criteria) this;
+        }
+
+        public Criteria andOutboundTypeGreaterThan(Integer value) {
+            addCriterion("outbound_type >", value, "outboundType");
+            return (Criteria) this;
+        }
+
+        public Criteria andOutboundTypeGreaterThanOrEqualTo(Integer value) {
+            addCriterion("outbound_type >=", value, "outboundType");
+            return (Criteria) this;
+        }
+
+        public Criteria andOutboundTypeLessThan(Integer value) {
+            addCriterion("outbound_type <", value, "outboundType");
+            return (Criteria) this;
+        }
+
+        public Criteria andOutboundTypeLessThanOrEqualTo(Integer value) {
+            addCriterion("outbound_type <=", value, "outboundType");
+            return (Criteria) this;
+        }
+
+        public Criteria andOutboundTypeIn(List<Integer> values) {
+            addCriterion("outbound_type in", values, "outboundType");
+            return (Criteria) this;
+        }
+
+        public Criteria andOutboundTypeNotIn(List<Integer> values) {
+            addCriterion("outbound_type not in", values, "outboundType");
+            return (Criteria) this;
+        }
+
+        public Criteria andOutboundTypeBetween(Integer value1, Integer value2) {
+            addCriterion("outbound_type between", value1, value2, "outboundType");
+            return (Criteria) this;
+        }
+
+        public Criteria andOutboundTypeNotBetween(Integer value1, Integer value2) {
+            addCriterion("outbound_type not between", value1, value2, "outboundType");
             return (Criteria) this;
         }
 
@@ -564,6 +684,66 @@ public class GoodsExample extends BaseExample {
 
         public Criteria andUnitNotBetween(String value1, String value2) {
             addCriterion("unit not between", value1, value2, "unit");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusIsNull() {
+            addCriterion("status is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusIsNotNull() {
+            addCriterion("status is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusEqualTo(Integer value) {
+            addCriterion("status =", value, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusNotEqualTo(Integer value) {
+            addCriterion("status <>", value, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusGreaterThan(Integer value) {
+            addCriterion("status >", value, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusGreaterThanOrEqualTo(Integer value) {
+            addCriterion("status >=", value, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusLessThan(Integer value) {
+            addCriterion("status <", value, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusLessThanOrEqualTo(Integer value) {
+            addCriterion("status <=", value, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusIn(List<Integer> values) {
+            addCriterion("status in", values, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusNotIn(List<Integer> values) {
+            addCriterion("status not in", values, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusBetween(Integer value1, Integer value2) {
+            addCriterion("status between", value1, value2, "status");
+            return (Criteria) this;
+        }
+
+        public Criteria andStatusNotBetween(Integer value1, Integer value2) {
+            addCriterion("status not between", value1, value2, "status");
             return (Criteria) this;
         }
 

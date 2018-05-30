@@ -20,8 +20,10 @@ public interface IGoodsService {
 
 	int deleteGoodsById(int id, int loginId, String loginName);
 
-	int inbound(int id, int num, int loginId, String loginName);
+	int inbound(int purchaseOrderId, int loginId, String loginName);
 
 	int outbound(int id, int num, int loginId, String loginName);
+
+	List<Goods> findGoodsList(String goodsName, String goodsModel, Integer type);
 
 }

@@ -1,5 +1,7 @@
 package com.zero.service.impl;
 
+import com.zero.common.enmu.DeletedEnum;
+import com.zero.common.enmu.OrderStatus;
 import com.zero.common.utils.BeanUtils;
 import com.zero.mapper.OrderMapper;
 import com.zero.model.Order;
@@ -81,6 +83,22 @@ public class OrderServiceImpl implements IOrderService {
         orderDb.setModifier(loginId);
         orderDb.setUpdateTime(new Date());
         return orderMapper.updateByPrimaryKey(orderDb);
+    }
+
+    @Override
+    public int delete(int id, int loginId) {
+        Order order = this.getOrderById(id);
+        if (Objects.isNull(order)) {
+            return 0;
+        }
+        if(order.getStatus().intValue() != OrderStatus.SAVE.getKey()){
+            LOGGER.error("订单【{}】状态【{}】不能删除！", id, order.getStatus());
+            return -1;
+        }
+        order.setIsDeleted(DeletedEnum.YES.getKey());
+        order.setModifier(loginId);
+        order.setUpdateTime(new Date());
+        return orderMapper.updateByPrimaryKey(order);
     }
 
     @Override

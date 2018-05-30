@@ -2,17 +2,21 @@ package com.zero.service.impl;
 
 import com.zero.common.BusinessException;
 import com.zero.common.enmu.DeletedEnum;
+import com.zero.common.enmu.PurchaseOrderStatus;
 import com.zero.common.enmu.RecordType;
 import com.zero.common.utils.BeanUtils;
 import com.zero.mapper.GoodsMapper;
 import com.zero.model.Goods;
 import com.zero.model.GoodsUseRecord;
+import com.zero.model.PurchaseOrder;
 import com.zero.model.example.GoodsExample;
 import com.zero.service.IGoodsRecordService;
 import com.zero.service.IGoodsService;
+import com.zero.service.IPurchaseOrderService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -26,13 +30,15 @@ public class GoodsServiceImpl implements IGoodsService {
     private GoodsMapper goodsMapper;
     @Resource
     private IGoodsRecordService goodsRecordService;
+    @Resource
+    private IPurchaseOrderService purchaseOrderService;
 
     @Override
     public List<Goods> findGoodsPage(String goodsName, String goodsModel, String batchNo, Integer type, Integer pageNum, Integer pageSize) {
         GoodsExample example = new GoodsExample();
         if(Objects.nonNull(pageNum) && Objects.nonNull(pageSize)){
-            example.setLimit(pageNum);
-            example.setPage(pageSize);
+            example.setLimit(pageSize);
+            example.setPage(pageNum);
         }
         GoodsExample.Criteria criteria = example.createCriteria();
         criteria.andIsDeletedEqualTo(DeletedEnum.NO.getKey());
@@ -42,9 +48,7 @@ public class GoodsServiceImpl implements IGoodsService {
         if(StringUtils.isNotEmpty(goodsModel)){
             criteria.andGoodsNameLike("%" + goodsModel + "%");
         }
-        if(StringUtils.isNotEmpty(batchNo)){
-            criteria.andBatchNoLike("%" + batchNo + "%");
-        }
+
         if(Objects.nonNull(type)){
             criteria.andTypeEqualTo(type);
         }
@@ -61,9 +65,6 @@ public class GoodsServiceImpl implements IGoodsService {
         }
         if(StringUtils.isNotEmpty(goodsModel)){
             criteria.andGoodsNameLike("%" + goodsModel + "%");
-        }
-        if(StringUtils.isNotEmpty(batchNo)){
-            criteria.andBatchNoLike("%" + batchNo + "%");
         }
         if(Objects.nonNull(type)){
             criteria.andTypeEqualTo(type);
@@ -85,7 +86,6 @@ public class GoodsServiceImpl implements IGoodsService {
         record.setGoodsId(goods.getId());
         record.setGoodsName(goods.getGoodsName());
         record.setGoodsModel(goods.getGoodsModel());
-        record.setBatchNo(goods.getBatchNo());
         record.setGoodsNum(goods.getNum());
         record.setCreateTime(new Date());
         record.setCreater(loginId);
@@ -116,7 +116,6 @@ public class GoodsServiceImpl implements IGoodsService {
         record.setGoodsId(goods.getId());
         record.setGoodsName(goods.getGoodsName());
         record.setGoodsModel(goods.getGoodsModel());
-        record.setBatchNo(goods.getBatchNo());
         record.setGoodsNum(goods.getNum());
         record.setCreateTime(new Date());
         record.setCreater(loginId);
@@ -146,31 +145,47 @@ public class GoodsServiceImpl implements IGoodsService {
 
     @Transactional
     @Override
-    public int inbound(int id, int num, int loginId, String loginName) {
-        Goods goodsDb = this.getGoodsById(id);
-        if(Objects.isNull(goodsDb)){
+    public int inbound(int purchaseOrderId, int loginId, String loginName) {
+        PurchaseOrder purchaseOrder = purchaseOrderService.getPurchaseOrderById(purchaseOrderId);
+        if(Objects.isNull(purchaseOrder)){
             return 0;
         }
-        GoodsUseRecord record = new GoodsUseRecord();
-        record.setOriginalNum(goodsDb.getNum());
-        goodsDb.setModifier(loginId);
-        goodsDb.setUpdateTime(new Date());
-        goodsDb.setNum(goodsDb.getNum() + num);
-        int rowNum = goodsMapper.updateByPrimaryKeySelective(goodsDb);
-        if(rowNum <= 0){
-            return 0;
+        final String model = purchaseOrder.getGoodsModel();
+        List<Goods> list = this.findGoodsList(purchaseOrder.getGoodsName(), null, purchaseOrder.getType());
+        if (CollectionUtils.isEmpty(list)){
+            Goods goods = new Goods();
+            goods.setGoodsName(purchaseOrder.getGoodsName());
+            goods.setGoodsModel(model);
+            goods.setColor(purchaseOrder.getColor());
+            goods.setNum(purchaseOrder.getNum());
+            goods.setType(purchaseOrder.getType());
+            goods.setUnit(purchaseOrder.getUnit());
+            goods.setCreateTime(new Date());
+            if(goodsMapper.insertSelective(goods) <= 0){
+                throw new BusinessException("物品记录新增异常，回滚");
+            }
+            if(purchaseOrderService.updateStatus(purchaseOrderId, PurchaseOrderStatus.FINISHED.getKey(), loginId, PurchaseOrderStatus.AUDIT.getKey()) <= 0){
+                throw new BusinessException("修改采购单失败，回滚");
+            }
+            return 1;
         }
-        record.setType(RecordType.INBOUND.getKey());
-        record.setGoodsId(goodsDb.getId());
-        record.setGoodsName(goodsDb.getGoodsName());
-        record.setGoodsModel(goodsDb.getGoodsModel());
-        record.setBatchNo(goodsDb.getBatchNo());
-        record.setGoodsNum(goodsDb.getNum());
-        record.setCreateTime(new Date());
-        record.setCreater(loginId);
-        int goodsNum = goodsRecordService.insert(record, loginId, loginName);
-        if(goodsNum <= 0){
+        Goods goods = null;
+        for (Goods tmp: list){
+            if(StringUtils.equals(tmp.getGoodsModel(), purchaseOrder.getGoodsModel())){
+                goods = tmp;
+                break;
+            }
+        }
+        if(Objects.isNull(goods)){
+            goods = list.get(0);
+        }
+        goods.setNum(goods.getNum() + purchaseOrder.getNum());
+        goods.setUpdateTime(new Date());
+        if(goodsMapper.updateByPrimaryKeySelective(goods) <= 0){
             throw new BusinessException("物品记录修改异常，回滚");
+        }
+        if(purchaseOrderService.updateStatus(purchaseOrderId, PurchaseOrderStatus.FINISHED.getKey(), loginId, PurchaseOrderStatus.AUDIT.getKey()) <= 0){
+            throw new BusinessException("修改采购单失败，回滚");
         }
         return 1;
     }
@@ -198,7 +213,6 @@ public class GoodsServiceImpl implements IGoodsService {
         record.setGoodsId(goodsDb.getId());
         record.setGoodsName(goodsDb.getGoodsName());
         record.setGoodsModel(goodsDb.getGoodsModel());
-        record.setBatchNo(goodsDb.getBatchNo());
         record.setGoodsNum(goodsDb.getNum());
         record.setCreateTime(new Date());
         record.setCreater(loginId);
@@ -207,6 +221,23 @@ public class GoodsServiceImpl implements IGoodsService {
             throw new BusinessException("物品记录修改异常，回滚");
         }
         return 1;
+    }
+
+    @Override
+    public List<Goods> findGoodsList(String goodsName, String goodsModel, Integer type) {
+        GoodsExample example = new GoodsExample();
+        GoodsExample.Criteria criteria = example.createCriteria();
+        criteria.andIsDeletedEqualTo(DeletedEnum.NO.getKey());
+        if(StringUtils.isNotEmpty(goodsName)){
+            criteria.andGoodsNameLike("%" + goodsName + "%");
+        }
+        if(StringUtils.isNotEmpty(goodsModel)){
+            criteria.andGoodsNameLike("%" + goodsModel + "%");
+        }
+        if(Objects.nonNull(type)){
+            criteria.andTypeEqualTo(type);
+        }
+        return goodsMapper.selectByExample(example);
     }
 
 }
