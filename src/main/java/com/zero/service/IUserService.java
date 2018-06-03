@@ -7,7 +7,9 @@ import java.util.List;
 
 public interface IUserService {
 
-	List<User> findUserPage(String phone, String loginName, String realName, int pageNum, int pageSize);
+	String getUserName(int id);
+
+	List<User> findUserPage(String phone, String loginName, String realName, Integer pageNum, Integer pageSize);
 
 	long findRowNum(String phone, String loginName, String realName);
 

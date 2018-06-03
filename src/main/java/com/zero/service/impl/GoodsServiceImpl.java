@@ -2,18 +2,23 @@ package com.zero.service.impl;
 
 import com.zero.common.BusinessException;
 import com.zero.common.enmu.DeletedEnum;
+import com.zero.common.enmu.OutBoundStatus;
 import com.zero.common.enmu.PurchaseOrderStatus;
 import com.zero.common.enmu.RecordType;
 import com.zero.common.utils.BeanUtils;
 import com.zero.mapper.GoodsMapper;
 import com.zero.model.Goods;
 import com.zero.model.GoodsUseRecord;
+import com.zero.model.OutBound;
 import com.zero.model.PurchaseOrder;
 import com.zero.model.example.GoodsExample;
 import com.zero.service.IGoodsRecordService;
 import com.zero.service.IGoodsService;
+import com.zero.service.IOutBoundService;
 import com.zero.service.IPurchaseOrderService;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -26,12 +31,16 @@ import java.util.Objects;
 @Service
 public class GoodsServiceImpl implements IGoodsService {
 
+    private static final Logger LOGGER = LogManager.getLogger(GoodsServiceImpl.class);
     @Resource
     private GoodsMapper goodsMapper;
     @Resource
     private IGoodsRecordService goodsRecordService;
     @Resource
     private IPurchaseOrderService purchaseOrderService;
+    @Resource
+    private IOutBoundService outBoundService;
+
 
     @Override
     public List<Goods> findGoodsPage(String goodsName, String goodsModel, String batchNo, Integer type, Integer pageNum, Integer pageSize) {
@@ -167,6 +176,11 @@ public class GoodsServiceImpl implements IGoodsService {
             if(purchaseOrderService.updateStatus(purchaseOrderId, PurchaseOrderStatus.FINISHED.getKey(), loginId, PurchaseOrderStatus.AUDIT.getKey()) <= 0){
                 throw new BusinessException("修改采购单失败，回滚");
             }
+            int goodsNum = goodsRecordService.insert(goods.getId(), goods.getGoodsName(), goods.getGoodsModel(), purchaseOrderId + "", goods.getNum(),
+                    0, RecordType.INBOUND.getKey(), loginId, purchaseOrder.getCreater());
+            if(goodsNum <= 0){
+                throw new BusinessException("插入物品记录异常，回滚");
+            }
             return 1;
         }
         Goods goods = null;
@@ -179,6 +193,7 @@ public class GoodsServiceImpl implements IGoodsService {
         if(Objects.isNull(goods)){
             goods = list.get(0);
         }
+        int originalNum = goods.getNum();
         goods.setNum(goods.getNum() + purchaseOrder.getNum());
         goods.setUpdateTime(new Date());
         if(goodsMapper.updateByPrimaryKeySelective(goods) <= 0){
@@ -187,38 +202,45 @@ public class GoodsServiceImpl implements IGoodsService {
         if(purchaseOrderService.updateStatus(purchaseOrderId, PurchaseOrderStatus.FINISHED.getKey(), loginId, PurchaseOrderStatus.AUDIT.getKey()) <= 0){
             throw new BusinessException("修改采购单失败，回滚");
         }
+        int goodsNum = goodsRecordService.insert(goods.getId(), goods.getGoodsName(), goods.getGoodsModel(), purchaseOrderId + "", goods.getNum(),
+                originalNum, RecordType.INBOUND.getKey(), loginId, purchaseOrder.getCreater());
+        if(goodsNum <= 0){
+            throw new BusinessException("插入物品记录异常，回滚");
+        }
         return 1;
     }
 
     @Transactional
     @Override
-    public int outbound(int id, int num, int loginId, String loginName) {
-        Goods goodsDb = this.getGoodsById(id);
-        if(Objects.isNull(goodsDb)){
+    public int outbound(int outboundid, int loginId, String loginName) {
+        OutBound outBound = outBoundService.getOutBoundById(outboundid);
+        if(Objects.isNull(outBound) || Objects.isNull(outBound.getGoodId())){
             return 0;
         }
-        GoodsUseRecord record = new GoodsUseRecord();
-        record.setOriginalNum(goodsDb.getNum());
-        goodsDb.setModifier(loginId);
-        goodsDb.setUpdateTime(new Date());
-        if(goodsDb.getNum() < num){
+        Goods goods = goodsMapper.selectByPrimaryKey(outBound.getGoodId());
+        if(Objects.isNull(goods)){
             return 0;
         }
-        goodsDb.setNum(goodsDb.getNum() - num);
-        int rowNum = goodsMapper.updateByPrimaryKeySelective(goodsDb);
+        if(outBound.getNum() > goods.getNum()){
+            LOGGER.error("库存【{}】不足！", goods.getNum());
+            return -1;
+        }
+        int originalNum = goods.getNum();
+        goods.setModifier(loginId);
+        goods.setUpdateTime(new Date());
+        goods.setNum(goods.getNum() - outBound.getNum());
+        int rowNum = goodsMapper.updateByPrimaryKeySelective(goods);
         if(rowNum <= 0){
             return 0;
         }
-        record.setType(RecordType.OUTBOUND.getKey());
-        record.setGoodsId(goodsDb.getId());
-        record.setGoodsName(goodsDb.getGoodsName());
-        record.setGoodsModel(goodsDb.getGoodsModel());
-        record.setGoodsNum(goodsDb.getNum());
-        record.setCreateTime(new Date());
-        record.setCreater(loginId);
-        int goodsNum = goodsRecordService.insert(record, loginId, loginName);
+        int outNum = outBoundService.updateStatus(outboundid, loginId, OutBoundStatus.FINISHED.getKey(), OutBoundStatus.AUDIT.getKey());
+        if(outNum <= 0){
+            throw new BusinessException("修改库存数量异常，回滚");
+        }
+        int goodsNum = goodsRecordService.insert(goods.getId(), goods.getGoodsName(), goods.getGoodsModel(), outboundid + "", goods.getNum(),
+                originalNum, RecordType.OUTBOUND.getKey(), loginId, outBound.getCreater());
         if(goodsNum <= 0){
-            throw new BusinessException("物品记录修改异常，回滚");
+            throw new BusinessException("插入物品记录异常，回滚");
         }
         return 1;
     }

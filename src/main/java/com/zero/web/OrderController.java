@@ -79,20 +79,19 @@ public class OrderController {
 		return Result.resultSuccess("修改订单成功！");
 	}
 
-	/*@PostMapping("/updateStatus/{orderId}")
-	public Result<String> updateStatus(HttpServletRequest request,
-									   @PathVariable("orderId") int orderId,
-									   int newStatus, int oldStatus){
-		if(orderService.updateStatus(orderId, newStatus, oldStatus, SessionUtils.getCurrentUserId(request)) <= 0){
-			return Result.resultFailure("修改订单状态失败！");
+	@PostMapping("/updateToProduce/{orderId}")
+	public Result<String> updateToProduce(HttpServletRequest request,
+									   @PathVariable("orderId") int orderId){
+		if(orderService.updateStatus(orderId, OrderStatus.SAMPLE.getKey(), OrderStatus.SAVE.getKey(), SessionUtils.getCurrentUserId(request)) <= 0){
+			return Result.resultFailure("订单进入生产阶段失败！");
 		}
-		return Result.resultSuccess("修改订单状态成功！");
-	}*/
+		return Result.resultSuccess("订单进入生产阶段成功！");
+	}
 
 	@PutMapping("/updateToFinish/{orderId}")
 	public Result<String> updateToFinish(HttpServletRequest request,
 									   @PathVariable("orderId") int orderId){
-		if(orderService.updateStatus(orderId, OrderStatus.STORAGE.getKey(), OrderStatus.PRODUCE.getKey(), SessionUtils.getCurrentUserId(request)) <= 0){
+		if(orderService.updateStatus(orderId, OrderStatus.STORAGE.getKey(), OrderStatus.SAMPLE.getKey(), SessionUtils.getCurrentUserId(request)) <= 0){
 			return Result.resultFailure("订单入库失败！");
 		}
 		return Result.resultSuccess("订单入库成功！");

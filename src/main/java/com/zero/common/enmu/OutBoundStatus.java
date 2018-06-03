@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 public enum OutBoundStatus implements EnumDict {
     SAVE(0, "新建"),
     AUDIT(1, "审核中"),
-    FINISHED(2, "已入库"),
+    FINISHED(2, "已出库"),
     REJECT(3, "驳回");
 
     int key;

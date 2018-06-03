@@ -1,5 +1,8 @@
 package com.zero.service.impl;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import com.zero.common.enmu.DeletedEnum;
 import com.zero.common.utils.BeanUtils;
@@ -9,6 +12,8 @@ import com.zero.model.User;
 import com.zero.model.example.UserExample;
 import com.zero.service.IUserService;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,18 +21,44 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class UserServiceImpl implements IUserService{
 
+    private static final Logger LOGGER = LogManager.getLogger(UserServiceImpl.class);
+
     @Autowired
     private UserMapper userMapper;
 
+    private LoadingCache<Integer, String> userCache = CacheBuilder.newBuilder()
+            .expireAfterWrite(5, TimeUnit.MINUTES)
+            .build(new CacheLoader<Integer, String>() {
+                @Override
+                public String load(Integer key) {
+                    return getUserById(key).getRealName();
+                }
+            });
+
+
     @Override
-    public List<User> findUserPage(String phone, String loginName, String realName, int pageNum, int pageSize) {
+    public String getUserName(int id) {
+        try {
+            return userCache.get(id);
+        } catch (ExecutionException e) {
+            LOGGER.error("缓存获取用户信息失败:", e);
+            return null;
+        }
+    }
+
+    @Override
+    public List<User> findUserPage(String phone, String loginName, String realName, Integer pageNum, Integer pageSize) {
         UserExample example = new UserExample();
-        example.setPage(pageNum);
-        example.setLimit(pageSize);
+        if(Objects.nonNull(pageNum) && Objects.nonNull(pageSize)){
+            example.setPage(pageNum);
+            example.setLimit(pageSize);
+        }
         UserExample.Criteria criteria = example.createCriteria();
         criteria.andIsDeletedEqualTo(DeletedEnum.NO.getKey());
         if(StringUtils.isNotEmpty(realName)){

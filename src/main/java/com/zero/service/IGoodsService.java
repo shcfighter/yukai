@@ -22,7 +22,7 @@ public interface IGoodsService {
 
 	int inbound(int purchaseOrderId, int loginId, String loginName);
 
-	int outbound(int id, int num, int loginId, String loginName);
+	int outbound(int outboundid, int loginId, String loginName);
 
 	List<Goods> findGoodsList(String goodsName, String goodsModel, Integer type);
 
