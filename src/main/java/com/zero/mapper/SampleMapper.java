@@ -3,8 +3,6 @@ package com.zero.mapper;
 import com.zero.model.Sample;
 import com.zero.model.example.SampleExample;
 import java.util.List;
-import java.util.Map;
-
 import org.apache.ibatis.annotations.Param;
 
 public interface SampleMapper {
@@ -29,5 +27,4 @@ public interface SampleMapper {
     int updateByPrimaryKeySelective(Sample record);
 
     int updateByPrimaryKey(Sample record);
-
 }

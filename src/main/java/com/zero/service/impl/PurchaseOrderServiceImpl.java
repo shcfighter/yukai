@@ -29,7 +29,7 @@ public class PurchaseOrderServiceImpl implements IPurchaseOrderService {
     private PurchaseOrderMapper purchaseOrderMapper;
 
     @Override
-    public List<PurchaseOrder> findPurchaseOrderByPage(String goodsName, String goodsModel, Integer status, GoodsGoodsType goodsType, Integer pageNum, Integer pageSize) {
+    public List<PurchaseOrder> findPurchaseOrderByPage(String purchaseCode, String orderCode, String productName, Integer status, Integer pageNum, Integer pageSize) {
         PurchaseOrderExample example = new PurchaseOrderExample();
         if(Objects.nonNull(pageNum) && Objects.nonNull(pageSize)){
             example.setPage(pageNum);
@@ -37,37 +37,37 @@ public class PurchaseOrderServiceImpl implements IPurchaseOrderService {
         }
         PurchaseOrderExample.Criteria criteria = example.createCriteria();
         criteria.andIsDeletedEqualTo(DeletedEnum.NO.getKey());
-        if(StringUtils.isNotEmpty(goodsName)){
-            criteria.andGoodsNameLike("%" + goodsName + "%");
+        if(StringUtils.isNotEmpty(purchaseCode)){
+            criteria.andPurchaseCodeLike("%" + purchaseCode + "%");
         }
-        if(StringUtils.isNotEmpty(goodsModel)){
-            criteria.andGoodsModelLike("%" + goodsModel + "%");
+        if(StringUtils.isNotEmpty(orderCode)){
+            criteria.andOrderCodeLike("%" + orderCode + "%");
+        }
+        if(StringUtils.isNotEmpty(productName)){
+            criteria.andProductNameLike("%" + productName + "%");
         }
         if(Objects.nonNull(status)){
             criteria.andStatusEqualTo(status);
-        }
-        if(Objects.nonNull(goodsType)){
-            criteria.andGoodsTypeEqualTo(goodsType.getKey());
         }
         return purchaseOrderMapper.selectByExample(example);
     }
 
     @Override
-    public long findPurchaseOrderRowNum(String goodsName, String goodsModel, Integer status, GoodsGoodsType goodsType) {
+    public long findPurchaseOrderRowNum(String purchaseCode, String orderCode, String productName, Integer status) {
         PurchaseOrderExample example = new PurchaseOrderExample();
         PurchaseOrderExample.Criteria criteria = example.createCriteria();
         criteria.andIsDeletedEqualTo(DeletedEnum.NO.getKey());
-        if(StringUtils.isNotEmpty(goodsName)){
-            criteria.andGoodsNameLike("%" + goodsName + "%");
+        if(StringUtils.isNotEmpty(purchaseCode)){
+            criteria.andPurchaseCodeLike("%" + purchaseCode + "%");
         }
-        if(StringUtils.isNotEmpty(goodsModel)){
-            criteria.andGoodsModelLike("%" + goodsModel + "%");
+        if(StringUtils.isNotEmpty(orderCode)){
+            criteria.andOrderCodeLike("%" + orderCode + "%");
+        }
+        if(StringUtils.isNotEmpty(productName)){
+            criteria.andProductNameLike("%" + productName + "%");
         }
         if(Objects.nonNull(status)){
             criteria.andStatusEqualTo(status);
-        }
-        if(Objects.nonNull(goodsType)){
-            criteria.andGoodsTypeEqualTo(goodsType.getKey());
         }
         return purchaseOrderMapper.countByExample(example);
     }

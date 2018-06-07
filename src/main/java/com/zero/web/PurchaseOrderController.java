@@ -1,25 +1,20 @@
 package com.zero.web;
 
 import com.zero.common.Result;
-import com.zero.common.enmu.GoodsGoodsType;
 import com.zero.common.enmu.PurchaseOrderStatus;
-import com.zero.common.utils.DateUtils;
 import com.zero.common.utils.SessionUtils;
-import com.zero.common.utils.excel.SimpleExcelExporter;
 import com.zero.model.PurchaseOrder;
 import com.zero.service.IPurchaseOrderService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.OutputStream;
-import java.net.URLEncoder;
-import java.util.Date;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController
 @RequestMapping("/purchaseOrder/")
@@ -36,53 +31,17 @@ public class PurchaseOrderController {
 
 	/**
 	 * 采购单入库申请列表
-	 * @param goodsName
-	 * @param goodsModel
 	 * @param status
 	 * @param pageNum
 	 * @param pageSize
 	 * @return
 	 */
 	@GetMapping("/findPurchaseOrderPage")
-	public Result<List<PurchaseOrder>> findPurchaseOrderPage(String goodsName, String goodsModel, Integer status,
+	public Result<List<PurchaseOrder>> findPurchaseOrderPage(String purchaseCode, String orderCode, String productName, Integer status,
 										   @RequestParam(value = "page", defaultValue = "1") int pageNum,
 										   @RequestParam(value = "limit", defaultValue = "10") int pageSize){
-		return Result.resultSuccess(purchaseOrderService.findPurchaseOrderRowNum(goodsName, goodsModel, status, GoodsGoodsType.PURCHASE),
-				purchaseOrderService.findPurchaseOrderByPage(goodsName, goodsModel, status, GoodsGoodsType.PURCHASE, pageNum, pageSize));
-	}
-
-	/**
-	 * 成品入库申请列表
-	 * @param goodsName
-	 * @param goodsModel
-	 * @param status
-	 * @param pageNum
-	 * @param pageSize
-	 * @return
-	 */
-	@GetMapping("/findProductPage")
-	public Result<List<PurchaseOrder>> findProductPage(String goodsName, String goodsModel, Integer status,
-															 @RequestParam(value = "page", defaultValue = "1") int pageNum,
-															 @RequestParam(value = "limit", defaultValue = "10") int pageSize){
-		return Result.resultSuccess(purchaseOrderService.findPurchaseOrderRowNum(goodsName, goodsModel, status, GoodsGoodsType.PRODUCT),
-				purchaseOrderService.findPurchaseOrderByPage(goodsName, goodsModel, status, GoodsGoodsType.PRODUCT, pageNum, pageSize));
-	}
-
-	/**
-	 * 仓库审核列表
-	 * @param goodsName
-	 * @param goodsModel
-	 * @param status
-	 * @param pageNum
-	 * @param pageSize
-	 * @return
-	 */
-	@GetMapping("/findPage")
-	public Result<List<PurchaseOrder>> findPage(String goodsName, String goodsModel, Integer status,
-													   @RequestParam(value = "page", defaultValue = "1") int pageNum,
-													   @RequestParam(value = "limit", defaultValue = "10") int pageSize){
-		return Result.resultSuccess(purchaseOrderService.findPurchaseOrderRowNum(goodsName, goodsModel, status, null),
-				purchaseOrderService.findPurchaseOrderByPage(goodsName, goodsModel, status, null, pageNum, pageSize));
+		return Result.resultSuccess(purchaseOrderService.findPurchaseOrderRowNum(purchaseCode, orderCode, productName, status),
+				purchaseOrderService.findPurchaseOrderByPage(purchaseCode, orderCode, productName, status, pageNum, pageSize));
 	}
 
 	@PostMapping("/insertPurchaseOrder")
@@ -111,13 +70,19 @@ public class PurchaseOrderController {
 		return Result.resultSuccess("修改采购单成功！");
 	}
 
-	@DeleteMapping("/deletePurchaseOrder/{id}")
+	@DeleteMapping("/deleteBatch")
 	public Result<String> deletePurchaseOrder(HttpServletRequest request,
-									   @PathVariable("id") int id){
-		if(purchaseOrderService.delete(id, SessionUtils.getCurrentUserId(request)) <= 0){
-			return Result.resultFailure("删除采购单失败！");
+									   @RequestParam("ids") List<Integer> ids){
+		if(CollectionUtils.isEmpty(ids)){
+			return Result.resultFailure("删除采购单信息失败，未选中采购单！");
 		}
-		return Result.resultSuccess("删除采购单成功！");
+		AtomicInteger success = new AtomicInteger(0);
+		ids.forEach(id -> {
+			if(purchaseOrderService.delete(id, SessionUtils.getCurrentUserId(request)) > 0){
+				success.getAndAdd(1);
+			}
+		});
+		return Result.resultSuccess("成功删除【" + success.get() + "】条采购单信息！");
 	}
 
 	@PutMapping("/updateToAudit/{id}")
@@ -137,29 +102,6 @@ public class PurchaseOrderController {
 			return Result.resultFailure("采购单打回失败！");
 		}
 		return Result.resultSuccess("采购单打回成功！");
-	}
-
-	@GetMapping("/purchaseOrderExport")
-	public void purchaseOrderExport(HttpServletResponse response, HttpServletRequest request,
-									String goodsName, String goodsModel, Integer status){
-		List<PurchaseOrder> list = purchaseOrderService.findPurchaseOrderByPage(goodsName, goodsModel, status, null, null, null);
-		try (OutputStream os = response.getOutputStream()) {
-			SimpleExcelExporter excelExporter = new SimpleExcelExporter(list, PurchaseOrder.class);
-			String filename = "采购单列表_" + DateUtils.getStringFormat(new Date(), DateUtils.DATEFORMAT2) + ".xlsx";
-			String header = request.getHeader("User-Agent").toUpperCase();
-			if (header.contains("MSIE") || header.contains("TRIDENT") || header.contains("EDGE")) {
-				filename = URLEncoder.encode(filename, "UTF-8");
-			} else {
-				filename = new String(filename.getBytes(), "ISO8859-1");
-			}
-			response.reset();
-			response.setContentType("application/octet-stream; charset=UTF-8");
-			response.setHeader("Content-Disposition", "attachment; filename=" +  filename);
-			excelExporter.export(os);
-		} catch (Exception ex) {
-			LOGGER.error("采购单导出失败:", ex);
-			Result.resultFailure("导出错误");
-		}
 	}
 
 }

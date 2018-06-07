@@ -1,6 +1,7 @@
 package com.zero.service;
 
 import com.zero.model.Sample;
+import com.zero.model.SampleDetail;
 import com.zero.model.SampleMaterial;
 
 import java.util.Date;
@@ -9,11 +10,11 @@ import java.util.Map;
 
 public interface ISampleService {
 
-    int insertOrUpdate(Sample sample, List<SampleMaterial> list, int loginId);
+    int insertOrUpdate(Sample sample, List<SampleDetail> list, int loginId);
 
-    List<Sample> findSamplePage(String sampleName, String sampleCode, Integer status, int page, int pageSize);
+    List<Sample> findSamplePage(String style, String sampleCode, Integer status, Integer page, Integer pageSize);
 
-    long findSampleRowNum(String sampleName, String sampleCode, Integer status);
+    long findSampleRowNum(String style, String sampleCode, Integer status);
 
     Sample findSampleById(int id);
 

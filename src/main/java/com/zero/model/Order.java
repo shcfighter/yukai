@@ -1,55 +1,47 @@
 package com.zero.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.zero.common.utils.excel.ExportConfig;
+import com.google.common.collect.Lists;
+import org.springframework.util.CollectionUtils;
 
-import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
-@ExportConfig.SheetName
 public class Order {
-    @ExportConfig.ColumnName(value = "id", order = 0)
     private Integer id;
-    @ExportConfig.ColumnName(value = "订单数量", order = 2)
-    private Integer orderNum;
-
-    @ExportConfig.ColumnName(value = "产品名称", order = 1)
-    private String productName;
-
-    @ExportConfig.ColumnName(value = "单位", order = 3)
-    private String productUnit;
-
-    @ExportConfig.ColumnName(value = "交付时间", order = 4, dateFormat = "yyyy-MM-dd")
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date deliverDate;
-
-    @ExportConfig.ColumnName(value = "单价", order = 5)
-    private BigDecimal unitPrice;
-
-    @ExportConfig.ColumnName(value = "总价", order = 6)
-    private BigDecimal totalPrice;
-
-    @ExportConfig.ColumnName(value = "合作公司", order = 7)
-    private String cooperationCompany;
-
-    @ExportConfig.ColumnName(value = "合作人", order = 8)
-    private String contactName;
-
-    @ExportConfig.ColumnName(value = "联系电话", order = 9)
-    private String contactPhone;
-
-    @ExportConfig.ColumnName(value = "下单时间", order = 10, dateFormat = "yyyy-MM-dd")
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date orderTime;
 
     private Integer sampleId;
 
-    @ExportConfig.ColumnName(value = "状态", order = 11, codeName = "com.zero.common.enmu.OrderStatus")
+    private String orderCode;
+
+    private String deliveryNumber;
+
+    private String poNumber;
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Date orderTime;
+
+    private Integer type;
+
+    private String sampleCode;
+
+    private String needle;
+
+    private String style;
+
     private Integer status;
+
+    private String material;
+
+    private String company;
+
+    private String brand;
+
+    private String photoUrl;
 
     private Integer isDeleted;
 
-    @ExportConfig.ColumnName(value = "创建时间", order = 12, dateFormat = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
     private Date updateTime;
@@ -60,6 +52,12 @@ public class Order {
 
     private String remarks;
 
+    private Integer winningBid;
+
+    private Integer totalNum;
+
+    private List<OrderDetail> details;
+
     public Integer getId() {
         return id;
     }
@@ -68,76 +66,76 @@ public class Order {
         this.id = id;
     }
 
-    public Integer getOrderNum() {
-        return orderNum;
+    public Integer getSampleId() {
+        return sampleId;
     }
 
-    public void setOrderNum(Integer orderNum) {
-        this.orderNum = orderNum;
+    public void setSampleId(Integer sampleId) {
+        this.sampleId = sampleId;
     }
 
-    public String getProductName() {
-        return productName;
+    public String getOrderCode() {
+        return orderCode;
     }
 
-    public void setProductName(String productName) {
-        this.productName = productName == null ? null : productName.trim();
+    public void setOrderCode(String orderCode) {
+        this.orderCode = orderCode == null ? null : orderCode.trim();
     }
 
-    public String getProductUnit() {
-        return productUnit;
+    public String getDeliveryNumber() {
+        return deliveryNumber;
     }
 
-    public void setProductUnit(String productUnit) {
-        this.productUnit = productUnit == null ? null : productUnit.trim();
+    public void setDeliveryNumber(String deliveryNumber) {
+        this.deliveryNumber = deliveryNumber == null ? null : deliveryNumber.trim();
     }
 
-    public Date getDeliverDate() {
-        return deliverDate;
+    public String getPoNumber() {
+        return poNumber;
     }
 
-    public void setDeliverDate(Date deliverDate) {
-        this.deliverDate = deliverDate;
+    public void setPoNumber(String poNumber) {
+        this.poNumber = poNumber == null ? null : poNumber.trim();
     }
 
-    public BigDecimal getUnitPrice() {
-        return unitPrice;
+    public Date getOrderTime() {
+        return orderTime;
     }
 
-    public void setUnitPrice(BigDecimal unitPrice) {
-        this.unitPrice = unitPrice;
+    public void setOrderTime(Date orderTime) {
+        this.orderTime = orderTime;
     }
 
-    public BigDecimal getTotalPrice() {
-        return totalPrice;
+    public Integer getType() {
+        return type;
     }
 
-    public void setTotalPrice(BigDecimal totalPrice) {
-        this.totalPrice = totalPrice;
+    public void setType(Integer type) {
+        this.type = type;
     }
 
-    public String getCooperationCompany() {
-        return cooperationCompany;
+    public String getSampleCode() {
+        return sampleCode;
     }
 
-    public void setCooperationCompany(String cooperationCompany) {
-        this.cooperationCompany = cooperationCompany == null ? null : cooperationCompany.trim();
+    public void setSampleCode(String sampleCode) {
+        this.sampleCode = sampleCode == null ? null : sampleCode.trim();
     }
 
-    public String getContactName() {
-        return contactName;
+    public String getNeedle() {
+        return needle;
     }
 
-    public void setContactName(String contactName) {
-        this.contactName = contactName == null ? null : contactName.trim();
+    public void setNeedle(String needle) {
+        this.needle = needle == null ? null : needle.trim();
     }
 
-    public String getContactPhone() {
-        return contactPhone;
+    public String getStyle() {
+        return style;
     }
 
-    public void setContactPhone(String contactPhone) {
-        this.contactPhone = contactPhone == null ? null : contactPhone.trim();
+    public void setStyle(String style) {
+        this.style = style == null ? null : style.trim();
     }
 
     public Integer getStatus() {
@@ -146,6 +144,38 @@ public class Order {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public String getMaterial() {
+        return material;
+    }
+
+    public void setMaterial(String material) {
+        this.material = material == null ? null : material.trim();
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company == null ? null : company.trim();
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand == null ? null : brand.trim();
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl == null ? null : photoUrl.trim();
     }
 
     public Integer getIsDeleted() {
@@ -196,19 +226,54 @@ public class Order {
         this.remarks = remarks == null ? null : remarks.trim();
     }
 
-    public Date getOrderTime() {
-        return orderTime;
+    public Integer getWinningBid() {
+        return winningBid;
     }
 
-    public void setOrderTime(Date orderTime) {
-        this.orderTime = orderTime;
+    public void setWinningBid(Integer winningBid) {
+        this.winningBid = winningBid;
     }
 
-    public Integer getSampleId() {
-        return sampleId;
+    public List<OrderDetail> getDetails() {
+        return details;
     }
 
-    public void setSampleId(Integer sampleId) {
-        this.sampleId = sampleId;
+    public void setDetails(List<OrderDetail> details) {
+        this.details = details;
+    }
+
+    public Integer getTotalNum() {
+        if(CollectionUtils.isEmpty(this.getDetails())){
+            return 0;
+        }
+        return Optional.ofNullable(this.getDetails()).orElse(Lists.newArrayList()).stream()
+            .map(OrderDetail::getNum).reduce((a, b) -> a + b).get();
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", sampleId=" + sampleId +
+                ", orderCode='" + orderCode + '\'' +
+                ", deliveryNumber='" + deliveryNumber + '\'' +
+                ", poNumber='" + poNumber + '\'' +
+                ", orderTime=" + orderTime +
+                ", type=" + type +
+                ", sampleCode='" + sampleCode + '\'' +
+                ", needle='" + needle + '\'' +
+                ", style='" + style + '\'' +
+                ", status=" + status +
+                ", material='" + material + '\'' +
+                ", company='" + company + '\'' +
+                ", brand='" + brand + '\'' +
+                ", photoUrl='" + photoUrl + '\'' +
+                ", isDeleted=" + isDeleted +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                ", creater=" + creater +
+                ", modifier=" + modifier +
+                ", remarks='" + remarks + '\'' +
+                '}';
     }
 }

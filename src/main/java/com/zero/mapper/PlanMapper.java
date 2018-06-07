@@ -2,8 +2,9 @@ package com.zero.mapper;
 
 import com.zero.model.Plan;
 import com.zero.model.example.PlanExample;
-import java.util.List;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 public interface PlanMapper {
     long countByExample(PlanExample example);
@@ -27,4 +28,6 @@ public interface PlanMapper {
     int updateByPrimaryKeySelective(Plan record);
 
     int updateByPrimaryKey(Plan record);
+
+    List<Plan> findPlanAndDetailList(PlanExample example);
 }

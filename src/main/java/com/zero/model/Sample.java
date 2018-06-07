@@ -1,20 +1,31 @@
 package com.zero.model;
 
-import java.util.Arrays;
 import java.util.Date;
 
 public class Sample {
     private Integer id;
 
-    private Integer orderId;
+    private String sampleCode;
+
+    private String needle;
 
     private String sampleName;
 
-    private String sampleCode;
+    private String style;
+
+    private String material;
+
+    private String company;
+
+    private String brand;
 
     private String photoUrl;
 
-    private int isDeleted;
+    private String color;
+
+    private Integer status;
+
+    private Integer isDeleted;
 
     private Date createTime;
 
@@ -26,30 +37,12 @@ public class Sample {
 
     private String remarks;
 
-    private Integer status;
-
     public Integer getId() {
         return id;
     }
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public Integer getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(Integer orderId) {
-        this.orderId = orderId;
-    }
-
-    public String getSampleName() {
-        return sampleName;
-    }
-
-    public void setSampleName(String sampleName) {
-        this.sampleName = sampleName == null ? null : sampleName.trim();
     }
 
     public String getSampleCode() {
@@ -60,6 +53,54 @@ public class Sample {
         this.sampleCode = sampleCode == null ? null : sampleCode.trim();
     }
 
+    public String getNeedle() {
+        return needle;
+    }
+
+    public void setNeedle(String needle) {
+        this.needle = needle == null ? null : needle.trim();
+    }
+
+    public String getSampleName() {
+        return sampleName;
+    }
+
+    public void setSampleName(String sampleName) {
+        this.sampleName = sampleName == null ? null : sampleName.trim();
+    }
+
+    public String getStyle() {
+        return style;
+    }
+
+    public void setStyle(String style) {
+        this.style = style == null ? null : style.trim();
+    }
+
+    public String getMaterial() {
+        return material;
+    }
+
+    public void setMaterial(String material) {
+        this.material = material == null ? null : material.trim();
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company == null ? null : company.trim();
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand == null ? null : brand.trim();
+    }
+
     public String getPhotoUrl() {
         return photoUrl;
     }
@@ -68,11 +109,27 @@ public class Sample {
         this.photoUrl = photoUrl == null ? null : photoUrl.trim();
     }
 
-    public int getIsDeleted() {
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color == null ? null : color.trim();
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public Integer getIsDeleted() {
         return isDeleted;
     }
 
-    public void setIsDeleted(int isDeleted) {
+    public void setIsDeleted(Integer isDeleted) {
         this.isDeleted = isDeleted;
     }
 
@@ -114,31 +171,5 @@ public class Sample {
 
     public void setRemarks(String remarks) {
         this.remarks = remarks == null ? null : remarks.trim();
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    @Override
-    public String toString() {
-        return "Sample{" +
-                "id=" + id +
-                ", orderId=" + orderId +
-                ", sampleName='" + sampleName + '\'' +
-                ", sampleCode='" + sampleCode + '\'' +
-                ", photoUrl='" + photoUrl + '\'' +
-                ", isDeleted=" + isDeleted +
-                ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
-                ", creater=" + creater +
-                ", modifier=" + modifier +
-                ", remarks='" + remarks + '\'' +
-                ", status=" + status +
-                '}';
     }
 }

@@ -7,10 +7,12 @@ import com.zero.common.utils.DateUtils;
 import com.zero.common.utils.SessionUtils;
 import com.zero.common.utils.excel.SimpleExcelExporter;
 import com.zero.model.Order;
+import com.zero.model.verify.OrderDetails;
+import com.zero.service.IOrderDetailService;
 import com.zero.service.IOrderService;
-import com.zero.service.ISampleService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +24,8 @@ import java.net.URLEncoder;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/order")
@@ -32,17 +35,19 @@ public class OrderController {
 	@Resource
 	IOrderService orderService;
 	@Resource
-	private ISampleService sampleService;
+	private IOrderDetailService orderDetailService;
 
 	@GetMapping("/getOrder/{id}")
 	public Result<Order> getOrder(@PathVariable("id") int id){
-		Map<String, Object> resultMap = Maps.newHashMap();
-		Order order = orderService.getOrderById(id);
-		resultMap.put("order", order);
-		if(Objects.nonNull(order) && Objects.nonNull(order.getSampleId())){
-			resultMap.put("sample", sampleService.findSampleById(order.getSampleId()));
-		}
-		return Result.resultSuccess(resultMap);
+		return Result.resultSuccess(orderService.getOrderById(id));
+	}
+
+	@GetMapping("/getOrderAndDetails/{id}")
+	public Result<Map<String, Object>> getOrderAndDetails(@PathVariable("id") int id){
+		Map<String, Object> result = Maps.newHashMap();
+		result.put("order", orderService.getOrderById(id));
+		result.put("orderDetails", orderDetailService.getOrderDetailByOrderId(id));
+		return Result.resultSuccess(result);
 	}
 
 	@GetMapping("/findOrderPage")
@@ -50,30 +55,40 @@ public class OrderController {
 										   @RequestParam(value = "page", defaultValue = "1") int pageNum,
 										   @RequestParam(value = "limit", defaultValue = "10") int pageSize){
 		return Result.resultSuccess(orderService.findOrderRowNum(productName, cooperationCompany, status),
-				orderService.findOrderByPage(productName, cooperationCompany, status, pageNum, pageSize));
+				orderService.findOrdersAndOrderDetailList(productName, cooperationCompany, status, pageNum, pageSize));
+	}
+
+	@GetMapping("/searchOrder")
+	public Result<List<Map<String, Object>>> searchOrder(String code, Integer pageNum, Integer pageSize){
+		return Result.resultSuccess(orderService.findOrderByPage(code, null, null, pageNum, pageSize).stream().map(order -> {
+			Map<String, Object> map = Maps.newHashMap();
+			map.put("id", order.getId());
+			map.put("code", order.getOrderCode());
+			return map;
+		}).collect(Collectors.toList()));
 	}
 
 	@PostMapping("/insertOrder")
-	public Result<String> insertOrder(HttpServletRequest request, @RequestBody Order order,
+	public Result<String> insertOrder(HttpServletRequest request, @RequestBody OrderDetails orderDetails,
 									 BindingResult bindingResult){
 		if(bindingResult.hasErrors()){
 			LOGGER.error("新增订单信息错误：{}", bindingResult.getFieldError().getDefaultMessage());
 			return Result.resultFailure(bindingResult.getFieldError().getDefaultMessage());
 		}
-		if(orderService.insert(order, SessionUtils.getCurrentUserId(request)) <= 0){
+		if(orderService.insert(orderDetails, SessionUtils.getCurrentUserId(request)) <= 0){
 			return Result.resultFailure("新增订单失败！");
 		}
 		return Result.resultSuccess("新增订单成功！");
 	}
 
 	@PostMapping("/updateOrder")
-	public Result<String> updateOrder(HttpServletRequest request, @RequestBody Order order,
+	public Result<String> updateOrder(HttpServletRequest request, @RequestBody OrderDetails orderDetails,
 									  BindingResult bindingResult){
 		if(bindingResult.hasErrors()){
 			LOGGER.error("修改订单信息错误：{}", bindingResult.getFieldError().getDefaultMessage());
 			return Result.resultFailure(bindingResult.getFieldError().getDefaultMessage());
 		}
-		if(orderService.update(order, SessionUtils.getCurrentUserId(request)) <= 0){
+		if(orderService.update(orderDetails, SessionUtils.getCurrentUserId(request)) <= 0){
 			return Result.resultFailure("修改订单失败！");
 		}
 		return Result.resultSuccess("修改订单成功！");
@@ -95,6 +110,28 @@ public class OrderController {
 			return Result.resultFailure("订单入库失败！");
 		}
 		return Result.resultSuccess("订单入库成功！");
+	}
+
+	@DeleteMapping("delete/{id}")
+	public Result<String> delete(HttpServletRequest request, @PathVariable("id") int id){
+		if(orderService.delete(id, SessionUtils.getCurrentUserId(request)) <= 0){
+			return Result.resultFailure("删除订单信息失败！");
+		}
+		return Result.resultSuccess("删除订单信息成功！");
+	}
+
+	@PostMapping("batchDelete")
+	public Result<String> batchDelete(HttpServletRequest request, @RequestParam("ids[]") List<Integer> ids){
+		if(CollectionUtils.isEmpty(ids)){
+			return Result.resultFailure("删除订单信息失败，未选中订单！");
+		}
+		AtomicInteger success = new AtomicInteger(0);
+		ids.forEach(id -> {
+			if(orderService.delete(id, SessionUtils.getCurrentUserId(request)) > 0){
+				success.getAndAdd(1);
+			}
+		});
+		return Result.resultSuccess("成功删除【" + success.get() + "】条订单信息！");
 	}
 
 	@GetMapping("/orderExport")

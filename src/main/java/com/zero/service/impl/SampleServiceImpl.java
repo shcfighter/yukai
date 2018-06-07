@@ -4,17 +4,18 @@ import com.zero.common.BusinessException;
 import com.zero.common.enmu.DeletedEnum;
 import com.zero.common.enmu.SampleStatus;
 import com.zero.common.utils.BeanUtils;
+import com.zero.mapper.SampleDetailMapper;
 import com.zero.mapper.SampleMapper;
 import com.zero.model.Sample;
-import com.zero.model.SampleMaterial;
+import com.zero.model.SampleDetail;
 import com.zero.model.example.SampleExample;
-import com.zero.service.IMaterialService;
 import com.zero.service.ISampleService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -29,11 +30,11 @@ public class SampleServiceImpl implements ISampleService {
     @Resource
     private SampleMapper sampleMapper;
     @Resource
-    private IMaterialService materialService;
+    private SampleDetailMapper sampleDetailMapper;
 
     @Transactional
     @Override
-    public int insertOrUpdate(Sample sample, List<SampleMaterial> list, int loginId) {
+    public int insertOrUpdate(Sample sample, List<SampleDetail> list, int loginId) {
         if(Objects.isNull(sample.getId())){
             sample.setCreater(loginId);
             sample.setCreateTime(new Date());
@@ -42,8 +43,10 @@ public class SampleServiceImpl implements ISampleService {
                 throw new BusinessException("保存样品失败！");
             }
             LOGGER.info("sample.getId():{}", sample.getId());
-            list.stream().forEach(m -> {m.setSimpleId(sample.getId());});
-            materialService.insertBatch(list, loginId);
+            list.stream().forEach(m -> {m.setSampleId(sample.getId());});
+            if(!CollectionUtils.isEmpty(list)){
+                sampleDetailMapper.insertBatch(list, loginId);
+            }
             return 1;
         }
         Sample sampleDb = sampleMapper.selectByPrimaryKey(sample.getId());
@@ -60,25 +63,30 @@ public class SampleServiceImpl implements ISampleService {
         sampleDb.setUpdateTime(new Date());
         list.forEach(m -> {
             if(Objects.isNull(m.getId())){
-                m.setSimpleId(sampleDb.getId());
-                materialService.insert(m, loginId);
+                m.setSampleId(sampleDb.getId());
+                m.setCreater(loginId);
+                m.setCreateTime(new Date());
+                sampleDetailMapper.insert(m);
             }
         });
         return sampleMapper.updateByPrimaryKeySelective(sampleDb);
     }
 
     @Override
-    public List<Sample> findSamplePage(String sampleName, String sampleCode, Integer status, int page, int pageSize) {
+    public List<Sample> findSamplePage(String style, String sampleCode, Integer status, Integer page, Integer pageSize) {
         SampleExample example = new SampleExample();
-        example.setPage(page);
-        example.setLimit(pageSize);
+        example.setOrderByClause(" create_time desc");
+        if(Objects.nonNull(page) && Objects.nonNull(pageSize)){
+            example.setPage(page);
+            example.setLimit(pageSize);
+        }
         SampleExample.Criteria criteria = example.createCriteria();
         criteria.andIsDeletedEqualTo(DeletedEnum.NO.getKey());
         if(Objects.nonNull(status)){
             criteria.andStatusEqualTo(status);
         }
-        if(StringUtils.isNotEmpty(sampleName)){
-            criteria.andSampleNameLike("%" + sampleName + "%");
+        if(StringUtils.isNotEmpty(style)){
+            criteria.andStyleLike("%" + style + "%");
         }
         if(StringUtils.isNotEmpty(sampleCode)){
             criteria.andSampleCodeLike("%" + sampleCode + "%");
@@ -87,15 +95,15 @@ public class SampleServiceImpl implements ISampleService {
     }
 
     @Override
-    public long findSampleRowNum(String sampleName, String sampleCode, Integer status) {
+    public long findSampleRowNum(String style, String sampleCode, Integer status) {
         SampleExample example = new SampleExample();
         SampleExample.Criteria criteria = example.createCriteria();
         criteria.andIsDeletedEqualTo(DeletedEnum.NO.getKey());
         if(Objects.nonNull(status)){
             criteria.andStatusEqualTo(status);
         }
-        if(StringUtils.isNotEmpty(sampleName)){
-            criteria.andSampleNameLike("%" + sampleName + "%");
+        if(StringUtils.isNotEmpty(style)){
+            criteria.andStyleLike("%" + style + "%");
         }
         if(StringUtils.isNotEmpty(sampleCode)){
             criteria.andSampleCodeLike("%" + sampleCode + "%");

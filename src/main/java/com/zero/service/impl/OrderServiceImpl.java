@@ -1,17 +1,22 @@
 package com.zero.service.impl;
 
+import com.zero.common.BusinessException;
 import com.zero.common.enmu.DeletedEnum;
 import com.zero.common.enmu.OrderStatus;
 import com.zero.common.utils.BeanUtils;
+import com.zero.mapper.OrderDetailMapper;
 import com.zero.mapper.OrderMapper;
 import com.zero.model.Order;
-import com.zero.model.User;
+import com.zero.model.OrderDetail;
+import com.zero.model.example.OrderDetailExample;
 import com.zero.model.example.OrderExample;
+import com.zero.model.verify.OrderDetails;
 import com.zero.service.IOrderService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -25,9 +30,11 @@ public class OrderServiceImpl implements IOrderService {
 
     @Resource
     private OrderMapper orderMapper;
+    @Resource
+    private OrderDetailMapper orderDetailMapper;
 
     @Override
-    public List<Order> findOrderByPage(String productName, String cooperationCompany, Integer status, Integer pageNum, Integer pageSize) {
+    public List<Order> findOrderByPage(String orderCode, String sampleCode, Integer status, Integer pageNum, Integer pageSize) {
         OrderExample example = new OrderExample();
         if(Objects.nonNull(pageNum) && Objects.nonNull(pageSize)){
             example.setLimit(pageSize);
@@ -35,11 +42,12 @@ public class OrderServiceImpl implements IOrderService {
         }
         example.setOrderByClause(" create_time desc");
         OrderExample.Criteria criteria = example.createCriteria();
-        if(StringUtils.isNotEmpty(productName)){
-            criteria.andProductNameLike("%" + productName + "%");
+        criteria.andIsDeletedEqualTo(DeletedEnum.NO.getKey());
+        if(StringUtils.isNotEmpty(orderCode)){
+            criteria.andOrderCodeLike("%" + orderCode + "%");
         }
-        if(StringUtils.isNotEmpty(cooperationCompany)){
-            criteria.andProductNameLike("%" + cooperationCompany + "%");
+        if(StringUtils.isNotEmpty(sampleCode)){
+            criteria.andSampleCodeLike("%" + sampleCode + "%");
         }
         if (Objects.nonNull(status)) {
             criteria.andStatusEqualTo(status);
@@ -48,14 +56,15 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     @Override
-    public long findOrderRowNum(String productName, String cooperationCompany, Integer status) {
+    public long findOrderRowNum(String orderCode, String sampleCode, Integer status) {
         OrderExample example = new OrderExample();
         OrderExample.Criteria criteria = example.createCriteria();
-        if(StringUtils.isNotEmpty(productName)){
-            criteria.andProductNameLike("%" + productName + "%");
+        criteria.andIsDeletedEqualTo(DeletedEnum.NO.getKey());
+        if(StringUtils.isNotEmpty(orderCode)){
+            criteria.andOrderCodeLike("%" + orderCode + "%");
         }
-        if(StringUtils.isNotEmpty(cooperationCompany)){
-            criteria.andProductNameLike("%" + cooperationCompany + "%");
+        if(StringUtils.isNotEmpty(sampleCode)){
+            criteria.andSampleCodeLike("%" + sampleCode + "%");
         }
         if (Objects.nonNull(status)) {
             criteria.andStatusEqualTo(status);
@@ -63,15 +72,35 @@ public class OrderServiceImpl implements IOrderService {
         return orderMapper.countByExample(example);
     }
 
+    @Transactional
     @Override
-    public int insert(Order order, int loginId) {
+    public int insert(OrderDetails orderDetails, int loginId) {
+        Order order = orderDetails.getOrder();
         order.setCreater(loginId);
         order.setCreateTime(new Date());
-        return orderMapper.insertSelective(order);
+        order.setIsDeleted(DeletedEnum.NO.getKey());
+        if(orderMapper.insertSelective(order) <= 0){
+            LOGGER.error("创建订单失败！");
+            return 0;
+        }
+        int orderId = order.getId();
+        List<OrderDetail> detailList = orderDetails.getDetailList();
+        detailList.forEach(d -> {
+            d.setOrderId(orderId);
+            d.setCreater(loginId);
+            d.setCreateTime(new Date());
+        });
+        if(orderDetailMapper.insertBatch(detailList, loginId) != detailList.size()){
+            LOGGER.error("批量创建尺寸失败！");
+            throw new BusinessException("批量创建尺寸异常");
+        }
+        return 1;
     }
 
+    @Transactional
     @Override
-    public int update(Order order, int loginId) {
+    public int update(OrderDetails orderDetails, int loginId) {
+        Order order = orderDetails.getOrder();
         if(Objects.isNull(order) || Objects.isNull(order.getId())){
             return 0;
         }
@@ -82,7 +111,29 @@ public class OrderServiceImpl implements IOrderService {
         BeanUtils.copyProperties(order, orderDb);
         orderDb.setModifier(loginId);
         orderDb.setUpdateTime(new Date());
-        return orderMapper.updateByPrimaryKey(orderDb);
+        if(orderMapper.updateByPrimaryKey(orderDb) <= 0){
+            LOGGER.error("修改订单失败！");
+            return 0;
+        }
+        OrderDetailExample detailExample = new OrderDetailExample();
+        OrderDetailExample.Criteria criteria = detailExample.createCriteria();
+        criteria.andOrderIdEqualTo(order.getId());
+        if(orderDetailMapper.deleteByExample(detailExample) <= 0){
+            LOGGER.error("批量删除尺寸失败！");
+            throw new BusinessException("批量删除尺寸异常");
+        }
+        int orderId = order.getId();
+        List<OrderDetail> detailList = orderDetails.getDetailList();
+        detailList.forEach(d -> {
+            d.setOrderId(orderId);
+            d.setCreater(loginId);
+            d.setCreateTime(new Date());
+        });
+        if(orderDetailMapper.insertBatch(detailList, loginId) != detailList.size()){
+            LOGGER.error("批量创建尺寸失败！");
+            throw new BusinessException("批量创建尺寸异常");
+        }
+        return 1;
     }
 
     @Override
@@ -98,7 +149,17 @@ public class OrderServiceImpl implements IOrderService {
         order.setIsDeleted(DeletedEnum.YES.getKey());
         order.setModifier(loginId);
         order.setUpdateTime(new Date());
-        return orderMapper.updateByPrimaryKey(order);
+        if(orderMapper.updateByPrimaryKey(order) <= 0){
+            LOGGER.info("删除订单失败！");
+            return 0;
+        }
+        OrderDetail orderDetail = new OrderDetail();
+        orderDetail.setIsDeleted(DeletedEnum.YES.getKey());
+        OrderDetailExample updateExample = new OrderDetailExample();
+        OrderDetailExample.Criteria criteria = updateExample.createCriteria();
+        criteria.andOrderIdEqualTo(id);
+        orderDetailMapper.updateByExampleSelective(orderDetail, updateExample);
+        return 1;
     }
 
     @Override
@@ -110,5 +171,27 @@ public class OrderServiceImpl implements IOrderService {
     @Override
     public Order getOrderById(int id) {
         return orderMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public List<Order> findOrdersAndOrderDetailList(String orderCode, String sampleCode, Integer status, Integer pageNum, Integer pageSize) {
+        OrderExample example = new OrderExample();
+        if(Objects.nonNull(pageNum) && Objects.nonNull(pageSize)){
+            example.setLimit(pageSize);
+            example.setPage(pageNum);
+        }
+        example.setOrderByClause(" create_time desc");
+        OrderExample.Criteria criteria = example.createCriteria();
+        criteria.andIsDeletedEqualTo(DeletedEnum.NO.getKey());
+        if(StringUtils.isNotEmpty(orderCode)){
+            criteria.andOrderCodeLike("%" + orderCode + "%");
+        }
+        if(StringUtils.isNotEmpty(sampleCode)){
+            criteria.andSampleCodeLike("%" + sampleCode + "%");
+        }
+        if (Objects.nonNull(status)) {
+            criteria.andStatusEqualTo(status);
+        }
+        return orderMapper.findOrdersAndOrderDetailList(example);
     }
 }

@@ -1,18 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.zero.mapper.SampleMapper">
-  <resultMap id="BaseResultMap" type="com.zero.model.Sample">
+<mapper namespace="com.zero.mapper.OrderDetailMapper">
+  <resultMap id="BaseResultMap" type="com.zero.model.OrderDetail">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="sample_code" jdbcType="VARCHAR" property="sampleCode" />
-    <result column="needle" jdbcType="VARCHAR" property="needle" />
-    <result column="sample_name" jdbcType="VARCHAR" property="sampleName" />
-    <result column="style" jdbcType="VARCHAR" property="style" />
-    <result column="material" jdbcType="VARCHAR" property="material" />
-    <result column="company" jdbcType="VARCHAR" property="company" />
-    <result column="brand" jdbcType="VARCHAR" property="brand" />
-    <result column="photo_url" jdbcType="VARCHAR" property="photoUrl" />
+    <result column="order_id" jdbcType="INTEGER" property="orderId" />
+    <result column="size_type" jdbcType="VARCHAR" property="sizeType" />
+    <result column="num" jdbcType="INTEGER" property="num" />
     <result column="color" jdbcType="VARCHAR" property="color" />
-    <result column="status" jdbcType="INTEGER" property="status" />
     <result column="is_deleted" jdbcType="INTEGER" property="isDeleted" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
@@ -79,17 +73,17 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, sample_code, needle, sample_name, style, material, company, brand, photo_url, 
-    color, status, is_deleted, create_time, update_time, creater, modifier, remarks
+    id, order_id, size_type, num, color, is_deleted, create_time, update_time, creater, 
+    modifier, remarks
   </sql>
-  <select id="selectByExample" parameterType="com.zero.model.example.SampleExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.zero.model.example.OrderDetailExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     'true' as QUERYID,
     <include refid="Base_Column_List" />
-    from t_sample
+    from t_order_detail
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -100,68 +94,46 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from t_sample
+    from t_order_detail
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from t_sample
+    delete from t_order_detail
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="com.zero.model.example.SampleExample">
-    delete from t_sample
+  <delete id="deleteByExample" parameterType="com.zero.model.example.OrderDetailExample">
+    delete from t_order_detail
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.zero.model.Sample" useGeneratedKeys="true" keyProperty="id">
-    insert into t_sample (id, sample_code, needle, 
-      sample_name, style, material, 
-      company, brand, photo_url, 
-      color, status, is_deleted, 
+  <insert id="insert" parameterType="com.zero.model.OrderDetail">
+    insert into t_order_detail (id, order_id, size_type, 
+      num, color, is_deleted, 
       create_time, update_time, creater, 
       modifier, remarks)
-    values (#{id,jdbcType=INTEGER}, #{sampleCode,jdbcType=VARCHAR}, #{needle,jdbcType=VARCHAR}, 
-      #{sampleName,jdbcType=VARCHAR}, #{style,jdbcType=VARCHAR}, #{material,jdbcType=VARCHAR}, 
-      #{company,jdbcType=VARCHAR}, #{brand,jdbcType=VARCHAR}, #{photoUrl,jdbcType=VARCHAR}, 
-      #{color,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{isDeleted,jdbcType=INTEGER}, 
+    values (#{id,jdbcType=INTEGER}, #{orderId,jdbcType=INTEGER}, #{sizeType,jdbcType=VARCHAR}, 
+      #{num,jdbcType=INTEGER}, #{color,jdbcType=VARCHAR}, #{isDeleted,jdbcType=INTEGER}, 
       #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{creater,jdbcType=INTEGER}, 
       #{modifier,jdbcType=INTEGER}, #{remarks,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.zero.model.Sample" useGeneratedKeys="true" keyProperty="id">
-    insert into t_sample
+  <insert id="insertSelective" parameterType="com.zero.model.OrderDetail">
+    insert into t_order_detail
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
       </if>
-      <if test="sampleCode != null">
-        sample_code,
+      <if test="orderId != null">
+        order_id,
       </if>
-      <if test="needle != null">
-        needle,
+      <if test="sizeType != null">
+        size_type,
       </if>
-      <if test="sampleName != null">
-        sample_name,
-      </if>
-      <if test="style != null">
-        style,
-      </if>
-      <if test="material != null">
-        material,
-      </if>
-      <if test="company != null">
-        company,
-      </if>
-      <if test="brand != null">
-        brand,
-      </if>
-      <if test="photoUrl != null">
-        photo_url,
+      <if test="num != null">
+        num,
       </if>
       <if test="color != null">
         color,
-      </if>
-      <if test="status != null">
-        status,
       </if>
       <if test="isDeleted != null">
         is_deleted,
@@ -186,35 +158,17 @@
       <if test="id != null">
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="sampleCode != null">
-        #{sampleCode,jdbcType=VARCHAR},
+      <if test="orderId != null">
+        #{orderId,jdbcType=INTEGER},
       </if>
-      <if test="needle != null">
-        #{needle,jdbcType=VARCHAR},
+      <if test="sizeType != null">
+        #{sizeType,jdbcType=VARCHAR},
       </if>
-      <if test="sampleName != null">
-        #{sampleName,jdbcType=VARCHAR},
-      </if>
-      <if test="style != null">
-        #{style,jdbcType=VARCHAR},
-      </if>
-      <if test="material != null">
-        #{material,jdbcType=VARCHAR},
-      </if>
-      <if test="company != null">
-        #{company,jdbcType=VARCHAR},
-      </if>
-      <if test="brand != null">
-        #{brand,jdbcType=VARCHAR},
-      </if>
-      <if test="photoUrl != null">
-        #{photoUrl,jdbcType=VARCHAR},
+      <if test="num != null">
+        #{num,jdbcType=INTEGER},
       </if>
       <if test="color != null">
         #{color,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null">
-        #{status,jdbcType=INTEGER},
       </if>
       <if test="isDeleted != null">
         #{isDeleted,jdbcType=INTEGER},
@@ -236,47 +190,29 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.zero.model.example.SampleExample" resultType="java.lang.Long">
-    select count(*) from t_sample
+  <select id="countByExample" parameterType="com.zero.model.example.OrderDetailExample" resultType="java.lang.Long">
+    select count(*) from t_order_detail
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update t_sample
+    update t_order_detail
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=INTEGER},
       </if>
-      <if test="record.sampleCode != null">
-        sample_code = #{record.sampleCode,jdbcType=VARCHAR},
+      <if test="record.orderId != null">
+        order_id = #{record.orderId,jdbcType=INTEGER},
       </if>
-      <if test="record.needle != null">
-        needle = #{record.needle,jdbcType=VARCHAR},
+      <if test="record.sizeType != null">
+        size_type = #{record.sizeType,jdbcType=VARCHAR},
       </if>
-      <if test="record.sampleName != null">
-        sample_name = #{record.sampleName,jdbcType=VARCHAR},
-      </if>
-      <if test="record.style != null">
-        style = #{record.style,jdbcType=VARCHAR},
-      </if>
-      <if test="record.material != null">
-        material = #{record.material,jdbcType=VARCHAR},
-      </if>
-      <if test="record.company != null">
-        company = #{record.company,jdbcType=VARCHAR},
-      </if>
-      <if test="record.brand != null">
-        brand = #{record.brand,jdbcType=VARCHAR},
-      </if>
-      <if test="record.photoUrl != null">
-        photo_url = #{record.photoUrl,jdbcType=VARCHAR},
+      <if test="record.num != null">
+        num = #{record.num,jdbcType=INTEGER},
       </if>
       <if test="record.color != null">
         color = #{record.color,jdbcType=VARCHAR},
-      </if>
-      <if test="record.status != null">
-        status = #{record.status,jdbcType=INTEGER},
       </if>
       <if test="record.isDeleted != null">
         is_deleted = #{record.isDeleted,jdbcType=INTEGER},
@@ -302,18 +238,12 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update t_sample
+    update t_order_detail
     set id = #{record.id,jdbcType=INTEGER},
-      sample_code = #{record.sampleCode,jdbcType=VARCHAR},
-      needle = #{record.needle,jdbcType=VARCHAR},
-      sample_name = #{record.sampleName,jdbcType=VARCHAR},
-      style = #{record.style,jdbcType=VARCHAR},
-      material = #{record.material,jdbcType=VARCHAR},
-      company = #{record.company,jdbcType=VARCHAR},
-      brand = #{record.brand,jdbcType=VARCHAR},
-      photo_url = #{record.photoUrl,jdbcType=VARCHAR},
+      order_id = #{record.orderId,jdbcType=INTEGER},
+      size_type = #{record.sizeType,jdbcType=VARCHAR},
+      num = #{record.num,jdbcType=INTEGER},
       color = #{record.color,jdbcType=VARCHAR},
-      status = #{record.status,jdbcType=INTEGER},
       is_deleted = #{record.isDeleted,jdbcType=INTEGER},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP},
@@ -324,38 +254,20 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.zero.model.Sample">
-    update t_sample
+  <update id="updateByPrimaryKeySelective" parameterType="com.zero.model.OrderDetail">
+    update t_order_detail
     <set>
-      <if test="sampleCode != null">
-        sample_code = #{sampleCode,jdbcType=VARCHAR},
+      <if test="orderId != null">
+        order_id = #{orderId,jdbcType=INTEGER},
       </if>
-      <if test="needle != null">
-        needle = #{needle,jdbcType=VARCHAR},
+      <if test="sizeType != null">
+        size_type = #{sizeType,jdbcType=VARCHAR},
       </if>
-      <if test="sampleName != null">
-        sample_name = #{sampleName,jdbcType=VARCHAR},
-      </if>
-      <if test="style != null">
-        style = #{style,jdbcType=VARCHAR},
-      </if>
-      <if test="material != null">
-        material = #{material,jdbcType=VARCHAR},
-      </if>
-      <if test="company != null">
-        company = #{company,jdbcType=VARCHAR},
-      </if>
-      <if test="brand != null">
-        brand = #{brand,jdbcType=VARCHAR},
-      </if>
-      <if test="photoUrl != null">
-        photo_url = #{photoUrl,jdbcType=VARCHAR},
+      <if test="num != null">
+        num = #{num,jdbcType=INTEGER},
       </if>
       <if test="color != null">
         color = #{color,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null">
-        status = #{status,jdbcType=INTEGER},
       </if>
       <if test="isDeleted != null">
         is_deleted = #{isDeleted,jdbcType=INTEGER},
@@ -378,18 +290,12 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.zero.model.Sample">
-    update t_sample
-    set sample_code = #{sampleCode,jdbcType=VARCHAR},
-      needle = #{needle,jdbcType=VARCHAR},
-      sample_name = #{sampleName,jdbcType=VARCHAR},
-      style = #{style,jdbcType=VARCHAR},
-      material = #{material,jdbcType=VARCHAR},
-      company = #{company,jdbcType=VARCHAR},
-      brand = #{brand,jdbcType=VARCHAR},
-      photo_url = #{photoUrl,jdbcType=VARCHAR},
+  <update id="updateByPrimaryKey" parameterType="com.zero.model.OrderDetail">
+    update t_order_detail
+    set order_id = #{orderId,jdbcType=INTEGER},
+      size_type = #{sizeType,jdbcType=VARCHAR},
+      num = #{num,jdbcType=INTEGER},
       color = #{color,jdbcType=VARCHAR},
-      status = #{status,jdbcType=INTEGER},
       is_deleted = #{isDeleted,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
@@ -398,4 +304,13 @@
       remarks = #{remarks,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <insert id="insertBatch" parameterType="list">
+    insert into t_order_detail (order_id, size_type, num, color, create_time, creater)
+    values
+    <foreach collection="list" item="detail" separator=",">
+      (#{detail.orderId,jdbcType=INTEGER}, #{detail.sizeType,jdbcType=VARCHAR}, #{detail.num,jdbcType=INTEGER},
+      #{detail.color,jdbcType=VARCHAR}, now(), #{loginId,jdbcType=INTEGER})
+    </foreach>
+  </insert>
 </mapper>

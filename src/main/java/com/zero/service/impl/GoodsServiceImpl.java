@@ -155,7 +155,7 @@ public class GoodsServiceImpl implements IGoodsService {
     @Transactional
     @Override
     public int inbound(int purchaseOrderId, int loginId, String loginName) {
-        PurchaseOrder purchaseOrder = purchaseOrderService.getPurchaseOrderById(purchaseOrderId);
+        /*PurchaseOrder purchaseOrder = purchaseOrderService.getPurchaseOrderById(purchaseOrderId);
         if(Objects.isNull(purchaseOrder)){
             return 0;
         }
@@ -206,7 +206,7 @@ public class GoodsServiceImpl implements IGoodsService {
                 originalNum, RecordType.INBOUND.getKey(), loginId, purchaseOrder.getCreater());
         if(goodsNum <= 0){
             throw new BusinessException("插入物品记录异常，回滚");
-        }
+        }*/
         return 1;
     }
 

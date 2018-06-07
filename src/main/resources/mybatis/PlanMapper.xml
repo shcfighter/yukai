@@ -4,20 +4,27 @@
   <resultMap id="BaseResultMap" type="com.zero.model.Plan">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="order_id" jdbcType="INTEGER" property="orderId" />
-    <result column="plan_name" jdbcType="VARCHAR" property="planName" />
-    <result column="dept_name" jdbcType="VARCHAR" property="deptName" />
+    <result column="sample_code" jdbcType="VARCHAR" property="sampleCode" />
+    <result column="order_code" jdbcType="VARCHAR" property="orderCode" />
     <result column="product_name" jdbcType="VARCHAR" property="productName" />
-    <result column="batch_no" jdbcType="VARCHAR" property="batchNo" />
-    <result column="begin_date" jdbcType="TIMESTAMP" property="beginDate" />
-    <result column="end_date" jdbcType="TIMESTAMP" property="endDate" />
+    <result column="photo_url" jdbcType="VARCHAR" property="photoUrl" />
+    <result column="dept_id" jdbcType="INTEGER" property="deptId" />
+    <result column="dept_name" jdbcType="VARCHAR" property="deptName" />
+    <result column="production_processes" jdbcType="VARCHAR" property="productionProcesses" />
+    <result column="billing_id" jdbcType="INTEGER" property="billingId" />
+    <result column="billing_user" jdbcType="VARCHAR" property="billingUser" />
+    <result column="billing_date" jdbcType="TIMESTAMP" property="billingDate" />
+    <result column="audit_id" jdbcType="INTEGER" property="auditId" />
+    <result column="audit_user" jdbcType="VARCHAR" property="auditUser" />
+    <result column="audit_date" jdbcType="TIMESTAMP" property="auditDate" />
     <result column="num" jdbcType="INTEGER" property="num" />
+    <result column="status" jdbcType="INTEGER" property="status" />
     <result column="is_deleted" jdbcType="INTEGER" property="isDeleted" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="creater" jdbcType="INTEGER" property="creater" />
     <result column="modifier" jdbcType="INTEGER" property="modifier" />
     <result column="remarks" jdbcType="VARCHAR" property="remarks" />
-    <result column="status" jdbcType="INTEGER" property="status" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -78,8 +85,10 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, order_id, plan_name, dept_name, product_name, batch_no, begin_date, end_date, 
-    num, is_deleted, create_time, update_time, creater, modifier, remarks, status
+    id, order_id, sample_code, order_code, product_name, photo_url, dept_id, dept_name, 
+    production_processes, billing_id, billing_user, billing_date, audit_id, audit_user, 
+    audit_date, num, status, is_deleted, create_time, update_time, creater, modifier, 
+    remarks
   </sql>
   <select id="selectByExample" parameterType="com.zero.model.example.PlanExample" resultMap="BaseResultMap">
     select
@@ -112,21 +121,25 @@
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.zero.model.Plan">
-    insert into t_plan (id, order_id, plan_name, 
-      dept_name, product_name, batch_no, 
-      begin_date, end_date, num, 
-      is_deleted, create_time, update_time, 
-      creater, modifier, remarks, 
-      status)
-    values (#{id,jdbcType=INTEGER}, #{orderId,jdbcType=INTEGER}, #{planName,jdbcType=VARCHAR}, 
-      #{deptName,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR}, #{batchNo,jdbcType=VARCHAR}, 
-      #{beginDate,jdbcType=TIMESTAMP}, #{endDate,jdbcType=TIMESTAMP}, #{num,jdbcType=INTEGER}, 
-      #{isDeleted,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{creater,jdbcType=INTEGER}, #{modifier,jdbcType=INTEGER}, #{remarks,jdbcType=VARCHAR}, 
-      #{status,jdbcType=INTEGER})
+  <insert id="insert" parameterType="com.zero.model.Plan" useGeneratedKeys="true" keyProperty="id">
+    insert into t_plan (id, order_id, sample_code, 
+      order_code, product_name, photo_url, 
+      dept_id, dept_name, production_processes, 
+      billing_id, billing_user, billing_date, 
+      audit_id, audit_user, audit_date, 
+      num, status, is_deleted, 
+      create_time, update_time, creater, 
+      modifier, remarks)
+    values (#{id,jdbcType=INTEGER}, #{orderId,jdbcType=INTEGER}, #{sampleCode,jdbcType=VARCHAR}, 
+      #{orderCode,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR}, #{photoUrl,jdbcType=VARCHAR}, 
+      #{deptId,jdbcType=INTEGER}, #{deptName,jdbcType=VARCHAR}, #{productionProcesses,jdbcType=VARCHAR}, 
+      #{billingId,jdbcType=INTEGER}, #{billingUser,jdbcType=VARCHAR}, #{billingDate,jdbcType=TIMESTAMP}, 
+      #{auditId,jdbcType=INTEGER}, #{auditUser,jdbcType=VARCHAR}, #{auditDate,jdbcType=TIMESTAMP}, 
+      #{num,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{isDeleted,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{creater,jdbcType=INTEGER}, 
+      #{modifier,jdbcType=INTEGER}, #{remarks,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.zero.model.Plan">
+  <insert id="insertSelective" parameterType="com.zero.model.Plan" useGeneratedKeys="true" keyProperty="id">
     insert into t_plan
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -135,26 +148,50 @@
       <if test="orderId != null">
         order_id,
       </if>
-      <if test="planName != null">
-        plan_name,
+      <if test="sampleCode != null">
+        sample_code,
       </if>
-      <if test="deptName != null">
-        dept_name,
+      <if test="orderCode != null">
+        order_code,
       </if>
       <if test="productName != null">
         product_name,
       </if>
-      <if test="batchNo != null">
-        batch_no,
+      <if test="photoUrl != null">
+        photo_url,
       </if>
-      <if test="beginDate != null">
-        begin_date,
+      <if test="deptId != null">
+        dept_id,
       </if>
-      <if test="endDate != null">
-        end_date,
+      <if test="deptName != null">
+        dept_name,
+      </if>
+      <if test="productionProcesses != null">
+        production_processes,
+      </if>
+      <if test="billingId != null">
+        billing_id,
+      </if>
+      <if test="billingUser != null">
+        billing_user,
+      </if>
+      <if test="billingDate != null">
+        billing_date,
+      </if>
+      <if test="auditId != null">
+        audit_id,
+      </if>
+      <if test="auditUser != null">
+        audit_user,
+      </if>
+      <if test="auditDate != null">
+        audit_date,
       </if>
       <if test="num != null">
         num,
+      </if>
+      <if test="status != null">
+        status,
       </if>
       <if test="isDeleted != null">
         is_deleted,
@@ -174,9 +211,6 @@
       <if test="remarks != null">
         remarks,
       </if>
-      <if test="status != null">
-        status,
-      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -185,26 +219,50 @@
       <if test="orderId != null">
         #{orderId,jdbcType=INTEGER},
       </if>
-      <if test="planName != null">
-        #{planName,jdbcType=VARCHAR},
+      <if test="sampleCode != null">
+        #{sampleCode,jdbcType=VARCHAR},
       </if>
-      <if test="deptName != null">
-        #{deptName,jdbcType=VARCHAR},
+      <if test="orderCode != null">
+        #{orderCode,jdbcType=VARCHAR},
       </if>
       <if test="productName != null">
         #{productName,jdbcType=VARCHAR},
       </if>
-      <if test="batchNo != null">
-        #{batchNo,jdbcType=VARCHAR},
+      <if test="photoUrl != null">
+        #{photoUrl,jdbcType=VARCHAR},
       </if>
-      <if test="beginDate != null">
-        #{beginDate,jdbcType=TIMESTAMP},
+      <if test="deptId != null">
+        #{deptId,jdbcType=INTEGER},
       </if>
-      <if test="endDate != null">
-        #{endDate,jdbcType=TIMESTAMP},
+      <if test="deptName != null">
+        #{deptName,jdbcType=VARCHAR},
+      </if>
+      <if test="productionProcesses != null">
+        #{productionProcesses,jdbcType=VARCHAR},
+      </if>
+      <if test="billingId != null">
+        #{billingId,jdbcType=INTEGER},
+      </if>
+      <if test="billingUser != null">
+        #{billingUser,jdbcType=VARCHAR},
+      </if>
+      <if test="billingDate != null">
+        #{billingDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="auditId != null">
+        #{auditId,jdbcType=INTEGER},
+      </if>
+      <if test="auditUser != null">
+        #{auditUser,jdbcType=VARCHAR},
+      </if>
+      <if test="auditDate != null">
+        #{auditDate,jdbcType=TIMESTAMP},
       </if>
       <if test="num != null">
         #{num,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
       </if>
       <if test="isDeleted != null">
         #{isDeleted,jdbcType=INTEGER},
@@ -224,9 +282,6 @@
       <if test="remarks != null">
         #{remarks,jdbcType=VARCHAR},
       </if>
-      <if test="status != null">
-        #{status,jdbcType=INTEGER},
-      </if>
     </trim>
   </insert>
   <select id="countByExample" parameterType="com.zero.model.example.PlanExample" resultType="java.lang.Long">
@@ -244,26 +299,50 @@
       <if test="record.orderId != null">
         order_id = #{record.orderId,jdbcType=INTEGER},
       </if>
-      <if test="record.planName != null">
-        plan_name = #{record.planName,jdbcType=VARCHAR},
+      <if test="record.sampleCode != null">
+        sample_code = #{record.sampleCode,jdbcType=VARCHAR},
       </if>
-      <if test="record.deptName != null">
-        dept_name = #{record.deptName,jdbcType=VARCHAR},
+      <if test="record.orderCode != null">
+        order_code = #{record.orderCode,jdbcType=VARCHAR},
       </if>
       <if test="record.productName != null">
         product_name = #{record.productName,jdbcType=VARCHAR},
       </if>
-      <if test="record.batchNo != null">
-        batch_no = #{record.batchNo,jdbcType=VARCHAR},
+      <if test="record.photoUrl != null">
+        photo_url = #{record.photoUrl,jdbcType=VARCHAR},
       </if>
-      <if test="record.beginDate != null">
-        begin_date = #{record.beginDate,jdbcType=TIMESTAMP},
+      <if test="record.deptId != null">
+        dept_id = #{record.deptId,jdbcType=INTEGER},
       </if>
-      <if test="record.endDate != null">
-        end_date = #{record.endDate,jdbcType=TIMESTAMP},
+      <if test="record.deptName != null">
+        dept_name = #{record.deptName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.productionProcesses != null">
+        production_processes = #{record.productionProcesses,jdbcType=VARCHAR},
+      </if>
+      <if test="record.billingId != null">
+        billing_id = #{record.billingId,jdbcType=INTEGER},
+      </if>
+      <if test="record.billingUser != null">
+        billing_user = #{record.billingUser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.billingDate != null">
+        billing_date = #{record.billingDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.auditId != null">
+        audit_id = #{record.auditId,jdbcType=INTEGER},
+      </if>
+      <if test="record.auditUser != null">
+        audit_user = #{record.auditUser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.auditDate != null">
+        audit_date = #{record.auditDate,jdbcType=TIMESTAMP},
       </if>
       <if test="record.num != null">
         num = #{record.num,jdbcType=INTEGER},
+      </if>
+      <if test="record.status != null">
+        status = #{record.status,jdbcType=INTEGER},
       </if>
       <if test="record.isDeleted != null">
         is_deleted = #{record.isDeleted,jdbcType=INTEGER},
@@ -283,9 +362,6 @@
       <if test="record.remarks != null">
         remarks = #{record.remarks,jdbcType=VARCHAR},
       </if>
-      <if test="record.status != null">
-        status = #{record.status,jdbcType=INTEGER},
-      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -295,20 +371,27 @@
     update t_plan
     set id = #{record.id,jdbcType=INTEGER},
       order_id = #{record.orderId,jdbcType=INTEGER},
-      plan_name = #{record.planName,jdbcType=VARCHAR},
-      dept_name = #{record.deptName,jdbcType=VARCHAR},
+      sample_code = #{record.sampleCode,jdbcType=VARCHAR},
+      order_code = #{record.orderCode,jdbcType=VARCHAR},
       product_name = #{record.productName,jdbcType=VARCHAR},
-      batch_no = #{record.batchNo,jdbcType=VARCHAR},
-      begin_date = #{record.beginDate,jdbcType=TIMESTAMP},
-      end_date = #{record.endDate,jdbcType=TIMESTAMP},
+      photo_url = #{record.photoUrl,jdbcType=VARCHAR},
+      dept_id = #{record.deptId,jdbcType=INTEGER},
+      dept_name = #{record.deptName,jdbcType=VARCHAR},
+      production_processes = #{record.productionProcesses,jdbcType=VARCHAR},
+      billing_id = #{record.billingId,jdbcType=INTEGER},
+      billing_user = #{record.billingUser,jdbcType=VARCHAR},
+      billing_date = #{record.billingDate,jdbcType=TIMESTAMP},
+      audit_id = #{record.auditId,jdbcType=INTEGER},
+      audit_user = #{record.auditUser,jdbcType=VARCHAR},
+      audit_date = #{record.auditDate,jdbcType=TIMESTAMP},
       num = #{record.num,jdbcType=INTEGER},
+      status = #{record.status,jdbcType=INTEGER},
       is_deleted = #{record.isDeleted,jdbcType=INTEGER},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       creater = #{record.creater,jdbcType=INTEGER},
       modifier = #{record.modifier,jdbcType=INTEGER},
-      remarks = #{record.remarks,jdbcType=VARCHAR},
-      status = #{record.status,jdbcType=INTEGER}
+      remarks = #{record.remarks,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -319,26 +402,50 @@
       <if test="orderId != null">
         order_id = #{orderId,jdbcType=INTEGER},
       </if>
-      <if test="planName != null">
-        plan_name = #{planName,jdbcType=VARCHAR},
+      <if test="sampleCode != null">
+        sample_code = #{sampleCode,jdbcType=VARCHAR},
       </if>
-      <if test="deptName != null">
-        dept_name = #{deptName,jdbcType=VARCHAR},
+      <if test="orderCode != null">
+        order_code = #{orderCode,jdbcType=VARCHAR},
       </if>
       <if test="productName != null">
         product_name = #{productName,jdbcType=VARCHAR},
       </if>
-      <if test="batchNo != null">
-        batch_no = #{batchNo,jdbcType=VARCHAR},
+      <if test="photoUrl != null">
+        photo_url = #{photoUrl,jdbcType=VARCHAR},
       </if>
-      <if test="beginDate != null">
-        begin_date = #{beginDate,jdbcType=TIMESTAMP},
+      <if test="deptId != null">
+        dept_id = #{deptId,jdbcType=INTEGER},
       </if>
-      <if test="endDate != null">
-        end_date = #{endDate,jdbcType=TIMESTAMP},
+      <if test="deptName != null">
+        dept_name = #{deptName,jdbcType=VARCHAR},
+      </if>
+      <if test="productionProcesses != null">
+        production_processes = #{productionProcesses,jdbcType=VARCHAR},
+      </if>
+      <if test="billingId != null">
+        billing_id = #{billingId,jdbcType=INTEGER},
+      </if>
+      <if test="billingUser != null">
+        billing_user = #{billingUser,jdbcType=VARCHAR},
+      </if>
+      <if test="billingDate != null">
+        billing_date = #{billingDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="auditId != null">
+        audit_id = #{auditId,jdbcType=INTEGER},
+      </if>
+      <if test="auditUser != null">
+        audit_user = #{auditUser,jdbcType=VARCHAR},
+      </if>
+      <if test="auditDate != null">
+        audit_date = #{auditDate,jdbcType=TIMESTAMP},
       </if>
       <if test="num != null">
         num = #{num,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
       </if>
       <if test="isDeleted != null">
         is_deleted = #{isDeleted,jdbcType=INTEGER},
@@ -358,29 +465,109 @@
       <if test="remarks != null">
         remarks = #{remarks,jdbcType=VARCHAR},
       </if>
-      <if test="status != null">
-        status = #{status,jdbcType=INTEGER},
-      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.zero.model.Plan">
     update t_plan
     set order_id = #{orderId,jdbcType=INTEGER},
-      plan_name = #{planName,jdbcType=VARCHAR},
-      dept_name = #{deptName,jdbcType=VARCHAR},
+      sample_code = #{sampleCode,jdbcType=VARCHAR},
+      order_code = #{orderCode,jdbcType=VARCHAR},
       product_name = #{productName,jdbcType=VARCHAR},
-      batch_no = #{batchNo,jdbcType=VARCHAR},
-      begin_date = #{beginDate,jdbcType=TIMESTAMP},
-      end_date = #{endDate,jdbcType=TIMESTAMP},
+      photo_url = #{photoUrl,jdbcType=VARCHAR},
+      dept_id = #{deptId,jdbcType=INTEGER},
+      dept_name = #{deptName,jdbcType=VARCHAR},
+      production_processes = #{productionProcesses,jdbcType=VARCHAR},
+      billing_id = #{billingId,jdbcType=INTEGER},
+      billing_user = #{billingUser,jdbcType=VARCHAR},
+      billing_date = #{billingDate,jdbcType=TIMESTAMP},
+      audit_id = #{auditId,jdbcType=INTEGER},
+      audit_user = #{auditUser,jdbcType=VARCHAR},
+      audit_date = #{auditDate,jdbcType=TIMESTAMP},
       num = #{num,jdbcType=INTEGER},
+      status = #{status,jdbcType=INTEGER},
       is_deleted = #{isDeleted,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       creater = #{creater,jdbcType=INTEGER},
       modifier = #{modifier,jdbcType=INTEGER},
-      remarks = #{remarks,jdbcType=VARCHAR},
-      status = #{status,jdbcType=INTEGER}
+      remarks = #{remarks,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <resultMap type="com.zero.model.Plan" id="planAndDetailResultMap" extends="BaseResultMap">
+    <collection property="detailList" ofType="com.zero.model.PlanDetail">
+      <id column="detail_id" jdbcType="INTEGER" property="id" />
+      <result column="detail_plan_id" jdbcType="INTEGER" property="planId" />
+      <result column="detail_size_type" jdbcType="VARCHAR" property="sizeType" />
+      <result column="detail_order_num" jdbcType="INTEGER" property="orderNum" />
+      <result column="detail_maneuvering_number" jdbcType="INTEGER" property="maneuveringNumber" />
+      <result column="detail_color" jdbcType="VARCHAR" property="color" />
+      <result column="detail_is_deleted" jdbcType="INTEGER" property="isDeleted" />
+      <result column="detail_create_time" jdbcType="TIMESTAMP" property="createTime" />
+      <result column="detail_update_time" jdbcType="TIMESTAMP" property="updateTime" />
+      <result column="detail_creater" jdbcType="INTEGER" property="creater" />
+      <result column="detail_modifier" jdbcType="INTEGER" property="modifier" />
+      <result column="detail_remarks" jdbcType="VARCHAR" property="remarks" />
+    </collection>
+    <collection property="materialList" ofType="com.zero.model.PlanMaterial">
+      <id column="material_id" jdbcType="INTEGER" property="id" />
+      <result column="material_plan_id" jdbcType="INTEGER" property="planId" />
+      <result column="material_material_name" jdbcType="VARCHAR" property="materialName" />
+      <result column="material_color" jdbcType="VARCHAR" property="color" />
+      <result column="material_num" jdbcType="INTEGER" property="num" />
+      <result column="material_is_deleted" jdbcType="INTEGER" property="isDeleted" />
+      <result column="material_create_time" jdbcType="TIMESTAMP" property="createTime" />
+      <result column="material_update_time" jdbcType="TIMESTAMP" property="updateTime" />
+      <result column="material_creater" jdbcType="INTEGER" property="creater" />
+      <result column="material_modifier" jdbcType="INTEGER" property="modifier" />
+      <result column="material_remarks" jdbcType="VARCHAR" property="remarks" />
+    </collection>
+  </resultMap>
+  <!-- 查询订单关联查询用户及订单明细 -->
+  <select id="findPlanAndDetailList" parameterType="com.zero.model.example.PlanExample" resultMap="planAndDetailResultMap">
+    SELECT
+    t1.*,
+    t2.id detail_id,
+    t2.plan_id detail_plan_id,
+    t2.size_type detail_size_type,
+    t2.order_num detail_order_num,
+    t2.maneuvering_number detail_maneuvering_number,
+    t2.color detail_color,
+    t2.create_time detail_create_time,
+    t2.update_time detail_update_time,
+    t2.creater detail_creater,
+    t2.modifier detail_modifier,
+    t2.remarks detail_remarks,
+    t3.id material_id,
+    t3.plan_id material_plan_id,
+    t3.material_name material_material_name,
+    t3.color material_color,
+    t3.num material_num,
+    t3.is_deleted material_is_deleted,
+    t3.create_time material_create_time,
+    t3.update_time material_update_time,
+    t3.creater material_creater,
+    t3.modifier material_modifier,
+    t3.remarks material_remarks
+    FROM
+    (
+    select * from t_plan
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null and offset != null">
+      limit #{limit} offset #{offset}
+    </if>
+    ) t1 left join t_plan_detail t2
+    on (t1.id = t2.plan_id)
+    left join t_plan_material t3
+    on(t1.id = t3.plan_id)
+    where t2.is_deleted = 0
+    and t3.is_deleted = 0
+    order by t1.create_time desc, t2.size_type desc
+  </select>
 </mapper>

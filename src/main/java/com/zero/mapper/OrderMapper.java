@@ -2,9 +2,10 @@ package com.zero.mapper;
 
 import com.zero.model.Order;
 import com.zero.model.example.OrderExample;
-import org.apache.ibatis.annotations.Param;
-
 import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Param;
 
 public interface OrderMapper {
     long countByExample(OrderExample example);
@@ -29,5 +30,7 @@ public interface OrderMapper {
 
     int updateByPrimaryKey(Order record);
 
-    int updateStatus(@Param("id") int orderId, @Param("newStatus") int newStatus, @Param("oldStatus") int oldStatus);
+    int updateStatus(int orderId, int newStatus, int oldStatus);
+
+    List<Order> findOrdersAndOrderDetailList(OrderExample example);
 }

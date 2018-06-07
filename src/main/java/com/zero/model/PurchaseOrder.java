@@ -1,45 +1,33 @@
 package com.zero.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import java.math.BigDecimal;
 import java.util.Date;
 
 public class PurchaseOrder {
     private Integer id;
 
-    private String goodsName;
+    private String purchaseCode;
 
-    private String goodsModel;
+    private String orderCode;
 
-    private Integer goodsType;
+    private String productName;
 
-    private Integer type;
+    private String ingredients;
 
     private String color;
 
-    private Integer num;
-
-    private String unit;
-
     private String batchNo;
 
-    private BigDecimal unitPrice;
+    private Integer weight;
 
-    private BigDecimal totalPrice;
+    private Integer num;
 
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date produceDate;
+    private String company;
 
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date expiredDate;
+    private String user;
 
-    private String supplier;
+    private String warehouser;
 
-    private String buyer;
-
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private Date buyDate;
+    private Date inboundDate;
 
     private Integer status;
 
@@ -63,36 +51,36 @@ public class PurchaseOrder {
         this.id = id;
     }
 
-    public String getGoodsName() {
-        return goodsName;
+    public String getPurchaseCode() {
+        return purchaseCode;
     }
 
-    public void setGoodsName(String goodsName) {
-        this.goodsName = goodsName == null ? null : goodsName.trim();
+    public void setPurchaseCode(String purchaseCode) {
+        this.purchaseCode = purchaseCode == null ? null : purchaseCode.trim();
     }
 
-    public String getGoodsModel() {
-        return goodsModel;
+    public String getOrderCode() {
+        return orderCode;
     }
 
-    public void setGoodsModel(String goodsModel) {
-        this.goodsModel = goodsModel == null ? null : goodsModel.trim();
+    public void setOrderCode(String orderCode) {
+        this.orderCode = orderCode == null ? null : orderCode.trim();
     }
 
-    public Integer getGoodsType() {
-        return goodsType;
+    public String getProductName() {
+        return productName;
     }
 
-    public void setGoodsType(Integer goodsType) {
-        this.goodsType = goodsType;
+    public void setProductName(String productName) {
+        this.productName = productName == null ? null : productName.trim();
     }
 
-    public Integer getType() {
-        return type;
+    public String getIngredients() {
+        return ingredients;
     }
 
-    public void setType(Integer type) {
-        this.type = type;
+    public void setIngredients(String ingredients) {
+        this.ingredients = ingredients == null ? null : ingredients.trim();
     }
 
     public String getColor() {
@@ -103,22 +91,6 @@ public class PurchaseOrder {
         this.color = color == null ? null : color.trim();
     }
 
-    public Integer getNum() {
-        return num;
-    }
-
-    public void setNum(Integer num) {
-        this.num = num;
-    }
-
-    public String getUnit() {
-        return unit;
-    }
-
-    public void setUnit(String unit) {
-        this.unit = unit == null ? null : unit.trim();
-    }
-
     public String getBatchNo() {
         return batchNo;
     }
@@ -127,60 +99,52 @@ public class PurchaseOrder {
         this.batchNo = batchNo == null ? null : batchNo.trim();
     }
 
-    public BigDecimal getUnitPrice() {
-        return unitPrice;
+    public Integer getWeight() {
+        return weight;
     }
 
-    public void setUnitPrice(BigDecimal unitPrice) {
-        this.unitPrice = unitPrice;
+    public void setWeight(Integer weight) {
+        this.weight = weight;
     }
 
-    public BigDecimal getTotalPrice() {
-        return totalPrice;
+    public Integer getNum() {
+        return num;
     }
 
-    public void setTotalPrice(BigDecimal totalPrice) {
-        this.totalPrice = totalPrice;
+    public void setNum(Integer num) {
+        this.num = num;
     }
 
-    public Date getProduceDate() {
-        return produceDate;
+    public String getCompany() {
+        return company;
     }
 
-    public void setProduceDate(Date produceDate) {
-        this.produceDate = produceDate;
+    public void setCompany(String company) {
+        this.company = company == null ? null : company.trim();
     }
 
-    public Date getExpiredDate() {
-        return expiredDate;
+    public String getUser() {
+        return user;
     }
 
-    public void setExpiredDate(Date expiredDate) {
-        this.expiredDate = expiredDate;
+    public void setUser(String user) {
+        this.user = user == null ? null : user.trim();
     }
 
-    public String getSupplier() {
-        return supplier;
+    public String getWarehouser() {
+        return warehouser;
     }
 
-    public void setSupplier(String supplier) {
-        this.supplier = supplier == null ? null : supplier.trim();
+    public void setWarehouser(String warehouser) {
+        this.warehouser = warehouser == null ? null : warehouser.trim();
     }
 
-    public String getBuyer() {
-        return buyer;
+    public Date getInboundDate() {
+        return inboundDate;
     }
 
-    public void setBuyer(String buyer) {
-        this.buyer = buyer == null ? null : buyer.trim();
-    }
-
-    public Date getBuyDate() {
-        return buyDate;
-    }
-
-    public void setBuyDate(Date buyDate) {
-        this.buyDate = buyDate;
+    public void setInboundDate(Date inboundDate) {
+        this.inboundDate = inboundDate;
     }
 
     public Integer getStatus() {

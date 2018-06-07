@@ -3,21 +3,18 @@
 <mapper namespace="com.zero.mapper.PurchaseOrderMapper">
   <resultMap id="BaseResultMap" type="com.zero.model.PurchaseOrder">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="goods_name" jdbcType="VARCHAR" property="goodsName" />
-    <result column="goods_model" jdbcType="VARCHAR" property="goodsModel" />
-    <result column="goods_type" jdbcType="INTEGER" property="goodsType" />
-    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="purchase_code" jdbcType="VARCHAR" property="purchaseCode" />
+    <result column="order_code" jdbcType="VARCHAR" property="orderCode" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="ingredients" jdbcType="VARCHAR" property="ingredients" />
     <result column="color" jdbcType="VARCHAR" property="color" />
-    <result column="num" jdbcType="INTEGER" property="num" />
-    <result column="unit" jdbcType="VARCHAR" property="unit" />
     <result column="batch_no" jdbcType="VARCHAR" property="batchNo" />
-    <result column="unit_price" jdbcType="DECIMAL" property="unitPrice" />
-    <result column="total_price" jdbcType="DECIMAL" property="totalPrice" />
-    <result column="produce_date" jdbcType="DATE" property="produceDate" />
-    <result column="expired_date" jdbcType="DATE" property="expiredDate" />
-    <result column="supplier" jdbcType="VARCHAR" property="supplier" />
-    <result column="buyer" jdbcType="VARCHAR" property="buyer" />
-    <result column="buy_date" jdbcType="DATE" property="buyDate" />
+    <result column="weight" jdbcType="INTEGER" property="weight" />
+    <result column="num" jdbcType="INTEGER" property="num" />
+    <result column="company" jdbcType="VARCHAR" property="company" />
+    <result column="user" jdbcType="VARCHAR" property="user" />
+    <result column="warehouser" jdbcType="VARCHAR" property="warehouser" />
+    <result column="inbound_date" jdbcType="TIMESTAMP" property="inboundDate" />
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="is_deleted" jdbcType="INTEGER" property="isDeleted" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -85,9 +82,9 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, goods_name, goods_model, goods_type, type, color, num, unit, batch_no, unit_price,
-    total_price, produce_date, expired_date, supplier, buyer, buy_date, status, is_deleted,
-    create_time, update_time, creater, modifier, remarks
+    id, purchase_code, order_code, product_name, ingredients, color, batch_no, weight, 
+    num, company, user, warehouser, inbound_date, status, is_deleted, create_time, update_time, 
+    creater, modifier, remarks
   </sql>
   <select id="selectByExample" parameterType="com.zero.model.example.PurchaseOrderExample" resultMap="BaseResultMap">
     select
@@ -108,7 +105,7 @@
     </if>
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select
+    select 
     <include refid="Base_Column_List" />
     from t_purchase_order
     where id = #{id,jdbcType=INTEGER}
@@ -124,21 +121,19 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.zero.model.PurchaseOrder">
-    insert into t_purchase_order (id, goods_name, goods_model,
-      goods_type, type, color,
-      num, unit, batch_no,
-      unit_price, total_price, produce_date,
-      expired_date, supplier, buyer,
-      buy_date, status, is_deleted,
-      create_time, update_time, creater,
+    insert into t_purchase_order (id, purchase_code, order_code, 
+      product_name, ingredients, color, 
+      batch_no, weight, num, 
+      company, user, warehouser, 
+      inbound_date, status, is_deleted, 
+      create_time, update_time, creater, 
       modifier, remarks)
-    values (#{id,jdbcType=INTEGER}, #{goodsName,jdbcType=VARCHAR}, #{goodsModel,jdbcType=VARCHAR},
-      #{goodsType,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, #{color,jdbcType=VARCHAR},
-      #{num,jdbcType=INTEGER}, #{unit,jdbcType=VARCHAR}, #{batchNo,jdbcType=VARCHAR},
-      #{unitPrice,jdbcType=DECIMAL}, #{totalPrice,jdbcType=DECIMAL}, #{produceDate,jdbcType=DATE},
-      #{expiredDate,jdbcType=DATE}, #{supplier,jdbcType=VARCHAR}, #{buyer,jdbcType=VARCHAR},
-      #{buyDate,jdbcType=DATE}, #{status,jdbcType=INTEGER}, #{isDeleted,jdbcType=INTEGER},
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{creater,jdbcType=INTEGER},
+    values (#{id,jdbcType=INTEGER}, #{purchaseCode,jdbcType=VARCHAR}, #{orderCode,jdbcType=VARCHAR}, 
+      #{productName,jdbcType=VARCHAR}, #{ingredients,jdbcType=VARCHAR}, #{color,jdbcType=VARCHAR}, 
+      #{batchNo,jdbcType=VARCHAR}, #{weight,jdbcType=INTEGER}, #{num,jdbcType=INTEGER}, 
+      #{company,jdbcType=VARCHAR}, #{user,jdbcType=VARCHAR}, #{warehouser,jdbcType=VARCHAR}, 
+      #{inboundDate,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, #{isDeleted,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{creater,jdbcType=INTEGER}, 
       #{modifier,jdbcType=INTEGER}, #{remarks,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.zero.model.PurchaseOrder">
@@ -147,50 +142,41 @@
       <if test="id != null">
         id,
       </if>
-      <if test="goodsName != null">
-        goods_name,
+      <if test="purchaseCode != null">
+        purchase_code,
       </if>
-      <if test="goodsModel != null">
-        goods_model,
+      <if test="orderCode != null">
+        order_code,
       </if>
-      <if test="goodsType != null">
-        goods_type,
+      <if test="productName != null">
+        product_name,
       </if>
-      <if test="type != null">
-        type,
+      <if test="ingredients != null">
+        ingredients,
       </if>
       <if test="color != null">
         color,
       </if>
-      <if test="num != null">
-        num,
-      </if>
-      <if test="unit != null">
-        unit,
-      </if>
       <if test="batchNo != null">
         batch_no,
       </if>
-      <if test="unitPrice != null">
-        unit_price,
+      <if test="weight != null">
+        weight,
       </if>
-      <if test="totalPrice != null">
-        total_price,
+      <if test="num != null">
+        num,
       </if>
-      <if test="produceDate != null">
-        produce_date,
+      <if test="company != null">
+        company,
       </if>
-      <if test="expiredDate != null">
-        expired_date,
+      <if test="user != null">
+        user,
       </if>
-      <if test="supplier != null">
-        supplier,
+      <if test="warehouser != null">
+        warehouser,
       </if>
-      <if test="buyer != null">
-        buyer,
-      </if>
-      <if test="buyDate != null">
-        buy_date,
+      <if test="inboundDate != null">
+        inbound_date,
       </if>
       <if test="status != null">
         status,
@@ -218,50 +204,41 @@
       <if test="id != null">
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="goodsName != null">
-        #{goodsName,jdbcType=VARCHAR},
+      <if test="purchaseCode != null">
+        #{purchaseCode,jdbcType=VARCHAR},
       </if>
-      <if test="goodsModel != null">
-        #{goodsModel,jdbcType=VARCHAR},
+      <if test="orderCode != null">
+        #{orderCode,jdbcType=VARCHAR},
       </if>
-      <if test="goodsType != null">
-        #{goodsType,jdbcType=INTEGER},
+      <if test="productName != null">
+        #{productName,jdbcType=VARCHAR},
       </if>
-      <if test="type != null">
-        #{type,jdbcType=INTEGER},
+      <if test="ingredients != null">
+        #{ingredients,jdbcType=VARCHAR},
       </if>
       <if test="color != null">
         #{color,jdbcType=VARCHAR},
       </if>
-      <if test="num != null">
-        #{num,jdbcType=INTEGER},
-      </if>
-      <if test="unit != null">
-        #{unit,jdbcType=VARCHAR},
-      </if>
       <if test="batchNo != null">
         #{batchNo,jdbcType=VARCHAR},
       </if>
-      <if test="unitPrice != null">
-        #{unitPrice,jdbcType=DECIMAL},
+      <if test="weight != null">
+        #{weight,jdbcType=INTEGER},
       </if>
-      <if test="totalPrice != null">
-        #{totalPrice,jdbcType=DECIMAL},
+      <if test="num != null">
+        #{num,jdbcType=INTEGER},
       </if>
-      <if test="produceDate != null">
-        #{produceDate,jdbcType=DATE},
+      <if test="company != null">
+        #{company,jdbcType=VARCHAR},
       </if>
-      <if test="expiredDate != null">
-        #{expiredDate,jdbcType=DATE},
+      <if test="user != null">
+        #{user,jdbcType=VARCHAR},
       </if>
-      <if test="supplier != null">
-        #{supplier,jdbcType=VARCHAR},
+      <if test="warehouser != null">
+        #{warehouser,jdbcType=VARCHAR},
       </if>
-      <if test="buyer != null">
-        #{buyer,jdbcType=VARCHAR},
-      </if>
-      <if test="buyDate != null">
-        #{buyDate,jdbcType=DATE},
+      <if test="inboundDate != null">
+        #{inboundDate,jdbcType=TIMESTAMP},
       </if>
       <if test="status != null">
         #{status,jdbcType=INTEGER},
@@ -298,50 +275,41 @@
       <if test="record.id != null">
         id = #{record.id,jdbcType=INTEGER},
       </if>
-      <if test="record.goodsName != null">
-        goods_name = #{record.goodsName,jdbcType=VARCHAR},
+      <if test="record.purchaseCode != null">
+        purchase_code = #{record.purchaseCode,jdbcType=VARCHAR},
       </if>
-      <if test="record.goodsModel != null">
-        goods_model = #{record.goodsModel,jdbcType=VARCHAR},
+      <if test="record.orderCode != null">
+        order_code = #{record.orderCode,jdbcType=VARCHAR},
       </if>
-      <if test="record.goodsType != null">
-        goods_type = #{record.goodsType,jdbcType=INTEGER},
+      <if test="record.productName != null">
+        product_name = #{record.productName,jdbcType=VARCHAR},
       </if>
-      <if test="record.type != null">
-        type = #{record.type,jdbcType=INTEGER},
+      <if test="record.ingredients != null">
+        ingredients = #{record.ingredients,jdbcType=VARCHAR},
       </if>
       <if test="record.color != null">
         color = #{record.color,jdbcType=VARCHAR},
       </if>
-      <if test="record.num != null">
-        num = #{record.num,jdbcType=INTEGER},
-      </if>
-      <if test="record.unit != null">
-        unit = #{record.unit,jdbcType=VARCHAR},
-      </if>
       <if test="record.batchNo != null">
         batch_no = #{record.batchNo,jdbcType=VARCHAR},
       </if>
-      <if test="record.unitPrice != null">
-        unit_price = #{record.unitPrice,jdbcType=DECIMAL},
+      <if test="record.weight != null">
+        weight = #{record.weight,jdbcType=INTEGER},
       </if>
-      <if test="record.totalPrice != null">
-        total_price = #{record.totalPrice,jdbcType=DECIMAL},
+      <if test="record.num != null">
+        num = #{record.num,jdbcType=INTEGER},
       </if>
-      <if test="record.produceDate != null">
-        produce_date = #{record.produceDate,jdbcType=DATE},
+      <if test="record.company != null">
+        company = #{record.company,jdbcType=VARCHAR},
       </if>
-      <if test="record.expiredDate != null">
-        expired_date = #{record.expiredDate,jdbcType=DATE},
+      <if test="record.user != null">
+        user = #{record.user,jdbcType=VARCHAR},
       </if>
-      <if test="record.supplier != null">
-        supplier = #{record.supplier,jdbcType=VARCHAR},
+      <if test="record.warehouser != null">
+        warehouser = #{record.warehouser,jdbcType=VARCHAR},
       </if>
-      <if test="record.buyer != null">
-        buyer = #{record.buyer,jdbcType=VARCHAR},
-      </if>
-      <if test="record.buyDate != null">
-        buy_date = #{record.buyDate,jdbcType=DATE},
+      <if test="record.inboundDate != null">
+        inbound_date = #{record.inboundDate,jdbcType=TIMESTAMP},
       </if>
       <if test="record.status != null">
         status = #{record.status,jdbcType=INTEGER},
@@ -372,28 +340,25 @@
   <update id="updateByExample" parameterType="map">
     update t_purchase_order
     set id = #{record.id,jdbcType=INTEGER},
-    goods_name = #{record.goodsName,jdbcType=VARCHAR},
-    goods_model = #{record.goodsModel,jdbcType=VARCHAR},
-    goods_type = #{record.goodsType,jdbcType=INTEGER},
-    type = #{record.type,jdbcType=INTEGER},
-    color = #{record.color,jdbcType=VARCHAR},
-    num = #{record.num,jdbcType=INTEGER},
-    unit = #{record.unit,jdbcType=VARCHAR},
-    batch_no = #{record.batchNo,jdbcType=VARCHAR},
-    unit_price = #{record.unitPrice,jdbcType=DECIMAL},
-    total_price = #{record.totalPrice,jdbcType=DECIMAL},
-    produce_date = #{record.produceDate,jdbcType=DATE},
-    expired_date = #{record.expiredDate,jdbcType=DATE},
-    supplier = #{record.supplier,jdbcType=VARCHAR},
-    buyer = #{record.buyer,jdbcType=VARCHAR},
-    buy_date = #{record.buyDate,jdbcType=DATE},
-    status = #{record.status,jdbcType=INTEGER},
-    is_deleted = #{record.isDeleted,jdbcType=INTEGER},
-    create_time = #{record.createTime,jdbcType=TIMESTAMP},
-    update_time = #{record.updateTime,jdbcType=TIMESTAMP},
-    creater = #{record.creater,jdbcType=INTEGER},
-    modifier = #{record.modifier,jdbcType=INTEGER},
-    remarks = #{record.remarks,jdbcType=VARCHAR}
+      purchase_code = #{record.purchaseCode,jdbcType=VARCHAR},
+      order_code = #{record.orderCode,jdbcType=VARCHAR},
+      product_name = #{record.productName,jdbcType=VARCHAR},
+      ingredients = #{record.ingredients,jdbcType=VARCHAR},
+      color = #{record.color,jdbcType=VARCHAR},
+      batch_no = #{record.batchNo,jdbcType=VARCHAR},
+      weight = #{record.weight,jdbcType=INTEGER},
+      num = #{record.num,jdbcType=INTEGER},
+      company = #{record.company,jdbcType=VARCHAR},
+      user = #{record.user,jdbcType=VARCHAR},
+      warehouser = #{record.warehouser,jdbcType=VARCHAR},
+      inbound_date = #{record.inboundDate,jdbcType=TIMESTAMP},
+      status = #{record.status,jdbcType=INTEGER},
+      is_deleted = #{record.isDeleted,jdbcType=INTEGER},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      creater = #{record.creater,jdbcType=INTEGER},
+      modifier = #{record.modifier,jdbcType=INTEGER},
+      remarks = #{record.remarks,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -401,50 +366,41 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.zero.model.PurchaseOrder">
     update t_purchase_order
     <set>
-      <if test="goodsName != null">
-        goods_name = #{goodsName,jdbcType=VARCHAR},
+      <if test="purchaseCode != null">
+        purchase_code = #{purchaseCode,jdbcType=VARCHAR},
       </if>
-      <if test="goodsModel != null">
-        goods_model = #{goodsModel,jdbcType=VARCHAR},
+      <if test="orderCode != null">
+        order_code = #{orderCode,jdbcType=VARCHAR},
       </if>
-      <if test="goodsType != null">
-        goods_type = #{goodsType,jdbcType=INTEGER},
+      <if test="productName != null">
+        product_name = #{productName,jdbcType=VARCHAR},
       </if>
-      <if test="type != null">
-        type = #{type,jdbcType=INTEGER},
+      <if test="ingredients != null">
+        ingredients = #{ingredients,jdbcType=VARCHAR},
       </if>
       <if test="color != null">
         color = #{color,jdbcType=VARCHAR},
       </if>
-      <if test="num != null">
-        num = #{num,jdbcType=INTEGER},
-      </if>
-      <if test="unit != null">
-        unit = #{unit,jdbcType=VARCHAR},
-      </if>
       <if test="batchNo != null">
         batch_no = #{batchNo,jdbcType=VARCHAR},
       </if>
-      <if test="unitPrice != null">
-        unit_price = #{unitPrice,jdbcType=DECIMAL},
+      <if test="weight != null">
+        weight = #{weight,jdbcType=INTEGER},
       </if>
-      <if test="totalPrice != null">
-        total_price = #{totalPrice,jdbcType=DECIMAL},
+      <if test="num != null">
+        num = #{num,jdbcType=INTEGER},
       </if>
-      <if test="produceDate != null">
-        produce_date = #{produceDate,jdbcType=DATE},
+      <if test="company != null">
+        company = #{company,jdbcType=VARCHAR},
       </if>
-      <if test="expiredDate != null">
-        expired_date = #{expiredDate,jdbcType=DATE},
+      <if test="user != null">
+        user = #{user,jdbcType=VARCHAR},
       </if>
-      <if test="supplier != null">
-        supplier = #{supplier,jdbcType=VARCHAR},
+      <if test="warehouser != null">
+        warehouser = #{warehouser,jdbcType=VARCHAR},
       </if>
-      <if test="buyer != null">
-        buyer = #{buyer,jdbcType=VARCHAR},
-      </if>
-      <if test="buyDate != null">
-        buy_date = #{buyDate,jdbcType=DATE},
+      <if test="inboundDate != null">
+        inbound_date = #{inboundDate,jdbcType=TIMESTAMP},
       </if>
       <if test="status != null">
         status = #{status,jdbcType=INTEGER},
@@ -472,21 +428,18 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.zero.model.PurchaseOrder">
     update t_purchase_order
-    set goods_name = #{goodsName,jdbcType=VARCHAR},
-      goods_model = #{goodsModel,jdbcType=VARCHAR},
-      goods_type = #{goodsType,jdbcType=INTEGER},
-      type = #{type,jdbcType=INTEGER},
+    set purchase_code = #{purchaseCode,jdbcType=VARCHAR},
+      order_code = #{orderCode,jdbcType=VARCHAR},
+      product_name = #{productName,jdbcType=VARCHAR},
+      ingredients = #{ingredients,jdbcType=VARCHAR},
       color = #{color,jdbcType=VARCHAR},
-      num = #{num,jdbcType=INTEGER},
-      unit = #{unit,jdbcType=VARCHAR},
       batch_no = #{batchNo,jdbcType=VARCHAR},
-      unit_price = #{unitPrice,jdbcType=DECIMAL},
-      total_price = #{totalPrice,jdbcType=DECIMAL},
-      produce_date = #{produceDate,jdbcType=DATE},
-      expired_date = #{expiredDate,jdbcType=DATE},
-      supplier = #{supplier,jdbcType=VARCHAR},
-      buyer = #{buyer,jdbcType=VARCHAR},
-      buy_date = #{buyDate,jdbcType=DATE},
+      weight = #{weight,jdbcType=INTEGER},
+      num = #{num,jdbcType=INTEGER},
+      company = #{company,jdbcType=VARCHAR},
+      user = #{user,jdbcType=VARCHAR},
+      warehouser = #{warehouser,jdbcType=VARCHAR},
+      inbound_date = #{inboundDate,jdbcType=TIMESTAMP},
       status = #{status,jdbcType=INTEGER},
       is_deleted = #{isDeleted,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},

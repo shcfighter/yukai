@@ -10,10 +10,11 @@ import java.util.stream.Stream;
 @Getter
 @AllArgsConstructor
 public enum PurchaseOrderStatus implements EnumDict {
-    SAVE(0, "新建"),
-    AUDIT(1, "审核中"),
-    FINISHED(2, "已入库"),
-    REJECT(3, "驳回");
+    SAVE(0, "草稿"),
+    PURCHASING(1, "采购中"),
+    AUDIT(2, "待入库"),
+    FINISHED(3, "已入库"),
+    REJECT(4, "驳回");
 
     int key;
     String desc;

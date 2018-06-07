@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface IPurchaseOrderService {
 
-    List<PurchaseOrder> findPurchaseOrderByPage(String goodsName, String goodsModel, Integer status, GoodsGoodsType goodsType, Integer pageNum, Integer pageSize);
+    List<PurchaseOrder> findPurchaseOrderByPage(String purchaseCode, String orderCode, String productName, Integer status, Integer pageNum, Integer pageSize);
 
-    long findPurchaseOrderRowNum(String goodsName, String goodsModel, Integer status, GoodsGoodsType goodsType);
+    long findPurchaseOrderRowNum(String purchaseCode, String orderCode, String productName, Integer status);
 
     int insert(PurchaseOrder purchaseOrder, int loginId);
 

@@ -2,14 +2,21 @@ package com.zero.service.impl;
 
 import com.google.common.collect.Lists;
 import com.zero.common.enmu.DeletedEnum;
-import com.zero.common.enmu.OrderStatus;
 import com.zero.common.enmu.PlanStatus;
 import com.zero.common.utils.BeanUtils;
+import com.zero.common.utils.SessionUtils;
+import com.zero.mapper.PlanDetailMapper;
 import com.zero.mapper.PlanMapper;
+import com.zero.mapper.PlanMaterialMapper;
 import com.zero.model.Plan;
+import com.zero.model.PlanDetail;
+import com.zero.model.PlanMaterial;
+import com.zero.model.example.PlanDetailExample;
 import com.zero.model.example.PlanExample;
-import com.zero.service.IOrderService;
+import com.zero.model.example.PlanMaterialExample;
+import com.zero.model.verify.PlanDetails;
 import com.zero.service.IPlanService;
+import com.zero.service.IUserService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,28 +36,71 @@ public class PlanServiceImpl implements IPlanService {
     @Resource
     private PlanMapper planMapper;
     @Resource
-    private IOrderService orderService;
+    private PlanMaterialMapper planMaterialMapper;
+    @Resource
+    PlanDetailMapper planDetailMapper;
+    @Resource
+    private IUserService userService;
 
+    @Transactional
     @Override
-    public int insert(Plan plan, int loginId) {
+    public int insert(PlanDetails planDetails, int loginId) {
+        Plan plan = planDetails.getPlan();
         plan.setCreater(loginId);
+        plan.setStatus(PlanStatus.SAVE.getKey());
+        plan.setBillingId(loginId);
+        plan.setBillingUser(userService.getUserName(loginId));
+        plan.setBillingDate(new Date());
         plan.setCreateTime(new Date());
-        return planMapper.insertSelective(plan);
+        if(planMapper.insertSelective(plan) <= 0){
+            LOGGER.error("新增计划单失败！");
+            return 0;
+        }
+        List<PlanDetail> detailList = planDetails.getDetailList();
+        detailList.forEach(d -> d.setPlanId(plan.getId()));
+        planDetailMapper.insertBatch(detailList, loginId);
+
+        List<PlanMaterial> materialList = planDetails.getMaterialList();
+        materialList.forEach(m -> m.setPlanId(plan.getId()));
+        planMaterialMapper.insertBatch(materialList, loginId);
+
+        return 1;
     }
 
+    @Transactional
     @Override
-    public int update(Plan plan, int loginId) {
+    public int update(PlanDetails planDetails, int loginId) {
+        Plan plan = planDetails.getPlan();
         Plan planDb = this.getPlanById(plan.getId());
         if(Objects.isNull(planDb)){
             return 0;
         }
-        if(PlanStatus.SAVE.getKey() != plan.getStatus().intValue()){
+        if(PlanStatus.SAVE.getKey() != planDb.getStatus().intValue()){
             return -1;
         }
         BeanUtils.copyProperties(plan, planDb);
         planDb.setUpdateTime(new Date());
         planDb.setModifier(loginId);
-        return planMapper.updateByPrimaryKeySelective(planDb);
+        if(planMapper.updateByPrimaryKeySelective(planDb) <= 0){
+            LOGGER.error("修改计划单失败！");
+            return 0;
+        }
+        PlanDetailExample planDetailExample = new PlanDetailExample();
+        PlanDetailExample.Criteria criteria = planDetailExample.createCriteria();
+        criteria.andPlanIdEqualTo(plan.getId());
+        planDetailMapper.deleteByExample(planDetailExample);
+        List<PlanDetail> detailList = planDetails.getDetailList();
+        detailList.forEach(d -> d.setPlanId(plan.getId()));
+        planDetailMapper.insertBatch(detailList, loginId);
+
+        PlanMaterialExample planMaterialExample = new PlanMaterialExample();
+        PlanMaterialExample.Criteria criteria2 = planMaterialExample.createCriteria();
+        criteria2.andPlanIdEqualTo(plan.getId());
+        planMaterialMapper.deleteByExample(planMaterialExample);
+        List<PlanMaterial> materialList = planDetails.getMaterialList();
+        materialList.forEach(m -> m.setPlanId(plan.getId()));
+        planMaterialMapper.insertBatch(materialList, loginId);
+        return 1;
     }
 
     @Override
@@ -74,7 +124,7 @@ public class PlanServiceImpl implements IPlanService {
     }
 
     @Override
-    public List<Plan> findPlanPage(String productName, String batchNo, Integer status, Integer pageNum, Integer pageSize) {
+    public List<Plan> findPlanPage(String productName, String sampleCode, String orderCode, Integer status, Integer pageNum, Integer pageSize) {
         PlanExample example = new PlanExample();
         if(Objects.nonNull(pageNum) && Objects.nonNull(pageSize)){
             example.setPage(pageNum);
@@ -88,14 +138,41 @@ public class PlanServiceImpl implements IPlanService {
         if(StringUtils.isNotEmpty(productName)){
             criteria.andProductNameLike("%" + productName + "%");
         }
-        if(StringUtils.isNotEmpty(batchNo)){
-            criteria.andBatchNoLike("%" + batchNo + "%");
+        if(StringUtils.isNotEmpty(sampleCode)){
+            criteria.andSampleCodeLike("%" + sampleCode + "%");
+        }
+        if(StringUtils.isNotEmpty(orderCode)){
+            criteria.andOrderCodeLike("%" + orderCode + "%");
         }
         return Optional.ofNullable(planMapper.selectByExample(example)).orElse(Lists.newArrayList());
     }
 
     @Override
-    public long findPlanRowNum(String productName, String batchNo, Integer status) {
+    public List<Plan> findPlanAndDetailList(String productName, String sampleCode, String orderCode, Integer status, Integer pageNum, Integer pageSize) {
+        PlanExample example = new PlanExample();
+        if(Objects.nonNull(pageNum) && Objects.nonNull(pageSize)){
+            example.setPage(pageNum);
+            example.setLimit(pageSize);
+        }
+        PlanExample.Criteria criteria = example.createCriteria();
+        criteria.andIsDeletedEqualTo(DeletedEnum.NO.getKey());
+        if (Objects.nonNull(status)) {
+            criteria.andStatusEqualTo(status);
+        }
+        if(StringUtils.isNotEmpty(productName)){
+            criteria.andProductNameLike("%" + productName + "%");
+        }
+        if(StringUtils.isNotEmpty(sampleCode)){
+            criteria.andSampleCodeLike("%" + sampleCode + "%");
+        }
+        if(StringUtils.isNotEmpty(orderCode)){
+            criteria.andOrderCodeLike("%" + orderCode + "%");
+        }
+        return Optional.ofNullable(planMapper.findPlanAndDetailList(example)).orElse(Lists.newArrayList());
+    }
+
+    @Override
+    public long findPlanRowNum(String productName, String sampleCode, String orderCode, Integer status) {
         PlanExample example = new PlanExample();
         PlanExample.Criteria criteria = example.createCriteria();
         criteria.andIsDeletedEqualTo(DeletedEnum.NO.getKey());
@@ -105,8 +182,11 @@ public class PlanServiceImpl implements IPlanService {
         if(StringUtils.isNotEmpty(productName)){
             criteria.andProductNameLike("%" + productName + "%");
         }
-        if(StringUtils.isNotEmpty(batchNo)){
-            criteria.andBatchNoLike("%" + batchNo + "%");
+        if(StringUtils.isNotEmpty(sampleCode)){
+            criteria.andSampleCodeLike("%" + sampleCode + "%");
+        }
+        if(StringUtils.isNotEmpty(orderCode)){
+            criteria.andOrderCodeLike("%" + orderCode + "%");
         }
         return planMapper.countByExample(example);
     }
