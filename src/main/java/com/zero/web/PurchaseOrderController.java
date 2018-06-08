@@ -70,9 +70,9 @@ public class PurchaseOrderController {
 		return Result.resultSuccess("修改采购单成功！");
 	}
 
-	@DeleteMapping("/deleteBatch")
+	@PostMapping("/deleteBatch")
 	public Result<String> deletePurchaseOrder(HttpServletRequest request,
-									   @RequestParam("ids") List<Integer> ids){
+									   @RequestParam("ids[]") List<Integer> ids){
 		if(CollectionUtils.isEmpty(ids)){
 			return Result.resultFailure("删除采购单信息失败，未选中采购单！");
 		}
@@ -85,14 +85,24 @@ public class PurchaseOrderController {
 		return Result.resultSuccess("成功删除【" + success.get() + "】条采购单信息！");
 	}
 
-	@PutMapping("/updateToAudit/{id}")
-	public Result<String> updateToAudit(HttpServletRequest request,
+	@PutMapping("/updateToPurchase/{id}")
+	public Result<String> updateToPurchase(HttpServletRequest request,
+										@PathVariable("id") int id){
+		if(purchaseOrderService.updateStatus(id, PurchaseOrderStatus.PURCHASING.getKey(), SessionUtils.getCurrentUserId(request),
+				PurchaseOrderStatus.SAVE.getKey(), PurchaseOrderStatus.REJECT.getKey()) <= 0){
+			return Result.resultFailure("修改采购单环节失败！");
+		}
+		return Result.resultSuccess("采购单进入采购状态！");
+	}
+
+	@PutMapping("/updateToInbound/{id}")
+	public Result<String> updateToInbound(HttpServletRequest request,
 									   @PathVariable("id") int id){
 		if(purchaseOrderService.updateStatus(id, PurchaseOrderStatus.AUDIT.getKey(), SessionUtils.getCurrentUserId(request),
-				PurchaseOrderStatus.SAVE.getKey(), PurchaseOrderStatus.REJECT.getKey()) <= 0){
-			return Result.resultFailure("采购单提交审批失败！");
+				PurchaseOrderStatus.PURCHASING.getKey()) <= 0){
+			return Result.resultFailure("修改采购单环节失败！");
 		}
-		return Result.resultSuccess("采购单提交审批成功！");
+		return Result.resultSuccess("采购单进入入库状态！");
 	}
 
 	@PutMapping("/updateToReject/{id}")

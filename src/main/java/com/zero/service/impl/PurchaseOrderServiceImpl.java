@@ -8,6 +8,7 @@ import com.zero.mapper.PurchaseOrderMapper;
 import com.zero.model.PurchaseOrder;
 import com.zero.model.example.PurchaseOrderExample;
 import com.zero.service.IPurchaseOrderService;
+import com.zero.service.IUserService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,6 +28,8 @@ public class PurchaseOrderServiceImpl implements IPurchaseOrderService {
 
     @Resource
     private PurchaseOrderMapper purchaseOrderMapper;
+    @Resource
+    private IUserService userService;
 
     @Override
     public List<PurchaseOrder> findPurchaseOrderByPage(String purchaseCode, String orderCode, String productName, Integer status, Integer pageNum, Integer pageSize) {
@@ -76,6 +79,7 @@ public class PurchaseOrderServiceImpl implements IPurchaseOrderService {
     public int insert(PurchaseOrder purchaseOrder, int loginId) {
         purchaseOrder.setCreater(loginId);
         purchaseOrder.setCreateTime(new Date());
+        purchaseOrder.setUser(userService.getUserName(loginId));
         return purchaseOrderMapper.insertSelective(purchaseOrder);
     }
 
