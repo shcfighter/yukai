@@ -11,7 +11,8 @@ import java.util.stream.Stream;
 @AllArgsConstructor
 public enum OrderStatus implements EnumDict{
     SAVE(0, "录单"),
-    SAMPLE(1, "生产阶段"),
+    PLAN(1, "计划排期中"),
+    PRODUCE(2, "生产中"),
     STORAGE(5, "入库"),
     INVALID(-1, "作废");
     int key;

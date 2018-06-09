@@ -17,6 +17,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -34,7 +35,7 @@ public class OrderServiceImpl implements IOrderService {
     private OrderDetailMapper orderDetailMapper;
 
     @Override
-    public List<Order> findOrderByPage(String orderCode, String sampleCode, Integer status, Integer pageNum, Integer pageSize) {
+    public List<Order> findOrderByPage(String orderCode, String sampleCode, List<Integer> status, Integer pageNum, Integer pageSize) {
         OrderExample example = new OrderExample();
         if(Objects.nonNull(pageNum) && Objects.nonNull(pageSize)){
             example.setLimit(pageSize);
@@ -49,8 +50,8 @@ public class OrderServiceImpl implements IOrderService {
         if(StringUtils.isNotEmpty(sampleCode)){
             criteria.andSampleCodeLike("%" + sampleCode + "%");
         }
-        if (Objects.nonNull(status)) {
-            criteria.andStatusEqualTo(status);
+        if (!CollectionUtils.isEmpty(status)) {
+            criteria.andStatusIn(status);
         }
         return orderMapper.selectByExample(example);
     }

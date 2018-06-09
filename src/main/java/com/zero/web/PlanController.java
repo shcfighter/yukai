@@ -110,6 +110,12 @@ public class PlanController {
         return Result.resultSuccess(result);
     }
 
+    /**
+     * 进入生产
+     * @param request
+     * @param id
+     * @return
+     */
     @PutMapping("updateToProduce/{id}")
     public Result<String> updateToProduce(HttpServletRequest request, @PathVariable("id") int id){
         if(planService.updateToProduce(id, SessionUtils.getCurrentUserId(request)) <= 0){

@@ -486,7 +486,7 @@
     update t_order
     set status = #{newStatus,jdbcType=INTEGER},
       update_time = now()
-    where id = #{id,jdbcType=INTEGER} and status = #{oldStatus,jdbcType=INTEGER}
+    where id = #{orderId,jdbcType=INTEGER} and status = #{oldStatus,jdbcType=INTEGER}
   </update>
 
   <resultMap type="com.zero.model.Order" id="ordersAndOrderDetailResultMap" extends="BaseResultMap">

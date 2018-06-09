@@ -83,6 +83,7 @@ public class ProductServiceImpl implements IProductService {
         return 1;
     }
 
+    @Transactional
     @Override
     public int delete(int id, int loginId) {
         Product product = this.getProductById(id);
@@ -92,10 +93,20 @@ public class ProductServiceImpl implements IProductService {
         if(ProductStatus.SAVE.getKey() != product.getStatus().intValue()){
             return -1;
         }
+        if(productMapper.updateByPrimaryKeySelective(product) <= 0){
+            return 0;
+        }
         product.setIsDeleted(DeletedEnum.YES.getKey());
         product.setUpdateTime(new Date());
         product.setModifier(loginId);
-        return productMapper.updateByPrimaryKeySelective(product);
+        ProductDetailExample example = new ProductDetailExample();
+        ProductDetailExample.Criteria criteria = example.createCriteria();
+        criteria.andIsDeletedEqualTo(DeletedEnum.YES.getKey());
+        ProductDetail detail = new ProductDetail();
+        detail.setProductId(product.getId());
+        productDetailMapper.updateByExampleSelective(detail, example);
+
+        return 1;
     }
 
     @Override

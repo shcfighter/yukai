@@ -19,4 +19,6 @@ public interface ISampleService {
     Sample findSampleById(int id);
 
     int deleteSample(int id, int loginId);
+
+    int updateToFinished(int id, int newStatus, int oldStatus, int loginId);
 }

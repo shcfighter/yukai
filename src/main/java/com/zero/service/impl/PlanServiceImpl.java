@@ -1,7 +1,9 @@
 package com.zero.service.impl;
 
 import com.google.common.collect.Lists;
+import com.zero.common.BusinessException;
 import com.zero.common.enmu.DeletedEnum;
+import com.zero.common.enmu.OrderStatus;
 import com.zero.common.enmu.PlanStatus;
 import com.zero.common.utils.BeanUtils;
 import com.zero.common.utils.SessionUtils;
@@ -15,6 +17,7 @@ import com.zero.model.example.PlanDetailExample;
 import com.zero.model.example.PlanExample;
 import com.zero.model.example.PlanMaterialExample;
 import com.zero.model.verify.PlanDetails;
+import com.zero.service.IOrderService;
 import com.zero.service.IPlanService;
 import com.zero.service.IUserService;
 import org.apache.commons.lang3.StringUtils;
@@ -41,6 +44,8 @@ public class PlanServiceImpl implements IPlanService {
     PlanDetailMapper planDetailMapper;
     @Resource
     private IUserService userService;
+    @Resource
+    private IOrderService orderService;
 
     @Transactional
     @Override
@@ -204,7 +209,15 @@ public class PlanServiceImpl implements IPlanService {
         plan.setStatus(PlanStatus.PRODUCE.getKey());
         plan.setUpdateTime(new Date());
         plan.setModifier(loginId);
-        return planMapper.updateByPrimaryKeySelective(plan);
+        if(planMapper.updateByPrimaryKeySelective(plan) <= 0){
+            LOGGER.error("修改计划单状态【{}】失败！", plan.getStatus());
+            return 0;
+        }
+        if(orderService.updateStatus(plan.getOrderId(), OrderStatus.PRODUCE.getKey(), OrderStatus.PLAN.getKey(), loginId) <= 0){
+            LOGGER.info("修改订单状态失败！");
+            throw new BusinessException("修改订单状态失败！");
+        }
+        return 1;
     }
 
     @Override

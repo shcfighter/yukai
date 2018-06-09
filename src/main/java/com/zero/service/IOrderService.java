@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface IOrderService {
 
-    List<Order> findOrderByPage(String orderCode, String sampleCode, Integer status, Integer pageNum, Integer pageSize);
+    List<Order> findOrderByPage(String orderCode, String sampleCode, List<Integer> status, Integer pageNum, Integer pageSize);
 
     long findOrderRowNum(String orderCode, String sampleCode, Integer status);
 

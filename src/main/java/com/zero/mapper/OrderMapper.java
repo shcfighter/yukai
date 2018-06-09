@@ -30,7 +30,7 @@ public interface OrderMapper {
 
     int updateByPrimaryKey(Order record);
 
-    int updateStatus(int orderId, int newStatus, int oldStatus);
+    int updateStatus(@Param("orderId") int orderId, @Param("newStatus") int newStatus, @Param("oldStatus") int oldStatus);
 
     List<Order> findOrdersAndOrderDetailList(OrderExample example);
 }

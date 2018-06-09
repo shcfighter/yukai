@@ -127,4 +127,21 @@ public class SampleServiceImpl implements ISampleService {
         sample.setUpdateTime(new Date());
         return sampleMapper.updateByPrimaryKey(sample);
     }
+
+    @Override
+    public int updateToFinished(int id, int newStatus, int oldStatus, int loginId) {
+        Sample sample = this.findSampleById(id);
+        if(Objects.isNull(sample)){
+            LOGGER.info("样品【{}】信息不存在!", id);
+            return 0;
+        }
+        if(sample.getStatus().intValue() != oldStatus){
+            LOGGER.info("样品【{}】状态【{}】不正确", id, sample.getStatus());
+            return 0;
+        }
+        sample.setStatus(SampleStatus.FINISHED.getKey());
+        sample.setUpdateTime(new Date());
+        sample.setModifier(loginId);
+        return sampleMapper.updateByPrimaryKeySelective(sample);
+    }
 }

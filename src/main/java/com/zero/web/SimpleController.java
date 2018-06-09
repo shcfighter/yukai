@@ -2,6 +2,7 @@ package com.zero.web;
 
 import com.google.common.collect.Maps;
 import com.zero.common.Result;
+import com.zero.common.enmu.SampleStatus;
 import com.zero.common.utils.SessionUtils;
 import com.zero.model.Sample;
 import com.zero.model.verify.SampleDetails;
@@ -82,7 +83,7 @@ public class SimpleController {
 
 	@GetMapping("searchSample")
 	public Result<List<Map<String, Object>>> searchSample(String code){
-		return Result.resultSuccess(sampleService.findSamplePage(null, code, null, null, null)
+		return Result.resultSuccess(sampleService.findSamplePage(null, code, SampleStatus.FINISHED.getKey(), 1, 50)
 		.stream().map(sample -> {
 						Map<String, Object> map = Maps.newHashMap();
 						map.put("id", sample.getId());
@@ -119,5 +120,13 @@ public class SimpleController {
 			return Result.resultFailure("删除样品尺寸信息失败！");
 		}
 		return Result.resultSuccess("删除样品尺寸信息成功！");
+	}
+
+	@PutMapping("updateToFinished/{id}")
+	public Result<String> updateToFinished(HttpServletRequest request, @PathVariable("id") int id){
+		if(sampleService.updateToFinished(id, SampleStatus.FINISHED.getKey(),SampleStatus.NEW.getKey() ,SessionUtils.getCurrentUserId(request)) <= 0){
+			return Result.resultFailure("样品状态更改失败！");
+		}
+		return Result.resultSuccess("样品中标成功！");
 	}
 }

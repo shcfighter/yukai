@@ -1,5 +1,6 @@
 package com.zero.web;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.zero.common.Result;
 import com.zero.common.enmu.OrderStatus;
@@ -10,6 +11,7 @@ import com.zero.model.Order;
 import com.zero.model.verify.OrderDetails;
 import com.zero.service.IOrderDetailService;
 import com.zero.service.IOrderService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.util.CollectionUtils;
@@ -21,9 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
 import java.net.URLEncoder;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -51,16 +51,21 @@ public class OrderController {
 	}
 
 	@GetMapping("/findOrderPage")
-	public Result<List<Order>> findOrderPage(String productName, String cooperationCompany, Integer status,
+	public Result<List<Order>> findOrderPage(String orderCode, String sampleCode, Integer status,
 										   @RequestParam(value = "page", defaultValue = "1") int pageNum,
 										   @RequestParam(value = "limit", defaultValue = "10") int pageSize){
-		return Result.resultSuccess(orderService.findOrderRowNum(productName, cooperationCompany, status),
-				orderService.findOrdersAndOrderDetailList(productName, cooperationCompany, status, pageNum, pageSize));
+		return Result.resultSuccess(orderService.findOrderRowNum(orderCode, sampleCode, status),
+				orderService.findOrdersAndOrderDetailList(orderCode, sampleCode, status, pageNum, pageSize));
 	}
 
 	@GetMapping("/searchOrder")
-	public Result<List<Map<String, Object>>> searchOrder(String code, Integer pageNum, Integer pageSize){
-		return Result.resultSuccess(orderService.findOrderByPage(code, null, null, pageNum, pageSize).stream().map(order -> {
+	public Result<List<Map<String, Object>>> searchOrder(String code,
+														 String statuss){
+		List<Integer> status = Lists.newArrayList();
+		if(StringUtils.isNotEmpty(statuss)){
+			status.addAll(Arrays.asList(StringUtils.split(statuss, ",")).stream().map(Integer::parseInt).collect(Collectors.toList()));
+		}
+		return Result.resultSuccess(orderService.findOrderByPage(code, null, status, 1, 50).stream().map(order -> {
 			Map<String, Object> map = Maps.newHashMap();
 			map.put("id", order.getId());
 			map.put("code", order.getOrderCode());
@@ -94,22 +99,22 @@ public class OrderController {
 		return Result.resultSuccess("修改订单成功！");
 	}
 
-	@PostMapping("/updateToProduce/{orderId}")
-	public Result<String> updateToProduce(HttpServletRequest request,
+	@PutMapping("/updateToPlan/{orderId}")
+	public Result<String> updateToPlan(HttpServletRequest request,
 									   @PathVariable("orderId") int orderId){
-		if(orderService.updateStatus(orderId, OrderStatus.SAMPLE.getKey(), OrderStatus.SAVE.getKey(), SessionUtils.getCurrentUserId(request)) <= 0){
-			return Result.resultFailure("订单进入生产阶段失败！");
+		if(orderService.updateStatus(orderId, OrderStatus.PLAN.getKey(), OrderStatus.SAVE.getKey(), SessionUtils.getCurrentUserId(request)) <= 0){
+			return Result.resultFailure("订单进入排期阶段失败！");
 		}
-		return Result.resultSuccess("订单进入生产阶段成功！");
+		return Result.resultSuccess("订单进入排期阶段成功！");
 	}
 
-	@PutMapping("/updateToFinish/{orderId}")
-	public Result<String> updateToFinish(HttpServletRequest request,
+	@PutMapping("/updateToProduce/{orderId}")
+	public Result<String> updateToProduce(HttpServletRequest request,
 									   @PathVariable("orderId") int orderId){
-		if(orderService.updateStatus(orderId, OrderStatus.STORAGE.getKey(), OrderStatus.SAMPLE.getKey(), SessionUtils.getCurrentUserId(request)) <= 0){
-			return Result.resultFailure("订单入库失败！");
+		if(orderService.updateStatus(orderId, OrderStatus.PRODUCE.getKey(), OrderStatus.PLAN.getKey(), SessionUtils.getCurrentUserId(request)) <= 0){
+			return Result.resultFailure("订单进去生产阶段失败！");
 		}
-		return Result.resultSuccess("订单入库成功！");
+		return Result.resultSuccess("订单进去生产阶段成功！");
 	}
 
 	@DeleteMapping("delete/{id}")
@@ -137,7 +142,8 @@ public class OrderController {
 	@GetMapping("/orderExport")
 	public void orderExport(HttpServletResponse response, HttpServletRequest request,
 							String productName, String cooperationCompany, Integer status){
-		List<Order> list = orderService.findOrderByPage(productName, cooperationCompany, status, null, null);
+		List<Order> list = orderService.findOrderByPage(productName, cooperationCompany, Objects.nonNull(status) ? Arrays.asList(new Integer[]{status}) : Lists.newArrayList(),
+				null, null);
 		try (OutputStream os = response.getOutputStream()) {
 			SimpleExcelExporter excelExporter = new SimpleExcelExporter(list, Order.class);
 			String filename = "订单列表_" + com.zero.common.utils.DateUtils.getStringFormat(new Date(), DateUtils.DATEFORMAT2) + ".xlsx";
