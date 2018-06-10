@@ -2,20 +2,18 @@ package com.zero.model;
 
 import java.util.Date;
 
-public class Product {
+public class ProductApplyDetail {
     private Integer id;
 
-    private String sampleCode;
+    private Integer productId;
 
-    private Integer orderId;
+    private String sizeType;
 
-    private String orderCode;
+    private Integer orderNum;
 
-    private String productName;
+    private Integer warehouseNum;
 
-    private String photoUrl;
-
-    private Integer status;
+    private String color;
 
     private Integer isDeleted;
 
@@ -37,52 +35,44 @@ public class Product {
         this.id = id;
     }
 
-    public String getSampleCode() {
-        return sampleCode;
+    public Integer getProductId() {
+        return productId;
     }
 
-    public void setSampleCode(String sampleCode) {
-        this.sampleCode = sampleCode == null ? null : sampleCode.trim();
+    public void setProductId(Integer productId) {
+        this.productId = productId;
     }
 
-    public Integer getOrderId() {
-        return orderId;
+    public String getSizeType() {
+        return sizeType;
     }
 
-    public void setOrderId(Integer orderId) {
-        this.orderId = orderId;
+    public void setSizeType(String sizeType) {
+        this.sizeType = sizeType == null ? null : sizeType.trim();
     }
 
-    public String getOrderCode() {
-        return orderCode;
+    public Integer getOrderNum() {
+        return orderNum;
     }
 
-    public void setOrderCode(String orderCode) {
-        this.orderCode = orderCode == null ? null : orderCode.trim();
+    public void setOrderNum(Integer orderNum) {
+        this.orderNum = orderNum;
     }
 
-    public String getProductName() {
-        return productName;
+    public Integer getWarehouseNum() {
+        return warehouseNum;
     }
 
-    public void setProductName(String productName) {
-        this.productName = productName == null ? null : productName.trim();
+    public void setWarehouseNum(Integer warehouseNum) {
+        this.warehouseNum = warehouseNum;
     }
 
-    public String getPhotoUrl() {
-        return photoUrl;
+    public String getColor() {
+        return color;
     }
 
-    public void setPhotoUrl(String photoUrl) {
-        this.photoUrl = photoUrl == null ? null : photoUrl.trim();
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
+    public void setColor(String color) {
+        this.color = color == null ? null : color.trim();
     }
 
     public Integer getIsDeleted() {

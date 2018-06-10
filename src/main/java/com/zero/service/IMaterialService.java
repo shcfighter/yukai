@@ -1,20 +1,21 @@
 package com.zero.service;
 
-import com.zero.model.SampleMaterial;
+
+import com.zero.model.Material;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IMaterialService {
 
-    SampleMaterial getMaterialById(int id);
+	List<Material> findMaterialPage(String productName, String color, String ingredients, Integer pageNum, Integer pageSize);
 
-    int delete(int id, int loginId);
+	long findRowNum(String productName, String color, String ingredients);
 
-    int insert(SampleMaterial sampleMaterial, int loginId);
+	Material getMaterialById(int id);
 
-    int update(SampleMaterial sampleMaterial, int loginId);
+	int inbound(int purchaseOrderId, int loginId, String loginName);
 
-    int insertBatch(List<SampleMaterial> list, int loginId);
+	Map<String, Object> outbound(int outboundId, int loginId, String loginName);
 
-    List<SampleMaterial> findMaterial(int sampleId);
 }

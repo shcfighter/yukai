@@ -2,26 +2,16 @@ package com.zero.model;
 
 import java.util.Date;
 
-public class OutBound {
+public class OutboundMaterial {
     private Integer id;
 
-    private Integer goodId;
+    private Integer outboundId;
 
-    private Integer outboundType;
-
-    private String goodsName;
-
-    private String goodsModel;
-
-    private Integer type;
+    private String materialName;
 
     private String color;
 
     private Integer num;
-
-    private String unit;
-
-    private Integer status;
 
     private Integer isDeleted;
 
@@ -43,44 +33,20 @@ public class OutBound {
         this.id = id;
     }
 
-    public Integer getGoodId() {
-        return goodId;
+    public Integer getOutboundId() {
+        return outboundId;
     }
 
-    public void setGoodId(Integer goodId) {
-        this.goodId = goodId;
+    public void setOutboundId(Integer outboundId) {
+        this.outboundId = outboundId;
     }
 
-    public Integer getOutboundType() {
-        return outboundType;
+    public String getMaterialName() {
+        return materialName;
     }
 
-    public void setOutboundType(Integer outboundType) {
-        this.outboundType = outboundType;
-    }
-
-    public String getGoodsName() {
-        return goodsName;
-    }
-
-    public void setGoodsName(String goodsName) {
-        this.goodsName = goodsName == null ? null : goodsName.trim();
-    }
-
-    public String getGoodsModel() {
-        return goodsModel;
-    }
-
-    public void setGoodsModel(String goodsModel) {
-        this.goodsModel = goodsModel == null ? null : goodsModel.trim();
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
+    public void setMaterialName(String materialName) {
+        this.materialName = materialName == null ? null : materialName.trim();
     }
 
     public String getColor() {
@@ -97,22 +63,6 @@ public class OutBound {
 
     public void setNum(Integer num) {
         this.num = num;
-    }
-
-    public String getUnit() {
-        return unit;
-    }
-
-    public void setUnit(String unit) {
-        this.unit = unit == null ? null : unit.trim();
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
     }
 
     public Integer getIsDeleted() {

@@ -1,23 +1,29 @@
 package com.zero.service.impl;
 
 import com.google.common.collect.Lists;
+import com.zero.common.BusinessException;
 import com.zero.common.enmu.DeletedEnum;
 import com.zero.common.enmu.ProductStatus;
-import com.zero.common.utils.BeanUtils;
 import com.zero.mapper.ProductDetailMapper;
 import com.zero.mapper.ProductMapper;
 import com.zero.model.Product;
+import com.zero.model.ProductApply;
+import com.zero.model.ProductApplyDetail;
 import com.zero.model.ProductDetail;
+import com.zero.model.example.OrderDetailExample;
 import com.zero.model.example.ProductDetailExample;
 import com.zero.model.example.ProductExample;
-import com.zero.model.verify.ProductDetails;
+import com.zero.service.IProductApplyDetailService;
+import com.zero.service.IProductApplyService;
+import com.zero.service.IProductDetailService;
 import com.zero.service.IProductService;
-import com.zero.service.IUserService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
@@ -33,81 +39,11 @@ public class ProductServiceImpl implements IProductService {
     @Resource
     private ProductDetailMapper productDetailMapper;
     @Resource
-    private IUserService userService;
-
-    @Transactional
-    @Override
-    public int insert(ProductDetails productDetails, int loginId) {
-        Product product = productDetails.getProduct();
-        product.setCreater(loginId);
-        product.setStatus(ProductStatus.SAVE.getKey());
-        product.setBillingUser(userService.getUserName(loginId));
-        product.setCreateTime(new Date());
-        if(productMapper.insertSelective(product) <= 0){
-            LOGGER.error("新增成品入库申请失败！");
-            return 0;
-        }
-        List<ProductDetail> detailList = productDetails.getDetailList();
-        detailList.forEach(d -> d.setProductId(product.getId()));
-        productDetailMapper.insertBatch(detailList, loginId);
-
-        return 1;
-    }
-
-    @Transactional
-    @Override
-    public int update(ProductDetails productDetails, int loginId) {
-        Product product = productDetails.getProduct();
-        Product productDb = this.getProductById(product.getId());
-        if(Objects.isNull(productDb)){
-            return 0;
-        }
-        if(ProductStatus.SAVE.getKey() != productDb.getStatus().intValue()){
-            return -1;
-        }
-        BeanUtils.copyProperties(product, productDb);
-        productDb.setUpdateTime(new Date());
-        productDb.setModifier(loginId);
-        if(productMapper.updateByPrimaryKeySelective(productDb) <= 0){
-            LOGGER.error("修改成品入库申请失败！");
-            return 0;
-        }
-        ProductDetailExample detailExample = new ProductDetailExample();
-        ProductDetailExample.Criteria criteria = detailExample.createCriteria();
-        criteria.andProductIdEqualTo(productDb.getId());
-        productDetailMapper.deleteByExample(detailExample);
-        List<ProductDetail> detailList = productDetails.getDetailList();
-        detailList.forEach(d -> d.setProductId(productDb.getId()));
-        productDetailMapper.insertBatch(detailList, loginId);
-
-        return 1;
-    }
-
-    @Transactional
-    @Override
-    public int delete(int id, int loginId) {
-        Product product = this.getProductById(id);
-        if(Objects.isNull(product)){
-            return 0;
-        }
-        if(ProductStatus.SAVE.getKey() != product.getStatus().intValue()){
-            return -1;
-        }
-        if(productMapper.updateByPrimaryKeySelective(product) <= 0){
-            return 0;
-        }
-        product.setIsDeleted(DeletedEnum.YES.getKey());
-        product.setUpdateTime(new Date());
-        product.setModifier(loginId);
-        ProductDetailExample example = new ProductDetailExample();
-        ProductDetailExample.Criteria criteria = example.createCriteria();
-        criteria.andIsDeletedEqualTo(DeletedEnum.YES.getKey());
-        ProductDetail detail = new ProductDetail();
-        detail.setProductId(product.getId());
-        productDetailMapper.updateByExampleSelective(detail, example);
-
-        return 1;
-    }
+    private IProductApplyService productApplyService;
+    @Resource
+    private IProductApplyDetailService productApplyDetailService;
+    @Resource
+    private IProductDetailService productDetailService;
 
     @Override
     public Product getProductById(int id) {
@@ -180,6 +116,103 @@ public class ProductServiceImpl implements IProductService {
             criteria.andOrderCodeLike("%" + orderCode + "%");
         }
         return productMapper.countByExample(example);
+    }
+
+    @Override
+    public Product findProductByOrderCode(String orderCode) {
+        ProductExample example = new ProductExample();
+        ProductExample.Criteria criteria = example.createCriteria();
+        criteria.andIsDeletedEqualTo(DeletedEnum.NO.getKey());
+        criteria.andOrderCodeEqualTo(orderCode);
+        List<Product> list = productMapper.selectByExample(example);
+        if(CollectionUtils.isEmpty(list)){
+            return null;
+        }
+        return list.get(0);
+    }
+
+    @Transactional
+    @Override
+    public int inbound(int productId, int loginId, String loginName) {
+        ProductApply productApply = productApplyService.getProductApplyById(productId);
+        List<ProductApplyDetail> applyDetailList = productApplyDetailService.getProductApplyDetailByProductId(productId);
+        if(Objects.isNull(productApply) && CollectionUtils.isEmpty(applyDetailList)){
+            LOGGER.info("成品入库申请单【{}】不存在！", productId);
+            return 0;
+        }
+        Product product = this.findProductByOrderCode(productApply.getOrderCode());
+        if(Objects.isNull(product)){
+            product = new Product();
+            product.setOrderId(productApply.getOrderId());
+            product.setOrderCode(productApply.getOrderCode());
+            product.setSampleCode(productApply.getSampleCode());
+            product.setProductName(productApply.getProductName());
+            product.setPhotoUrl(productApply.getPhotoUrl());
+            product.setCreateTime(new Date());
+            product.setCreater(loginId);
+            product.setIsDeleted(DeletedEnum.NO.getKey());
+            if(productMapper.insertSelective(product) <= 0){
+                LOGGER.info("新增成品库存失败！");
+                return 0;
+            }
+            int totalNum = 0;
+            List<ProductDetail> details = Lists.newArrayList();
+            for(ProductApplyDetail detail : applyDetailList){
+                ProductDetail productDetail = new ProductDetail();
+                productDetail.setProductId(product.getId());
+                productDetail.setOrderNum(detail.getOrderNum());
+                productDetail.setColor(detail.getColor());
+                productDetail.setSizeType(detail.getSizeType());
+                productDetail.setWarehouseNum(detail.getWarehouseNum());
+                totalNum += productDetail.getWarehouseNum();
+                details.add(productDetail);
+            }
+            if(productDetailMapper.insertBatch(details, loginId) < applyDetailList.size()){
+                LOGGER.info("新增成品库存详情失败");
+                throw new BusinessException("新增成品库存详情失败");
+            }
+            return 1;
+        }
+
+        List<ProductDetail> productDetails = productDetailService.getProductDetailByProductId(productId);
+        List<ProductDetail> details = Lists.newArrayList();
+        for(ProductApplyDetail detail : applyDetailList){
+            ProductDetail updateProductDetail = new ProductDetail();
+            boolean isUpdate = false;
+            for (ProductDetail productDetail: productDetails) {
+                if(StringUtils.equals(detail.getSizeType(), productDetail.getSizeType())){
+                    updateProductDetail = productDetail;
+                    updateProductDetail.setOrderNum(productDetail.getOrderNum() + detail.getOrderNum());
+                    updateProductDetail.setWarehouseNum(productDetail.getWarehouseNum() + detail.getWarehouseNum());
+                    isUpdate = true;
+                    continue;
+                }
+            }
+            if(!isUpdate) {
+                updateProductDetail.setProductId(product.getId());
+                updateProductDetail.setOrderNum(detail.getOrderNum());
+                updateProductDetail.setColor(detail.getColor());
+                updateProductDetail.setSizeType(detail.getSizeType());
+                updateProductDetail.setWarehouseNum(detail.getWarehouseNum());
+            }
+            details.add(updateProductDetail);
+
+            ProductDetailExample example = new ProductDetailExample();
+            ProductDetailExample.Criteria criteria = example.createCriteria();
+            criteria.andProductIdEqualTo(product.getId());
+            productDetailMapper.deleteByExample(example);
+
+            if(productDetailMapper.insertBatch(details, loginId) < applyDetailList.size()){
+                LOGGER.info("新增成品库存详情失败");
+                throw new BusinessException("新增成品库存详情失败");
+            }
+            if(productApplyService.updateStatus(productId, ProductStatus.FINISHED.getKey(), loginId, ProductStatus.AUDIT.getKey()) <= 0){
+                LOGGER.info("更改成品入库申请单失败！");
+                throw new BusinessException("更改成品入库申请单失败！");
+            }
+        }
+
+        return 1;
     }
 
 }

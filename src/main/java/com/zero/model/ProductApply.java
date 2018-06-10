@@ -1,9 +1,12 @@
 package com.zero.model;
 
 import java.util.Date;
+import java.util.List;
 
-public class Product {
+public class ProductApply {
     private Integer id;
+
+    private Integer planId;
 
     private String sampleCode;
 
@@ -14,6 +17,14 @@ public class Product {
     private String productName;
 
     private String photoUrl;
+
+    private String productionProcesses;
+
+    private String billingUser;
+
+    private String warehouseUser;
+
+    private Date warehouseDate;
 
     private Integer status;
 
@@ -29,12 +40,22 @@ public class Product {
 
     private String remarks;
 
+    private List<ProductApplyDetail> detailList;
+
     public Integer getId() {
         return id;
     }
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getPlanId() {
+        return planId;
+    }
+
+    public void setPlanId(Integer planId) {
+        this.planId = planId;
     }
 
     public String getSampleCode() {
@@ -75,6 +96,38 @@ public class Product {
 
     public void setPhotoUrl(String photoUrl) {
         this.photoUrl = photoUrl == null ? null : photoUrl.trim();
+    }
+
+    public String getProductionProcesses() {
+        return productionProcesses;
+    }
+
+    public void setProductionProcesses(String productionProcesses) {
+        this.productionProcesses = productionProcesses == null ? null : productionProcesses.trim();
+    }
+
+    public String getBillingUser() {
+        return billingUser;
+    }
+
+    public void setBillingUser(String billingUser) {
+        this.billingUser = billingUser == null ? null : billingUser.trim();
+    }
+
+    public String getWarehouseUser() {
+        return warehouseUser;
+    }
+
+    public void setWarehouseUser(String warehouseUser) {
+        this.warehouseUser = warehouseUser == null ? null : warehouseUser.trim();
+    }
+
+    public Date getWarehouseDate() {
+        return warehouseDate;
+    }
+
+    public void setWarehouseDate(Date warehouseDate) {
+        this.warehouseDate = warehouseDate;
     }
 
     public Integer getStatus() {
@@ -131,5 +184,13 @@ public class Product {
 
     public void setRemarks(String remarks) {
         this.remarks = remarks == null ? null : remarks.trim();
+    }
+
+    public List<ProductApplyDetail> getDetailList() {
+        return detailList;
+    }
+
+    public void setDetailList(List<ProductApplyDetail> detailList) {
+        this.detailList = detailList;
     }
 }

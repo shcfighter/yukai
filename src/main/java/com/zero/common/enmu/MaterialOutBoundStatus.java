@@ -9,10 +9,10 @@ import java.util.stream.Stream;
 
 @Getter
 @AllArgsConstructor
-public enum ProductStatus implements EnumDict {
+public enum MaterialOutBoundStatus implements EnumDict {
     SAVE(0, "草稿"),
-    AUDIT(1, "待入库"),
-    FINISHED(2, "已入库"),
+    AUDIT(1, "申请出库"),
+    FINISHED(2, "出库完成"),
     REJECT(3, "驳回");
 
     int key;
@@ -20,6 +20,6 @@ public enum ProductStatus implements EnumDict {
 
     @Override
     public Map<Integer, String> getDict() {
-        return Stream.of(ProductStatus.values()).collect(Collectors.toMap(ProductStatus::getKey, ProductStatus::getDesc));
+        return Stream.of(MaterialOutBoundStatus.values()).collect(Collectors.toMap(MaterialOutBoundStatus::getKey, MaterialOutBoundStatus::getDesc));
     }
 }

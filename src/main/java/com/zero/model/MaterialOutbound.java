@@ -2,20 +2,26 @@ package com.zero.model;
 
 import java.util.Date;
 
-public class Goods {
+public class MaterialOutbound {
     private Integer id;
 
-    private String goodsName;
+    private Integer orderId;
 
-    private String goodsModel;
+    private String orderCode;
 
-    private Integer type;
+    private String sampleCode;
+
+    private Integer planId;
+
+    private String productName;
+
+    private String materialName;
 
     private String color;
 
     private Integer num;
 
-    private String unit;
+    private Integer status;
 
     private Integer isDeleted;
 
@@ -37,28 +43,52 @@ public class Goods {
         this.id = id;
     }
 
-    public String getGoodsName() {
-        return goodsName;
+    public Integer getOrderId() {
+        return orderId;
     }
 
-    public void setGoodsName(String goodsName) {
-        this.goodsName = goodsName == null ? null : goodsName.trim();
+    public void setOrderId(Integer orderId) {
+        this.orderId = orderId;
     }
 
-    public String getGoodsModel() {
-        return goodsModel;
+    public String getOrderCode() {
+        return orderCode;
     }
 
-    public void setGoodsModel(String goodsModel) {
-        this.goodsModel = goodsModel == null ? null : goodsModel.trim();
+    public void setOrderCode(String orderCode) {
+        this.orderCode = orderCode == null ? null : orderCode.trim();
     }
 
-    public Integer getType() {
-        return type;
+    public String getSampleCode() {
+        return sampleCode;
     }
 
-    public void setType(Integer type) {
-        this.type = type;
+    public void setSampleCode(String sampleCode) {
+        this.sampleCode = sampleCode == null ? null : sampleCode.trim();
+    }
+
+    public Integer getPlanId() {
+        return planId;
+    }
+
+    public void setPlanId(Integer planId) {
+        this.planId = planId;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName == null ? null : productName.trim();
+    }
+
+    public String getMaterialName() {
+        return materialName;
+    }
+
+    public void setMaterialName(String materialName) {
+        this.materialName = materialName == null ? null : materialName.trim();
     }
 
     public String getColor() {
@@ -77,12 +107,12 @@ public class Goods {
         this.num = num;
     }
 
-    public String getUnit() {
-        return unit;
+    public Integer getStatus() {
+        return status;
     }
 
-    public void setUnit(String unit) {
-        this.unit = unit == null ? null : unit.trim();
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public Integer getIsDeleted() {

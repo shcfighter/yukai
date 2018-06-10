@@ -2,20 +2,18 @@ package com.zero.model;
 
 import java.util.Date;
 
-public class Product {
+public class Material {
     private Integer id;
-
-    private String sampleCode;
-
-    private Integer orderId;
-
-    private String orderCode;
 
     private String productName;
 
-    private String photoUrl;
+    private String ingredients;
 
-    private Integer status;
+    private String color;
+
+    private Integer weight;
+
+    private Integer num;
 
     private Integer isDeleted;
 
@@ -37,30 +35,6 @@ public class Product {
         this.id = id;
     }
 
-    public String getSampleCode() {
-        return sampleCode;
-    }
-
-    public void setSampleCode(String sampleCode) {
-        this.sampleCode = sampleCode == null ? null : sampleCode.trim();
-    }
-
-    public Integer getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(Integer orderId) {
-        this.orderId = orderId;
-    }
-
-    public String getOrderCode() {
-        return orderCode;
-    }
-
-    public void setOrderCode(String orderCode) {
-        this.orderCode = orderCode == null ? null : orderCode.trim();
-    }
-
     public String getProductName() {
         return productName;
     }
@@ -69,20 +43,36 @@ public class Product {
         this.productName = productName == null ? null : productName.trim();
     }
 
-    public String getPhotoUrl() {
-        return photoUrl;
+    public String getIngredients() {
+        return ingredients;
     }
 
-    public void setPhotoUrl(String photoUrl) {
-        this.photoUrl = photoUrl == null ? null : photoUrl.trim();
+    public void setIngredients(String ingredients) {
+        this.ingredients = ingredients == null ? null : ingredients.trim();
     }
 
-    public Integer getStatus() {
-        return status;
+    public String getColor() {
+        return color;
     }
 
-    public void setStatus(Integer status) {
-        this.status = status;
+    public void setColor(String color) {
+        this.color = color == null ? null : color.trim();
+    }
+
+    public Integer getWeight() {
+        return weight;
+    }
+
+    public void setWeight(Integer weight) {
+        this.weight = weight;
+    }
+
+    public Integer getNum() {
+        return num;
+    }
+
+    public void setNum(Integer num) {
+        this.num = num;
     }
 
     public Integer getIsDeleted() {

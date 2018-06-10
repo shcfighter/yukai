@@ -1,77 +1,188 @@
 package com.zero.service.impl;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.zero.common.BusinessException;
 import com.zero.common.enmu.DeletedEnum;
-import com.zero.common.utils.BeanUtils;
-import com.zero.mapper.SampleMaterialMapper;
-import com.zero.model.SampleMaterial;
-import com.zero.model.example.SampleMaterialExample;
-import com.zero.service.IMaterialService;
+import com.zero.common.enmu.MaterialOutBoundStatus;
+import com.zero.common.enmu.PurchaseOrderStatus;
+import com.zero.common.enmu.RecordType;
+import com.zero.mapper.MaterialMapper;
+import com.zero.mapper.MaterialOutboundMapper;
+import com.zero.model.Material;
+import com.zero.model.MaterialOutbound;
+import com.zero.model.OutboundMaterial;
+import com.zero.model.PurchaseOrder;
+import com.zero.model.example.MaterialExample;
+import com.zero.service.*;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 public class MaterialServiceImpl implements IMaterialService {
 
+    private static final Logger LOGGER = LogManager.getLogger(MaterialServiceImpl.class);
     @Resource
-    private SampleMaterialMapper sampleMaterialMapper;
+    private MaterialMapper materialMapper;
+    @Resource
+    private IGoodsRecordService goodsRecordService;
+    @Resource
+    private IPurchaseOrderService purchaseOrderService;
+    @Resource
+    private IMaterialOutboundService materialOutboundService;
+    @Resource
+    private IOutboundMaterialService outboundMaterialService;
 
     @Override
-    public SampleMaterial getMaterialById(int id) {
-        return sampleMaterialMapper.selectByPrimaryKey(id);
-    }
-
-    @Override
-    public int delete(int id, int loginId) {
-        SampleMaterial material = sampleMaterialMapper.selectByPrimaryKey(id);
-        if(Objects.isNull(material)){
-            return 0;
+    public List<Material> findMaterialPage(String productName, String color, String ingredients, Integer pageNum, Integer pageSize) {
+        MaterialExample example = new MaterialExample();
+        if(Objects.nonNull(pageNum) && Objects.nonNull(pageSize)){
+            example.setLimit(pageSize);
+            example.setPage(pageNum);
         }
-        material.setIsDeleted(DeletedEnum.YES.getKey());
-        material.setModifier(loginId);
-        material.setUpdateTime(new Date());
-        return sampleMaterialMapper.updateByPrimaryKeySelective(material);
-    }
-
-    @Override
-    public int insert(SampleMaterial sampleMaterial, int loginId) {
-        sampleMaterial.setCreater(loginId);
-        sampleMaterial.setCreateTime(new Date());
-        return sampleMaterialMapper.insertSelective(sampleMaterial);
-    }
-
-    @Override
-    public int update(SampleMaterial sampleMaterial, int loginId) {
-        SampleMaterial material = sampleMaterialMapper.selectByPrimaryKey(sampleMaterial.getId());
-        if(Objects.isNull(material)){
-            return 0;
-        }
-        BeanUtils.copyProperties(sampleMaterial, material);
-        material.setModifier(loginId);
-        material.setUpdateTime(new Date());
-        return sampleMaterialMapper.updateByPrimaryKeySelective(material);
-    }
-
-    @Override
-    public int insertBatch(List<SampleMaterial> list, int loginId) {
-        if(CollectionUtils.isEmpty(list)){
-            return 0;
-        }
-        return sampleMaterialMapper.insertBatch(list, loginId);
-    }
-
-    @Override
-    public List<SampleMaterial> findMaterial(int sampleId) {
-        SampleMaterialExample example = new SampleMaterialExample();
-        SampleMaterialExample.Criteria criteria = example.createCriteria();
-        criteria.andSimpleIdEqualTo(sampleId);
+        MaterialExample.Criteria criteria = example.createCriteria();
         criteria.andIsDeletedEqualTo(DeletedEnum.NO.getKey());
-        return Optional.ofNullable(sampleMaterialMapper.selectByExample(example)).orElse(Lists.newArrayList());
+        if(StringUtils.isNotEmpty(productName)){
+            criteria.andProductNameLike("%" + productName + "%");
+        }
+        if(StringUtils.isNotEmpty(color)){
+            criteria.andColorLike("%" + color + "%");
+        }
+        if(StringUtils.isNotEmpty(ingredients)){
+            criteria.andIngredientsLike("%" + ingredients + "%");
+        }
+        return materialMapper.selectByExample(example);
+    }
+
+    @Override
+    public long findRowNum(String productName, String color, String ingredients) {
+        MaterialExample example = new MaterialExample();
+        MaterialExample.Criteria criteria = example.createCriteria();
+        criteria.andIsDeletedEqualTo(DeletedEnum.NO.getKey());
+        if(StringUtils.isNotEmpty(productName)){
+            criteria.andProductNameLike("%" + productName + "%");
+        }
+        if(StringUtils.isNotEmpty(color)){
+            criteria.andColorLike("%" + color + "%");
+        }
+        if(StringUtils.isNotEmpty(ingredients)){
+            criteria.andIngredientsLike("%" + ingredients + "%");
+        }
+        return materialMapper.countByExample(example);
+    }
+
+    @Override
+    public Material getMaterialById(int id) {
+        return materialMapper.selectByPrimaryKey(id);
+    }
+
+    @Transactional
+    @Override
+    public int inbound(int purchaseOrderId, int loginId, String loginName) {
+        PurchaseOrder purchaseOrder = purchaseOrderService.getPurchaseOrderById(purchaseOrderId);
+        if(Objects.isNull(purchaseOrder)){
+            return 0;
+        }
+        final String productName = purchaseOrder.getProductName();
+        List<Material> list = this.findMaterialPage(purchaseOrder.getProductName(), purchaseOrder.getColor(), null, null, null);
+        if (CollectionUtils.isEmpty(list)){
+            Material material = new Material();
+            material.setProductName(purchaseOrder.getProductName());
+            material.setColor(purchaseOrder.getColor());
+            material.setNum(purchaseOrder.getNum());
+            material.setIngredients(purchaseOrder.getIngredients());
+            material.setWeight(purchaseOrder.getWeight());
+            material.setCreateTime(new Date());
+            if(materialMapper.insertSelective(material) <= 0){
+                throw new BusinessException("物品记录新增异常，回滚");
+            }
+            if(purchaseOrderService.updateStatus(purchaseOrderId, PurchaseOrderStatus.FINISHED.getKey(), loginId, PurchaseOrderStatus.AUDIT.getKey()) <= 0){
+                throw new BusinessException("修改采购单失败，回滚");
+            }
+            int goodsNum = goodsRecordService.insert(material.getId(), material.getProductName(), material.getIngredients(), purchaseOrderId + "", material.getNum(),
+                    0, RecordType.INBOUND.getKey(), loginId, purchaseOrder.getCreater());
+            if(goodsNum <= 0){
+                throw new BusinessException("插入物品记录异常，回滚");
+            }
+            return 1;
+        }
+        Material material = list.get(0);
+        int originalNum = material.getNum();
+        material.setNum(material.getNum() + purchaseOrder.getNum());
+        material.setUpdateTime(new Date());
+        if(materialMapper.updateByPrimaryKeySelective(material) <= 0){
+            throw new BusinessException("物品记录修改异常，回滚");
+        }
+        if(purchaseOrderService.updateStatus(purchaseOrderId, PurchaseOrderStatus.FINISHED.getKey(), loginId, PurchaseOrderStatus.AUDIT.getKey()) <= 0){
+            throw new BusinessException("修改采购单失败，回滚");
+        }
+        int goodsNum = goodsRecordService.insert(material.getId(), material.getProductName(), material.getIngredients(), purchaseOrderId + "", material.getNum(),
+                originalNum, RecordType.INBOUND.getKey(), loginId, purchaseOrder.getCreater());
+        if(goodsNum <= 0){
+            throw new BusinessException("插入物品记录异常，回滚");
+        }
+        return 1;
+    }
+
+    @Transactional
+    @Override
+    public Map<String, Object> outbound(int outboundId, int loginId, String loginName) {
+        Map<String, Object> result = Maps.newHashMap();
+        MaterialOutbound materialOutbound = materialOutboundService.getMaterialOutboundById(outboundId);
+        if(Objects.isNull(materialOutbound)){
+            LOGGER.info("原材料申请单【{}】不存在!", outboundId);
+            result.put("message", "原材料申请单不存在!");
+            result.put("success", 0);
+            return result;
+        }
+        List<OutboundMaterial> outboundMaterialList = outboundMaterialService.getOutboundMaterialByOutboundId(outboundId);
+        if(CollectionUtils.isEmpty(outboundMaterialList)){
+            LOGGER.info("原材料申请详情【{}】不存在!", outboundId);
+            result.put("message", "原材料申请详情不存在!");
+            result.put("success", 0);
+            return result;
+        }
+        for (OutboundMaterial m : outboundMaterialList) {
+            List<Material> materialList = this.findMaterialPage(m.getMaterialName(), m.getColor(), null, null, null);
+            if(CollectionUtils.isEmpty(materialList)){
+                LOGGER.info("{}的{}库存里不存在!", m.getColor(), m.getMaterialName());
+                throw new BusinessException(m.getColor() + m.getMaterialName() + "库存里不存在！");
+            }
+            Material material = materialList.get(0);
+            if(material.getNum() < m.getNum()){
+                LOGGER.info("{}的{}库存不足!", m.getColor(), m.getMaterialName());
+                throw new BusinessException(m.getColor() + m.getMaterialName() + "库存不足！");
+            }
+            int originalNum = material.getNum();
+            material.setModifier(loginId);
+            material.setUpdateTime(new Date());
+            material.setNum(material.getNum() - m.getNum());
+            int rowNum = materialMapper.updateByPrimaryKeySelective(material);
+            if(rowNum <= 0){
+                LOGGER.info("更新库存【{}】数量失败！", material.getId());
+                result.put("message", "更新库存数量失败！");
+                result.put("success", 0);
+                return result;
+            }
+            int outNum = materialOutboundService.updateStatus(outboundId, loginId, MaterialOutBoundStatus.FINISHED.getKey(), MaterialOutBoundStatus.AUDIT.getKey());
+            if(outNum <= 0){
+                LOGGER.info("更新原材料申请单状态【{}】数量失败！", outboundId);
+                throw new BusinessException("更新原材料申请单状态异常，回滚");
+            }
+            goodsRecordService.insert(material.getId(), material.getProductName(), material.getColor(), outboundId + "", material.getNum(),
+                    originalNum, RecordType.OUTBOUND.getKey(), loginId, materialOutbound.getCreater());
+        }
+        result.put("message", "原材料出库成功");
+        result.put("success", 1);
+        return result;
     }
 }

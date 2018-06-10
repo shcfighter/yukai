@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.zero.mapper.OutBoundMapper">
-  <resultMap id="BaseResultMap" type="com.zero.model.OutBound">
+<mapper namespace="com.zero.mapper.OutboundMaterialMapper">
+  <resultMap id="BaseResultMap" type="com.zero.model.OutboundMaterial">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="good_id" jdbcType="INTEGER" property="goodId" />
-    <result column="outbound_type" jdbcType="INTEGER" property="outboundType" />
-    <result column="goods_name" jdbcType="VARCHAR" property="goodsName" />
-    <result column="goods_model" jdbcType="VARCHAR" property="goodsModel" />
-    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="outbound_id" jdbcType="INTEGER" property="outboundId" />
+    <result column="material_name" jdbcType="VARCHAR" property="materialName" />
     <result column="color" jdbcType="VARCHAR" property="color" />
     <result column="num" jdbcType="INTEGER" property="num" />
-    <result column="unit" jdbcType="VARCHAR" property="unit" />
-    <result column="status" jdbcType="INTEGER" property="status" />
     <result column="is_deleted" jdbcType="INTEGER" property="isDeleted" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
@@ -78,17 +73,17 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, good_id, outbound_type, goods_name, goods_model, type, color, num, unit, status, 
-    is_deleted, create_time, update_time, creater, modifier, remarks
+    id, outbound_id, material_name, color, num, is_deleted, create_time, update_time, 
+    creater, modifier, remarks
   </sql>
-  <select id="selectByExample" parameterType="com.zero.model.example.OutBoundExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.zero.model.example.OutboundMaterialExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     'true' as QUERYID,
     <include refid="Base_Column_List" />
-    from t_outbound
+    from t_outbound_material
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -99,65 +94,46 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from t_outbound
+    from t_outbound_material
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from t_outbound
+    delete from t_outbound_material
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="com.zero.model.example.OutBoundExample">
-    delete from t_outbound
+  <delete id="deleteByExample" parameterType="com.zero.model.example.OutboundMaterialExample">
+    delete from t_outbound_material
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.zero.model.OutBound">
-    insert into t_outbound (id, good_id, outbound_type, 
-      goods_name, goods_model, type, 
-      color, num, unit, status, 
-      is_deleted, create_time, update_time, 
-      creater, modifier, remarks
-      )
-    values (#{id,jdbcType=INTEGER}, #{goodId,jdbcType=INTEGER}, #{outboundType,jdbcType=INTEGER}, 
-      #{goodsName,jdbcType=VARCHAR}, #{goodsModel,jdbcType=VARCHAR}, #{type,jdbcType=INTEGER}, 
-      #{color,jdbcType=VARCHAR}, #{num,jdbcType=INTEGER}, #{unit,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
-      #{isDeleted,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{creater,jdbcType=INTEGER}, #{modifier,jdbcType=INTEGER}, #{remarks,jdbcType=VARCHAR}
-      )
+  <insert id="insert" parameterType="com.zero.model.OutboundMaterial">
+    insert into t_outbound_material (id, outbound_id, material_name, 
+      color, num, is_deleted, 
+      create_time, update_time, creater, 
+      modifier, remarks)
+    values (#{id,jdbcType=INTEGER}, #{outboundId,jdbcType=INTEGER}, #{materialName,jdbcType=VARCHAR}, 
+      #{color,jdbcType=VARCHAR}, #{num,jdbcType=INTEGER}, #{isDeleted,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{creater,jdbcType=INTEGER}, 
+      #{modifier,jdbcType=INTEGER}, #{remarks,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.zero.model.OutBound">
-    insert into t_outbound
+  <insert id="insertSelective" parameterType="com.zero.model.OutboundMaterial">
+    insert into t_outbound_material
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
       </if>
-      <if test="goodId != null">
-        good_id,
+      <if test="outboundId != null">
+        outbound_id,
       </if>
-      <if test="outboundType != null">
-        outbound_type,
-      </if>
-      <if test="goodsName != null">
-        goods_name,
-      </if>
-      <if test="goodsModel != null">
-        goods_model,
-      </if>
-      <if test="type != null">
-        type,
+      <if test="materialName != null">
+        material_name,
       </if>
       <if test="color != null">
         color,
       </if>
       <if test="num != null">
         num,
-      </if>
-      <if test="unit != null">
-        unit,
-      </if>
-      <if test="status != null">
-        status,
       </if>
       <if test="isDeleted != null">
         is_deleted,
@@ -182,32 +158,17 @@
       <if test="id != null">
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="goodId != null">
-        #{goodId,jdbcType=INTEGER},
+      <if test="outboundId != null">
+        #{outboundId,jdbcType=INTEGER},
       </if>
-      <if test="outboundType != null">
-        #{outboundType,jdbcType=INTEGER},
-      </if>
-      <if test="goodsName != null">
-        #{goodsName,jdbcType=VARCHAR},
-      </if>
-      <if test="goodsModel != null">
-        #{goodsModel,jdbcType=VARCHAR},
-      </if>
-      <if test="type != null">
-        #{type,jdbcType=INTEGER},
+      <if test="materialName != null">
+        #{materialName,jdbcType=VARCHAR},
       </if>
       <if test="color != null">
         #{color,jdbcType=VARCHAR},
       </if>
       <if test="num != null">
         #{num,jdbcType=INTEGER},
-      </if>
-      <if test="unit != null">
-        #{unit,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null">
-        #{status,jdbcType=INTEGER},
       </if>
       <if test="isDeleted != null">
         #{isDeleted,jdbcType=INTEGER},
@@ -229,44 +190,29 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.zero.model.example.OutBoundExample" resultType="java.lang.Long">
-    select count(*) from t_outbound
+  <select id="countByExample" parameterType="com.zero.model.example.OutboundMaterialExample" resultType="java.lang.Long">
+    select count(*) from t_outbound_material
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update t_outbound
+    update t_outbound_material
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=INTEGER},
       </if>
-      <if test="record.goodId != null">
-        good_id = #{record.goodId,jdbcType=INTEGER},
+      <if test="record.outboundId != null">
+        outbound_id = #{record.outboundId,jdbcType=INTEGER},
       </if>
-      <if test="record.outboundType != null">
-        outbound_type = #{record.outboundType,jdbcType=INTEGER},
-      </if>
-      <if test="record.goodsName != null">
-        goods_name = #{record.goodsName,jdbcType=VARCHAR},
-      </if>
-      <if test="record.goodsModel != null">
-        goods_model = #{record.goodsModel,jdbcType=VARCHAR},
-      </if>
-      <if test="record.type != null">
-        type = #{record.type,jdbcType=INTEGER},
+      <if test="record.materialName != null">
+        material_name = #{record.materialName,jdbcType=VARCHAR},
       </if>
       <if test="record.color != null">
         color = #{record.color,jdbcType=VARCHAR},
       </if>
       <if test="record.num != null">
         num = #{record.num,jdbcType=INTEGER},
-      </if>
-      <if test="record.unit != null">
-        unit = #{record.unit,jdbcType=VARCHAR},
-      </if>
-      <if test="record.status != null">
-        status = #{record.status,jdbcType=INTEGER},
       </if>
       <if test="record.isDeleted != null">
         is_deleted = #{record.isDeleted,jdbcType=INTEGER},
@@ -292,17 +238,12 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update t_outbound
+    update t_outbound_material
     set id = #{record.id,jdbcType=INTEGER},
-      good_id = #{record.goodId,jdbcType=INTEGER},
-      outbound_type = #{record.outboundType,jdbcType=INTEGER},
-      goods_name = #{record.goodsName,jdbcType=VARCHAR},
-      goods_model = #{record.goodsModel,jdbcType=VARCHAR},
-      type = #{record.type,jdbcType=INTEGER},
+      outbound_id = #{record.outboundId,jdbcType=INTEGER},
+      material_name = #{record.materialName,jdbcType=VARCHAR},
       color = #{record.color,jdbcType=VARCHAR},
       num = #{record.num,jdbcType=INTEGER},
-      unit = #{record.unit,jdbcType=VARCHAR},
-      status = #{record.status,jdbcType=INTEGER},
       is_deleted = #{record.isDeleted,jdbcType=INTEGER},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP},
@@ -313,35 +254,20 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.zero.model.OutBound">
-    update t_outbound
+  <update id="updateByPrimaryKeySelective" parameterType="com.zero.model.OutboundMaterial">
+    update t_outbound_material
     <set>
-      <if test="goodId != null">
-        good_id = #{goodId,jdbcType=INTEGER},
+      <if test="outboundId != null">
+        outbound_id = #{outboundId,jdbcType=INTEGER},
       </if>
-      <if test="outboundType != null">
-        outbound_type = #{outboundType,jdbcType=INTEGER},
-      </if>
-      <if test="goodsName != null">
-        goods_name = #{goodsName,jdbcType=VARCHAR},
-      </if>
-      <if test="goodsModel != null">
-        goods_model = #{goodsModel,jdbcType=VARCHAR},
-      </if>
-      <if test="type != null">
-        type = #{type,jdbcType=INTEGER},
+      <if test="materialName != null">
+        material_name = #{materialName,jdbcType=VARCHAR},
       </if>
       <if test="color != null">
         color = #{color,jdbcType=VARCHAR},
       </if>
       <if test="num != null">
         num = #{num,jdbcType=INTEGER},
-      </if>
-      <if test="unit != null">
-        unit = #{unit,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null">
-        status = #{status,jdbcType=INTEGER},
       </if>
       <if test="isDeleted != null">
         is_deleted = #{isDeleted,jdbcType=INTEGER},
@@ -364,17 +290,12 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.zero.model.OutBound">
-    update t_outbound
-    set good_id = #{goodId,jdbcType=INTEGER},
-      outbound_type = #{outboundType,jdbcType=INTEGER},
-      goods_name = #{goodsName,jdbcType=VARCHAR},
-      goods_model = #{goodsModel,jdbcType=VARCHAR},
-      type = #{type,jdbcType=INTEGER},
+  <update id="updateByPrimaryKey" parameterType="com.zero.model.OutboundMaterial">
+    update t_outbound_material
+    set outbound_id = #{outboundId,jdbcType=INTEGER},
+      material_name = #{materialName,jdbcType=VARCHAR},
       color = #{color,jdbcType=VARCHAR},
       num = #{num,jdbcType=INTEGER},
-      unit = #{unit,jdbcType=VARCHAR},
-      status = #{status,jdbcType=INTEGER},
       is_deleted = #{isDeleted,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
@@ -383,4 +304,13 @@
       remarks = #{remarks,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <insert id="insertBatch" parameterType="list">
+    insert into t_outbound_material (outbound_id, material_name, num, color, create_time, creater)
+    values
+    <foreach collection="list" item="material" separator=",">
+      (#{material.outboundId,jdbcType=INTEGER}, #{material.materialName,jdbcType=VARCHAR}, #{material.num,jdbcType=INTEGER},
+      #{material.color,jdbcType=VARCHAR}, now(), #{loginId,jdbcType=INTEGER})
+    </foreach>
+  </insert>
 </mapper>

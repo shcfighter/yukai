@@ -2,11 +2,8 @@ package com.zero.service;
 
 import com.zero.model.Sample;
 import com.zero.model.SampleDetail;
-import com.zero.model.SampleMaterial;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 public interface ISampleService {
 
