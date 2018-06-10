@@ -34,41 +34,41 @@ public class ProductApplyController {
     public Result<String> insertProductApply(HttpServletRequest request,
                                         @RequestBody ProductApplyDetails productDetails, BindingResult bindingResult){
         if(bindingResult.hasErrors()){
-            LOGGER.error("新增生产计划信息错误：{}", bindingResult.getFieldError().getDefaultMessage());
+            LOGGER.error("新增成品入库单信息错误：{}", bindingResult.getFieldError().getDefaultMessage());
             return Result.resultFailure(bindingResult.getFieldError().getDefaultMessage());
         }
         if(productApplyService.insert(productDetails, SessionUtils.getCurrentUserId(request)) <= 0){
-            return Result.resultFailure("新增生产计划失败！");
+            return Result.resultFailure("新增成品入库单失败！");
         }
-        return Result.resultSuccess("新增生产计划成功！");
+        return Result.resultSuccess("新增成品入库单成功！");
     }
 
     @PostMapping("updateProductApply")
     public Result<String> updateProductApply(HttpServletRequest request, @RequestBody ProductApplyDetails productDetails,
                                      BindingResult bindingResult){
         if(bindingResult.hasErrors()){
-            LOGGER.error("修改生产计划信息错误：{}", bindingResult.getFieldError().getDefaultMessage());
+            LOGGER.error("修改成品入库单信息错误：{}", bindingResult.getFieldError().getDefaultMessage());
             return Result.resultFailure(bindingResult.getFieldError().getDefaultMessage());
         }
         if(productApplyService.update(productDetails, SessionUtils.getCurrentUserId(request)) <= 0){
-            return Result.resultFailure("修改生产计划失败！");
+            return Result.resultFailure("修改成品入库单失败！");
         }
-        return Result.resultSuccess("修改生产计划成功！");
+        return Result.resultSuccess("修改成品入库单成功！");
     }
 
     @DeleteMapping("deleteProductApply/{id}")
     public Result<String> deleteProductApply(HttpServletRequest request, @PathVariable("id") int id){
         if(productApplyService.delete(id, SessionUtils.getCurrentUserId(request)) <= 0){
-            return Result.resultFailure("删除生产计划失败！");
+            return Result.resultFailure("删除成品入库单失败！");
         }
-        LOGGER.info("删除生产计划【{}】信息", id);
-        return Result.resultSuccess("删除生产计划成功！");
+        LOGGER.info("删除成品出库单【{}】信息", id);
+        return Result.resultSuccess("删除成品入库单成功！");
     }
 
     @PostMapping("batchDelete")
     public Result<String> batchDelete(HttpServletRequest request, @RequestParam("ids[]") List<Integer> ids){
         if(CollectionUtils.isEmpty(ids)){
-            return Result.resultFailure("删除生产计划单信息失败，未选中样品！");
+            return Result.resultFailure("删除成品入库单信息失败，未选中成品入库单！");
         }
         AtomicInteger success = new AtomicInteger(0);
         ids.forEach(id -> {
@@ -76,7 +76,7 @@ public class ProductApplyController {
                 success.getAndAdd(1);
             }
         });
-        return Result.resultSuccess("成功删除【" + success.get() + "】条生产计划单信息！");
+        return Result.resultSuccess("成功删除【" + success.get() + "】条成品入库单信息！");
     }
 
     @GetMapping("findProductApplyPage")
@@ -87,11 +87,11 @@ public class ProductApplyController {
                 productApplyService.findProductApplyAndDetailList(productName, sampleCode, orderCode, status, pageNum, pageSize));
     }
 
-    @GetMapping("getProductApplyDetailByPlanId/{id}")
-    public Result<List<Map<String, Object>>> getProductApplyDetailByPlanId(@PathVariable("id") int planId){
+    @GetMapping("getProductApplyDetailById/{id}")
+    public Result<List<Map<String, Object>>> getProductApplyDetailById(@PathVariable("id") int id){
         Map<String, Object> result = Maps.newHashMap();
-        result.put("plan", productApplyService.getProductApplyById(planId));
-        result.put("detailList", productApplyDetailService.getProductApplyDetailByProductId(planId));
+        result.put("productApply", productApplyService.getProductApplyById(id));
+        result.put("detailList", productApplyDetailService.getProductApplyDetailByProductId(id));
         return Result.resultSuccess(result);
     }
 

@@ -532,6 +532,6 @@
       </if>
       ) t1 left join t_order_detail t2
     on (t1.id = t2.order_id and t2.is_deleted = 0)
-    order by t1.create_time desc, t2.size_type desc
+    order by t1.create_time desc, t2.size_type*1 asc
     </select>
 </mapper>

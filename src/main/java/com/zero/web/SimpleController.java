@@ -54,12 +54,6 @@ public class SimpleController {
 			LOGGER.error("新增样品信息错误：{}", bindingResult.getFieldError().getDefaultMessage());
 			return Result.resultFailure(bindingResult.getFieldError().getDefaultMessage());
 		}
-		LOGGER.info("原材料size：{}", sampleMaterial.getDetailList().size());
-		sampleMaterial.getDetailList().forEach(m -> {
-			LOGGER.info("原材料：{}", m);
-		});
-		LOGGER.info("样品：{}", sampleMaterial.getSample());
-		LOGGER.info("图片：{}", sampleMaterial.getSampleUrls());
 		sampleMaterial.getSample().setPhotoUrl(sampleMaterial.getSampleUrls());
 		int result = sampleService.insertOrUpdate(sampleMaterial.getSample(), sampleMaterial.getDetailList(), SessionUtils.getCurrentUserId(request));
 		if(result == 0){

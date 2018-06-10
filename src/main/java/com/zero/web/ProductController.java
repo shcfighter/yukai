@@ -44,11 +44,11 @@ public class ProductController {
     public Result<String> outbound(HttpServletRequest request,
                                    @PathVariable("outboundId") int outboundId){
         Map<String, Object> result = null;
-        /*try {
-            result = materialService.outbound(outboundId, SessionUtils.getCurrentUserId(request), SessionUtils.getCurrentUserName(request));
+        try {
+            result = productService.outbound(outboundId, SessionUtils.getCurrentUserId(request), SessionUtils.getCurrentUserName(request));
         } catch (Exception e) {
             return Result.resultFailure(e.getMessage());
-        }*/
+        }
         if(StringUtils.equals(result.get("success") + "", "0")){
             return Result.resultFailure(result.get("message") + "");
         }

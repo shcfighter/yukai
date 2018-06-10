@@ -1,22 +1,17 @@
 package com.zero.service.impl;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.zero.common.BusinessException;
 import com.zero.common.enmu.DeletedEnum;
 import com.zero.common.enmu.ProductStatus;
 import com.zero.mapper.ProductDetailMapper;
 import com.zero.mapper.ProductMapper;
-import com.zero.model.Product;
-import com.zero.model.ProductApply;
-import com.zero.model.ProductApplyDetail;
-import com.zero.model.ProductDetail;
+import com.zero.model.*;
 import com.zero.model.example.OrderDetailExample;
 import com.zero.model.example.ProductDetailExample;
 import com.zero.model.example.ProductExample;
-import com.zero.service.IProductApplyDetailService;
-import com.zero.service.IProductApplyService;
-import com.zero.service.IProductDetailService;
-import com.zero.service.IProductService;
+import com.zero.service.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,10 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ProductServiceImpl implements IProductService {
@@ -39,11 +31,15 @@ public class ProductServiceImpl implements IProductService {
     @Resource
     private ProductDetailMapper productDetailMapper;
     @Resource
+    private IProductDetailService productDetailService;
+    @Resource
     private IProductApplyService productApplyService;
     @Resource
     private IProductApplyDetailService productApplyDetailService;
     @Resource
-    private IProductDetailService productDetailService;
+    private IProductOutboundService productOutboundService;
+    @Resource
+    private IProductOutboundDetailService productOutboundDetailService;
 
     @Override
     public Product getProductById(int id) {
@@ -213,6 +209,63 @@ public class ProductServiceImpl implements IProductService {
         }
 
         return 1;
+    }
+
+    @Transactional
+    @Override
+    public Map<String, Object> outbound(int outboundId, int loginId, String loginName) {
+        Map<String, Object> result = Maps.newHashMap();
+        ProductOutbound productOutbound = productOutboundService.getProductOutboundById(outboundId);
+        List<ProductOutboundDetail> outboundDetailList = productOutboundDetailService.getProductOutboundDetailByProductId(outboundId);
+        if(Objects.isNull(productOutbound) || CollectionUtils.isEmpty(outboundDetailList)){
+            result.put("success", 0);
+            result.put("message", "成品出货申请单或详情不存在！");
+            return result;
+        }
+        Product product = this.findProductByOrderCode(productOutbound.getOrderCode());
+        if(Objects.isNull(product)){
+            result.put("success", 0);
+            result.put("message", "成品库存不足！");
+            return result;
+        }
+        List<ProductDetail> productDetailList = productDetailService.getProductDetailByProductId(product.getId());
+        if(Objects.isNull(product) || CollectionUtils.isEmpty(productDetailList)){
+            result.put("success", 0);
+            result.put("message", "成品库存不足！");
+            return result;
+        }
+        for (ProductOutboundDetail outboundDetail: outboundDetailList) {
+            boolean isSuccess = false;
+            ProductDetail updateProductDetail = null;
+            for (ProductDetail productDetail: productDetailList){
+                if(StringUtils.equals(outboundDetail.getSizeType(), productDetail.getSizeType())
+                        && productDetail.getWarehouseNum() >= outboundDetail.getWarehouseNum()){
+                    productDetail.setOrderNum(productDetail.getOrderNum() - outboundDetail.getOrderNum());
+                    productDetail.setWarehouseNum(productDetail.getWarehouseNum() - outboundDetail.getWarehouseNum());
+                    productDetail.setUpdateTime(new Date());
+                    updateProductDetail = productDetail;
+                    isSuccess = true;
+                    continue;
+                }
+            }
+            if(!isSuccess){
+                LOGGER.info("{}{}库存不足！", outboundDetail.getColor(), outboundDetail.getWarehouseNum());
+                throw new BusinessException(outboundDetail.getColor() + outboundDetail.getWarehouseNum() + "库存不足！");
+            }
+            if(productDetailMapper.updateByPrimaryKeySelective(updateProductDetail) <= 0){
+                LOGGER.info("{}{}更改库存失败！", outboundDetail.getColor(), outboundDetail.getWarehouseNum());
+                throw new BusinessException(outboundDetail.getColor() + outboundDetail.getWarehouseNum() + "更改库存失败！");
+            }
+        }
+        if(productOutboundService.updateStatus(outboundId, ProductStatus.FINISHED.getKey(), loginId,
+                ProductStatus.FINISHED.getKey()) <= 0){
+            LOGGER.info("更改成品出库申请【{}】单状态失败！", outboundId);
+            throw new BusinessException("更改成品出库申请【"  +outboundId + "】单状态失败！");
+        }
+
+        result.put("success", 1);
+        result.put("message", "成品出货成功！");
+        return result;
     }
 
 }

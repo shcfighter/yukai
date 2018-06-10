@@ -566,6 +566,6 @@
     on (t1.id = t2.plan_id and t2.is_deleted = 0)
     left join t_plan_material t3
     on(t1.id = t3.plan_id and t3.is_deleted = 0)
-    order by t1.create_time desc, t2.size_type desc
+    order by t1.create_time desc, t2.size_type*1 asc
   </select>
 </mapper>

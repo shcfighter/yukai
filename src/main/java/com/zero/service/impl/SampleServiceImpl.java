@@ -8,6 +8,7 @@ import com.zero.mapper.SampleDetailMapper;
 import com.zero.mapper.SampleMapper;
 import com.zero.model.Sample;
 import com.zero.model.SampleDetail;
+import com.zero.model.example.SampleDetailExample;
 import com.zero.model.example.SampleExample;
 import com.zero.service.ISampleService;
 import org.apache.commons.lang3.StringUtils;
@@ -61,14 +62,16 @@ public class SampleServiceImpl implements ISampleService {
         BeanUtils.copyProperties(sample, sampleDb);
         sampleDb.setModifier(loginId);
         sampleDb.setUpdateTime(new Date());
-        list.forEach(m -> {
-            if(Objects.isNull(m.getId())){
-                m.setSampleId(sampleDb.getId());
-                m.setCreater(loginId);
-                m.setCreateTime(new Date());
-                sampleDetailMapper.insert(m);
-            }
-        });
+
+        SampleDetailExample example = new SampleDetailExample();
+        SampleDetailExample.Criteria criteria = example.createCriteria();
+        criteria.andSampleIdEqualTo(sampleDb.getId());
+        sampleDetailMapper.deleteByExample(example);
+
+        list.stream().forEach(m -> {m.setSampleId(sampleDb.getId());});
+        if(!CollectionUtils.isEmpty(list)){
+            sampleDetailMapper.insertBatch(list, loginId);
+        }
         return sampleMapper.updateByPrimaryKeySelective(sampleDb);
     }
 

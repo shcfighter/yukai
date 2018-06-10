@@ -306,11 +306,11 @@
   </update>
 
   <insert id="insertBatch" parameterType="list">
-    insert into t_sample_detail (sample_id, attribute, unit, create_time, creater)
+    insert into t_sample_detail (sample_id, attribute, value, unit, create_time, creater)
     values
     <foreach collection="list" item="detail" separator=",">
-      (#{detail.sampleId,jdbcType=INTEGER}, #{detail.attribute,jdbcType=VARCHAR}, #{detail.unit,jdbcType=VARCHAR},
-      now(), #{loginId,jdbcType=INTEGER})
+      (#{detail.sampleId,jdbcType=INTEGER}, #{detail.attribute,jdbcType=VARCHAR}, #{detail.value,jdbcType=VARCHAR},
+      #{detail.unit,jdbcType=VARCHAR}, now(), #{loginId,jdbcType=INTEGER})
     </foreach>
   </insert>
 

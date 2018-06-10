@@ -3,6 +3,7 @@ package com.zero.service;
 import com.zero.model.Product;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IProductService {
 
@@ -19,4 +20,5 @@ public interface IProductService {
 
     int inbound(int productId, int loginId, String loginName);
 
+    Map<String, Object> outbound(int outboundId, int loginId, String loginName);
 }
