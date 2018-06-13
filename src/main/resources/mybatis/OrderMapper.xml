@@ -490,18 +490,31 @@
   </update>
 
   <resultMap type="com.zero.model.Order" id="ordersAndOrderDetailResultMap" extends="BaseResultMap">
-    <collection property="details" ofType="com.zero.model.OrderDetail">
-      <id column="detail_id" jdbcType="INTEGER" property="id" />
-      <result column="order_id" jdbcType="INTEGER" property="orderId" />
-      <result column="size_type" jdbcType="VARCHAR" property="sizeType" />
-      <result column="num" jdbcType="INTEGER" property="num" />
-      <result column="color" jdbcType="VARCHAR" property="color" />
-      <result column="detail_deleted" jdbcType="INTEGER" property="isDeleted" />
-      <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-      <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-      <result column="creater" jdbcType="INTEGER" property="creater" />
-      <result column="modifier" jdbcType="INTEGER" property="modifier" />
-      <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <collection property="batchDetails" ofType="com.zero.model.OrderBatch">
+      <id column="batch_id" jdbcType="INTEGER" property="id" />
+      <result column="batch_order_id" jdbcType="INTEGER" property="orderId" />
+      <result column="batch_delivery_number" jdbcType="VARCHAR" property="deliveryNumber" />
+      <result column="batch_po_number" jdbcType="VARCHAR" property="poNumber" />
+      <result column="batch_color" jdbcType="VARCHAR" property="color" />
+      <result column="batch_is_deleted" jdbcType="INTEGER" property="isDeleted" />
+      <result column="batch_create_time" jdbcType="TIMESTAMP" property="createTime" />
+      <result column="batch_update_time" jdbcType="TIMESTAMP" property="updateTime" />
+      <result column="batch_creater" jdbcType="INTEGER" property="creater" />
+      <result column="batch_modifier" jdbcType="INTEGER" property="modifier" />
+      <result column="batch_remarks" jdbcType="VARCHAR" property="remarks" />
+      <collection property="details" ofType="com.zero.model.OrderDetail">
+        <id column="detail_id" jdbcType="INTEGER" property="id" />
+        <result column="order_id" jdbcType="INTEGER" property="orderId" />
+        <result column="size_type" jdbcType="VARCHAR" property="sizeType" />
+        <result column="num" jdbcType="INTEGER" property="num" />
+        <result column="color" jdbcType="VARCHAR" property="color" />
+        <result column="detail_deleted" jdbcType="INTEGER" property="isDeleted" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="creater" jdbcType="INTEGER" property="creater" />
+        <result column="modifier" jdbcType="INTEGER" property="modifier" />
+        <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+      </collection>
     </collection>
   </resultMap>
   <!-- 查询订单关联查询用户及订单明细 -->
@@ -517,7 +530,17 @@
       t2.update_time detail_update_time,
       t2.creater detail_creater,
       t2.modifier detail_modifier,
-      t2.remarks detail_remarks
+      t2.remarks detail_remarks,
+      t3.id batch_id,
+      t3.order_id batch_order_id,
+      t3.delivery_number batch_delivery_number,
+      t3.po_number batch_po_number,
+      t2.color batch_color,
+      t3.create_time batch_create_time,
+      t3.update_time batch_update_time,
+      t3.creater batch_creater,
+      t3.modifier batch_modifier,
+      t3.remarks batch_remarks
     FROM
       (
       select * from t_order
@@ -530,8 +553,9 @@
       <if test="limit != null and offset != null">
         limit #{limit} offset #{offset}
       </if>
-      ) t1 left join t_order_detail t2
-    on (t1.id = t2.order_id and t2.is_deleted = 0)
-    order by t1.create_time desc, t2.size_type*1 asc
+      ) t1 LEFT JOIN t_order_batch t3 on(t1.id = t3.order_id and t3.is_deleted = 0)
+    left join t_order_detail t2
+    on (t3.id = t2.order_id and t2.is_deleted = 0)
+    order by t1.create_time desc
     </select>
 </mapper>

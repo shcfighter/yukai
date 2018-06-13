@@ -24,4 +24,9 @@ public class ProductDetailServiceImpl implements IProductDetailService {
         criteria.andProductIdEqualTo(productId);
         return productDetailMapper.selectByExample(example);
     }
+
+    @Override
+    public long selectTotal() {
+        return productDetailMapper.selectTotal();
+    }
 }

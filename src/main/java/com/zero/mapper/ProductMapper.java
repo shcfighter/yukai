@@ -3,6 +3,8 @@ package com.zero.mapper;
 import com.zero.model.Product;
 import com.zero.model.example.ProductExample;
 import java.util.List;
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Param;
 
 public interface ProductMapper {
@@ -29,4 +31,6 @@ public interface ProductMapper {
     int updateByPrimaryKey(Product record);
 
     List<Product> findProductAndDetailList(ProductExample example);
+
+    List<Map<String, Object>> findProductList(ProductExample example);
 }

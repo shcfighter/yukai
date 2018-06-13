@@ -324,4 +324,8 @@
       remarks = #{remarks,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectTotal" resultType="java.lang.Long">
+    select sum(num) from t_material where is_deleted = 0
+  </select>
 </mapper>

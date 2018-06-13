@@ -12,7 +12,7 @@ public interface IProductService {
 
     List<Product> findProductPage(String productName, String sampleCode, String orderCode, Integer status, Integer pageNum, Integer pageSize);
 
-    List<Product> findProductAndDetailList(String productName, String sampleCode, String orderCode, Integer status, Integer pageNum, Integer pageSize);
+    List<Map<String, Object>> findProductAndDetailList(String productName, String sampleCode, String orderCode, Integer status, Integer pageNum, Integer pageSize);
 
     long findProductRowNum(String productName, String sampleCode, String orderCode, Integer status);
 

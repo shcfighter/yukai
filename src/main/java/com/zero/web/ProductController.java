@@ -2,9 +2,6 @@ package com.zero.web;
 
 import com.zero.common.Result;
 import com.zero.common.utils.SessionUtils;
-import com.zero.model.Material;
-import com.zero.model.Product;
-import com.zero.service.IMaterialService;
 import com.zero.service.IProductService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -24,7 +21,7 @@ public class ProductController {
     private IProductService productService;
 
     @GetMapping("/findProductPage")
-    public Result<List<Product>> findProductPage(String productName, String sampleCode, String orderCode, Integer status,
+    public Result<List<Map<String, Object>>> findProductPage(String productName, String sampleCode, String orderCode, Integer status,
                                                  @RequestParam(value = "page", defaultValue = "1") int pageNum,
                                                  @RequestParam(value = "limit", defaultValue = "10") int pageSize){
         return Result.resultSuccess(productService.findProductRowNum(productName, sampleCode, orderCode, status),

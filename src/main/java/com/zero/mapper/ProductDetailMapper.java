@@ -29,4 +29,6 @@ public interface ProductDetailMapper {
     int updateByPrimaryKey(ProductDetail record);
 
     int insertBatch(@Param("list") List<ProductDetail> list, @Param("loginId") int loginId);
+
+    long selectTotal();
 }

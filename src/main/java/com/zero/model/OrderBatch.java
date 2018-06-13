@@ -3,20 +3,16 @@ package com.zero.model;
 import java.util.Date;
 import java.util.List;
 
-public class Product {
+public class OrderBatch {
     private Integer id;
-
-    private String sampleCode;
 
     private Integer orderId;
 
-    private String orderCode;
+    private String deliveryNumber;
 
-    private String productName;
+    private String poNumber;
 
-    private String photoUrl;
-
-    private Integer status;
+    private String color;
 
     private Integer isDeleted;
 
@@ -30,7 +26,7 @@ public class Product {
 
     private String remarks;
 
-    private List<ProductDetail> detailList;
+    private List<OrderDetail> details;
 
     public Integer getId() {
         return id;
@@ -38,14 +34,6 @@ public class Product {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public String getSampleCode() {
-        return sampleCode;
-    }
-
-    public void setSampleCode(String sampleCode) {
-        this.sampleCode = sampleCode == null ? null : sampleCode.trim();
     }
 
     public Integer getOrderId() {
@@ -56,36 +44,28 @@ public class Product {
         this.orderId = orderId;
     }
 
-    public String getOrderCode() {
-        return orderCode;
+    public String getDeliveryNumber() {
+        return deliveryNumber;
     }
 
-    public void setOrderCode(String orderCode) {
-        this.orderCode = orderCode == null ? null : orderCode.trim();
+    public void setDeliveryNumber(String deliveryNumber) {
+        this.deliveryNumber = deliveryNumber == null ? null : deliveryNumber.trim();
     }
 
-    public String getProductName() {
-        return productName;
+    public String getPoNumber() {
+        return poNumber;
     }
 
-    public void setProductName(String productName) {
-        this.productName = productName == null ? null : productName.trim();
+    public void setPoNumber(String poNumber) {
+        this.poNumber = poNumber == null ? null : poNumber.trim();
     }
 
-    public String getPhotoUrl() {
-        return photoUrl;
+    public String getColor() {
+        return color;
     }
 
-    public void setPhotoUrl(String photoUrl) {
-        this.photoUrl = photoUrl == null ? null : photoUrl.trim();
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
+    public void setColor(String color) {
+        this.color = color == null ? null : color.trim();
     }
 
     public Integer getIsDeleted() {
@@ -136,11 +116,11 @@ public class Product {
         this.remarks = remarks == null ? null : remarks.trim();
     }
 
-    public List<ProductDetail> getDetailList() {
-        return detailList;
+    public List<OrderDetail> getDetails() {
+        return details;
     }
 
-    public void setDetailList(List<ProductDetail> detailList) {
-        this.detailList = detailList;
+    public void setDetails(List<OrderDetail> details) {
+        this.details = details;
     }
 }

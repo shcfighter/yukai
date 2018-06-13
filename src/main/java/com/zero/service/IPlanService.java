@@ -23,5 +23,9 @@ public interface IPlanService {
 
     int updateToProduce(int id, int loginId);
 
+    int updateToAudit(int id, int loginId);
+
     int updateToFinish(int id, int loginId);
+
+    int updateToReject(int id, int loginId);
 }

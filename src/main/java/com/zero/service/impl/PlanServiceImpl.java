@@ -6,7 +6,6 @@ import com.zero.common.enmu.DeletedEnum;
 import com.zero.common.enmu.OrderStatus;
 import com.zero.common.enmu.PlanStatus;
 import com.zero.common.utils.BeanUtils;
-import com.zero.common.utils.SessionUtils;
 import com.zero.mapper.PlanDetailMapper;
 import com.zero.mapper.PlanMapper;
 import com.zero.mapper.PlanMaterialMapper;
@@ -203,7 +202,7 @@ public class PlanServiceImpl implements IPlanService {
         if(Objects.isNull(plan)){
             return 0;
         }
-        if(PlanStatus.SAVE.getKey() != plan.getStatus().intValue()){
+        if(PlanStatus.AUDIT.getKey() != plan.getStatus().intValue()){
             return -1;
         }
         plan.setStatus(PlanStatus.PRODUCE.getKey());
@@ -215,9 +214,24 @@ public class PlanServiceImpl implements IPlanService {
         }
         if(orderService.updateStatus(plan.getOrderId(), OrderStatus.PRODUCE.getKey(), OrderStatus.PLAN.getKey(), loginId) <= 0){
             LOGGER.info("修改订单状态失败！");
-            throw new BusinessException("修改订单状态失败！");
         }
         return 1;
+    }
+
+    @Override
+    public int updateToAudit(int id, int loginId) {
+        Plan plan = this.getPlanById(id);
+        if(Objects.isNull(plan)){
+            return 0;
+        }
+        if(PlanStatus.SAVE.getKey() != plan.getStatus() && PlanStatus.REJECT.getKey() != plan.getStatus()){
+            LOGGER.error("生产计划【{}】状态【{}】不正确", id, plan.getStatus());
+            return -1;
+        }
+        plan.setStatus(PlanStatus.AUDIT.getKey());
+        plan.setUpdateTime(new Date());
+        plan.setModifier(loginId);
+        return planMapper.updateByPrimaryKeySelective(plan);
     }
 
     @Override
@@ -231,6 +245,22 @@ public class PlanServiceImpl implements IPlanService {
             return -1;
         }
         plan.setStatus(PlanStatus.FINISHED.getKey());
+        plan.setUpdateTime(new Date());
+        plan.setModifier(loginId);
+        return planMapper.updateByPrimaryKeySelective(plan);
+    }
+
+    @Override
+    public int updateToReject(int id, int loginId) {
+        Plan plan = this.getPlanById(id);
+        if(Objects.isNull(plan)){
+            return 0;
+        }
+        if(PlanStatus.AUDIT.getKey() != plan.getStatus()){
+            LOGGER.error("生产计划【{}】状态【{}】不正确", id, plan.getStatus());
+            return -1;
+        }
+        plan.setStatus(PlanStatus.REJECT.getKey());
         plan.setUpdateTime(new Date());
         plan.setModifier(loginId);
         return planMapper.updateByPrimaryKeySelective(plan);

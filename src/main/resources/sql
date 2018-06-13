@@ -1,3 +1,51 @@
+/*
+Navicat MySQL Data Transfer
+
+Source Server         : 47.98.232.164_mysql
+Source Server Version : 50722
+Source Host           : 47.98.232.164:3306
+Source Database       : layui
+
+Target Server Type    : MYSQL
+Target Server Version : 50722
+File Encoding         : 65001
+
+Date: 2018-06-13 13:48:43
+*/
+
+SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for t_color
+-- ----------------------------
+DROP TABLE IF EXISTS `t_color`;
+CREATE TABLE `t_color` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `color_name` varchar(50) DEFAULT NULL,
+  `remarks` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8 COMMENT='颜色库';
+
+-- ----------------------------
+-- Records of t_color
+-- ----------------------------
+INSERT INTO `t_color` VALUES ('1', '红色', null);
+INSERT INTO `t_color` VALUES ('2', '白色', null);
+INSERT INTO `t_color` VALUES ('3', '黑色', null);
+INSERT INTO `t_color` VALUES ('4', '绿色', null);
+INSERT INTO `t_color` VALUES ('5', '蓝色', null);
+INSERT INTO `t_color` VALUES ('6', '紫色', null);
+INSERT INTO `t_color` VALUES ('7', '橙色', null);
+INSERT INTO `t_color` VALUES ('8', '棕色', null);
+INSERT INTO `t_color` VALUES ('9', '金黄色', null);
+INSERT INTO `t_color` VALUES ('10', '粉红色', null);
+INSERT INTO `t_color` VALUES ('11', '黄色', null);
+INSERT INTO `t_color` VALUES ('12', '棕红色', null);
+
+-- ----------------------------
+-- Table structure for t_dept
+-- ----------------------------
+DROP TABLE IF EXISTS `t_dept`;
 CREATE TABLE `t_dept` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `p_id` int(11) DEFAULT NULL COMMENT '父节点',
@@ -10,36 +58,33 @@ CREATE TABLE `t_dept` (
   `modifier` int(11) DEFAULT NULL,
   `remarks` varchar(512) CHARACTER SET latin1 DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COMMENT='部门';
 
-CREATE TABLE `t_goods` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `goods_name` varchar(50) DEFAULT NULL COMMENT '货物名称',
-  `goods_model` varchar(50) DEFAULT NULL COMMENT '货物型号',
-  `type` int(2) DEFAULT NULL COMMENT '1-原材料；2-成品；',
-  `color` varchar(10) DEFAULT NULL COMMENT '货物颜色',
-  `num` int(11) DEFAULT NULL COMMENT '货物数量',
-  `unit` varchar(10) DEFAULT NULL COMMENT '货物单位',
-  `batch_no` varchar(50) DEFAULT NULL COMMENT '批号',
-  `unit_price` decimal(10,2) DEFAULT NULL COMMENT '单价',
-  `total_price` decimal(15,2) DEFAULT NULL,
-  `produce_date` date DEFAULT NULL COMMENT '生产日期',
-  `expired_date` date DEFAULT NULL COMMENT '过期日期',
-  `is_deleted` int(2) DEFAULT '0',
-  `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  `update_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  `creater` int(11) DEFAULT NULL,
-  `modifier` int(255) DEFAULT NULL,
-  `remarks` varchar(512) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='货物 库存';
+-- ----------------------------
+-- Records of t_dept
+-- ----------------------------
+INSERT INTO `t_dept` VALUES ('1', null, '董事长办公室', 'dsz', '0', '2018-05-15 11:29:58', '2018-05-15 11:30:02', null, null, null);
+INSERT INTO `t_dept` VALUES ('2', null, '总经理', 'zjl', '0', '2018-05-15 11:33:42', '2018-05-15 11:33:42', null, null, null);
+INSERT INTO `t_dept` VALUES ('3', '2', '计划科', 'jhk', '0', null, null, null, null, null);
+INSERT INTO `t_dept` VALUES ('4', '2', '生产部', 'scb', '0', null, null, null, null, null);
+INSERT INTO `t_dept` VALUES ('5', '2', '采购部', 'cgb', '0', null, null, null, null, null);
+INSERT INTO `t_dept` VALUES ('7', '2', '1212', '2121', '1', '2018-05-15 17:03:11', '2018-05-15 09:07:40', '2', '2', null);
+INSERT INTO `t_dept` VALUES ('8', '2', '4343', '4324', '1', '2018-05-15 08:48:52', '2018-05-15 09:08:17', '2', '2', null);
+INSERT INTO `t_dept` VALUES ('9', '2', '4324', '432', '0', '2018-05-15 17:03:11', '2018-05-15 17:03:11', '2', '2', null);
+INSERT INTO `t_dept` VALUES ('12', '5', '采购一组', '324', '0', '2018-05-15 09:08:36', null, '2', null, null);
+INSERT INTO `t_dept` VALUES ('13', null, '父节点', '324', '0', '2018-05-15 09:10:38', null, '2', null, null);
+INSERT INTO `t_dept` VALUES ('14', '9', 'test', 'test', '0', '2018-05-16 13:07:08', null, '2', null, null);
 
+-- ----------------------------
+-- Table structure for t_goods_use_record
+-- ----------------------------
+DROP TABLE IF EXISTS `t_goods_use_record`;
 CREATE TABLE `t_goods_use_record` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `goods_id` int(11) DEFAULT NULL,
   `goods_name` varchar(50) DEFAULT NULL,
   `goods_model` varchar(50) DEFAULT NULL,
-  `batch_no` varchar(50) DEFAULT NULL,
+  `batch_no` varchar(50) DEFAULT NULL COMMENT '入库/出库申请单id',
   `goods_num` int(11) DEFAULT NULL COMMENT '更改后数量',
   `original_num` int(11) DEFAULT '0' COMMENT '原始数量',
   `user` varchar(50) DEFAULT NULL COMMENT '使用人',
@@ -49,8 +94,82 @@ CREATE TABLE `t_goods_use_record` (
   `remarks` varchar(512) DEFAULT NULL,
   `type` int(2) DEFAULT NULL COMMENT '1-新增；2-修改；3-入库；4-出库；5-删除;',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COMMENT='货物使用情况';
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8 COMMENT='货物使用情况';
 
+-- ----------------------------
+-- Records of t_goods_use_record
+-- ----------------------------
+INSERT INTO `t_goods_use_record` VALUES ('19', '13', '麻布', '第三方', '22', '436', '0', '超级管理员', '0', '2018-06-09 06:51:09', '2', null, '3');
+INSERT INTO `t_goods_use_record` VALUES ('20', '14', '白线', '尼龙', '23', '5435', '0', '超级管理员', '0', '2018-06-09 07:07:05', '2', null, '3');
+INSERT INTO `t_goods_use_record` VALUES ('21', '15', '20180610', '214325', '24', '100', '0', '超级管理员', '0', '2018-06-09 23:00:13', '2', null, '3');
+INSERT INTO `t_goods_use_record` VALUES ('22', '16', '20160610', '4535', '25', '100', '0', '超级管理员', '0', '2018-06-09 23:04:24', '2', null, '3');
+INSERT INTO `t_goods_use_record` VALUES ('23', '16', '20180610', '红色', '18', '90', '100', '超级管理员', '0', '2018-06-09 23:07:59', '2', null, '4');
+INSERT INTO `t_goods_use_record` VALUES ('24', '17', '麻布', '3254', '26', '500', '0', '超级管理员', '0', '2018-06-12 04:12:58', '2', null, '3');
+INSERT INTO `t_goods_use_record` VALUES ('25', '18', '969', '4365', '28', '60', '0', '超级管理员', '0', '2018-06-12 04:17:55', '2', null, '3');
+INSERT INTO `t_goods_use_record` VALUES ('26', '19', '62A24N10W4SP', '435', '27', '50', '0', '超级管理员', '0', '2018-06-12 04:17:58', '2', null, '3');
+INSERT INTO `t_goods_use_record` VALUES ('30', '19', '原材料：62A24N10W4SP', '红色', '19', '20', '50', '超级管理员', '0', '2018-06-12 05:10:21', '2', null, '4');
+INSERT INTO `t_goods_use_record` VALUES ('31', '18', '原材料：969', '绿色', '19', '13', '100', '超级管理员', '0', '2018-06-12 05:10:21', '2', null, '4');
+
+-- ----------------------------
+-- Table structure for t_material
+-- ----------------------------
+DROP TABLE IF EXISTS `t_material`;
+CREATE TABLE `t_material` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `product_name` varchar(50) DEFAULT NULL COMMENT '原材料名称',
+  `ingredients` varchar(100) DEFAULT NULL COMMENT '成份',
+  `color` varchar(50) DEFAULT NULL COMMENT '货物型号',
+  `weight` int(2) DEFAULT NULL COMMENT '重量',
+  `num` int(11) DEFAULT NULL COMMENT '货物数量',
+  `is_deleted` int(2) DEFAULT '0',
+  `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `update_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `creater` int(11) DEFAULT NULL,
+  `modifier` int(255) DEFAULT NULL,
+  `remarks` varchar(512) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 COMMENT='货物 库存';
+
+-- ----------------------------
+-- Records of t_material
+-- ----------------------------
+INSERT INTO `t_material` VALUES ('17', '麻布', '3254', '黑色', '20', '500', '0', '2018-06-12 04:12:58', null, null, null, null);
+INSERT INTO `t_material` VALUES ('18', '969', '4365', '绿色', '45', '13', '0', '2018-06-12 12:47:51', '2018-06-12 05:10:21', null, '2', null);
+INSERT INTO `t_material` VALUES ('19', '62A24N10W4SP', '435', '红色', '43', '20', '0', '2018-06-12 04:17:58', '2018-06-12 05:10:21', null, '2', null);
+
+-- ----------------------------
+-- Table structure for t_material_outbound
+-- ----------------------------
+DROP TABLE IF EXISTS `t_material_outbound`;
+CREATE TABLE `t_material_outbound` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `order_id` int(11) DEFAULT NULL COMMENT '订单id',
+  `order_code` varchar(100) DEFAULT NULL COMMENT '订单code',
+  `sample_code` varchar(50) DEFAULT NULL,
+  `plan_id` int(11) DEFAULT NULL COMMENT '计划单id',
+  `product_name` varchar(100) DEFAULT NULL COMMENT '货物名称',
+  `material_name` varchar(100) DEFAULT NULL COMMENT '货物型号',
+  `color` varchar(10) DEFAULT NULL COMMENT '货物颜色',
+  `num` int(11) DEFAULT NULL COMMENT '货物数量',
+  `status` int(2) DEFAULT '0' COMMENT '0-草稿；1-申请出库；2-出库完成；3-驳回；',
+  `is_deleted` int(2) DEFAULT '0',
+  `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `update_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `creater` int(11) DEFAULT NULL,
+  `modifier` int(255) DEFAULT NULL,
+  `remarks` varchar(512) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 COMMENT='原材料出库申请单';
+
+-- ----------------------------
+-- Records of t_material_outbound
+-- ----------------------------
+INSERT INTO `t_material_outbound` VALUES ('19', '34', 'order_20180612', 'HU81804004', '14', '夏季森马', '969', '绿色', '87', '2', '0', '2018-06-12 04:18:10', '2018-06-12 05:10:21', '2', '2', '');
+
+-- ----------------------------
+-- Table structure for t_menu
+-- ----------------------------
+DROP TABLE IF EXISTS `t_menu`;
 CREATE TABLE `t_menu` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `p_id` int(11) DEFAULT NULL,
@@ -62,40 +181,114 @@ CREATE TABLE `t_menu` (
   `is_valid` int(11) DEFAULT '0' COMMENT '0-正常；1-禁用',
   `remarks` varchar(512) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8 COMMENT='菜单';
 
+-- ----------------------------
+-- Records of t_menu
+-- ----------------------------
+INSERT INTO `t_menu` VALUES ('1', null, '系统管理', null, 'layui-icon-set', '1', '99', '0', null);
+INSERT INTO `t_menu` VALUES ('2', '1', '部门管理', 'system/dept-list.html', null, '1', '1', '0', null);
+INSERT INTO `t_menu` VALUES ('3', '1', '用户管理', 'system/user-list.html', 'layui-icon-user1', '1', '2', '0', null);
+INSERT INTO `t_menu` VALUES ('4', '1', '角色管理', 'system/role-list.html', null, '1', '3', '0', null);
+INSERT INTO `t_menu` VALUES ('5', '12', '原材料申请', 'business\r\n/material-outbound-list.html', null, '1', '2', '0', null);
+INSERT INTO `t_menu` VALUES ('6', null, '仓库管理', null, 'layui-icon-component', '1', '7', '0', null);
+INSERT INTO `t_menu` VALUES ('7', '6', '原材料库存', 'business/material-list.html', null, '1', '3', '0', null);
+INSERT INTO `t_menu` VALUES ('8', null, '主页', 'main.html', 'layui-icon-home', '1', '1', '0', null);
+INSERT INTO `t_menu` VALUES ('9', null, '控制台', 'home/console.html', null, '1', '1', '0', null);
+INSERT INTO `t_menu` VALUES ('11', null, '订单管理', 'business/order-list.html', 'layui-icon-read', '1', '3', '0', null);
+INSERT INTO `t_menu` VALUES ('12', null, '生产车间', '', 'layui-icon-read', '1', '6', '0', null);
+INSERT INTO `t_menu` VALUES ('13', null, '样品管理', 'business/sample-list.html', 'layui-icon-read', '1', '2', '0', null);
+INSERT INTO `t_menu` VALUES ('14', '6', '库存使用', 'business/goods-record-list.html', null, '1', '5', '0', null);
+INSERT INTO `t_menu` VALUES ('15', '12', '计划单', 'business/plan-list-produce.html', '', '1', '1', '0', null);
+INSERT INTO `t_menu` VALUES ('16', null, '采购科', null, 'layui-icon-read', '1', '5', '1', null);
+INSERT INTO `t_menu` VALUES ('18', null, '计划科', null, 'layui-icon-read', '1', '4', '0', null);
+INSERT INTO `t_menu` VALUES ('19', '18', '订单列表', 'business/order-list-read.html', null, '1', '2', '0', null);
+INSERT INTO `t_menu` VALUES ('20', '18', '样品列表', 'business/sample-list-read.html', null, '1', '3', '0', null);
+INSERT INTO `t_menu` VALUES ('21', '18', '计划单', 'business/plan-list.html', null, '1', '1', '0', null);
+INSERT INTO `t_menu` VALUES ('22', '12', '成品入库申请', 'business/product-apply-list.html', null, '1', '2', '0', null);
+INSERT INTO `t_menu` VALUES ('23', '16', '生产计划单', 'business/plan-list-read.html', null, '1', '1', '1', null);
+INSERT INTO `t_menu` VALUES ('24', '18', '采购单', 'business/purchase-order-list.html', null, '1', '2', '0', null);
+INSERT INTO `t_menu` VALUES ('25', '6', '原材料入库', 'business/purchase-order-list-warehouse.html', null, '1', '1', '0', null);
+INSERT INTO `t_menu` VALUES ('26', '6', '成品入库申请', 'business/product-apply-list-warehouse.html', null, '1', '4', '0', null);
+INSERT INTO `t_menu` VALUES ('27', '12', '半成品外发', 'business/outgoing-list.html', null, '1', '1', '0', null);
+INSERT INTO `t_menu` VALUES ('28', '6', '原材料出库', 'business/material-outbound-list-warehouse.html', null, '1', '2', '0', null);
+INSERT INTO `t_menu` VALUES ('29', null, '成品出库申请', 'business/product-outbound-list.html', 'layui-icon-read', '1', '7', '0', null);
+INSERT INTO `t_menu` VALUES ('30', '6', '成品出库申请', 'business/product-outbound-list-warehouse.html', null, '1', '5', '0', null);
+INSERT INTO `t_menu` VALUES ('31', null, '审核生产计划', 'business/plan-list-audit.html', 'layui-icon-read', '1', '7', '0', null);
+INSERT INTO `t_menu` VALUES ('32', null, '颜色管理', 'system/color-list.html', 'layui-icon-read', '1', '8', '0', null);
+
+-- ----------------------------
+-- Table structure for t_order
+-- ----------------------------
+DROP TABLE IF EXISTS `t_order`;
 CREATE TABLE `t_order` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `order_num` int(11) DEFAULT NULL COMMENT '订单数据',
-  `product_name` varchar(100) DEFAULT NULL COMMENT '产品名称',
-  `product_unit` varchar(10) DEFAULT NULL COMMENT '产品单位',
-  `deliver_date` date DEFAULT NULL COMMENT '交付时间',
-  `unit_price` decimal(8,2) DEFAULT NULL COMMENT '单价',
-  `total_price` decimal(15,2) DEFAULT NULL COMMENT '总价',
-  `cooperation_company` varchar(50) DEFAULT NULL COMMENT '合作公司',
-  `contact_name` varchar(50) DEFAULT NULL COMMENT '合作人',
-  `contact_phone` varchar(11) DEFAULT NULL COMMENT '联系方式',
-  `status` int(11) DEFAULT '0' COMMENT '0-接单、录单；1-打样；2-采购；3-排单；4-生产；5-入库；-1-作废',
-  `is_deleted` int(2) DEFAULT NULL,
+  `sample_id` int(11) DEFAULT NULL COMMENT '样品id',
+  `order_code` varchar(50) DEFAULT NULL COMMENT '订单code',
+  `delivery_number` varchar(20) DEFAULT NULL COMMENT '交货号',
+  `po_number` varchar(100) DEFAULT NULL COMMENT 'po号',
+  `order_time` datetime DEFAULT NULL,
+  `type` int(11) DEFAULT NULL COMMENT '1-自营；2-外贸;',
+  `sample_code` varchar(50) DEFAULT NULL COMMENT '款号',
+  `needle` varchar(100) DEFAULT NULL COMMENT '针形',
+  `style` varchar(50) DEFAULT NULL COMMENT '款式',
+  `status` int(11) DEFAULT '0' COMMENT '0-草稿；1-计划排期中；2-生产中；5-入库；-1-作废',
+  `material` varchar(100) DEFAULT NULL COMMENT '材料',
+  `company` varchar(100) DEFAULT NULL COMMENT '公司',
+  `brand` varchar(50) DEFAULT NULL COMMENT '品牌',
+  `photo_url` varchar(5000) DEFAULT NULL COMMENT '照片 以逗号分隔',
+  `is_deleted` int(2) DEFAULT '0',
+  `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `update_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `creater` int(11) DEFAULT NULL,
+  `modifier` int(11) DEFAULT NULL,
+  `remarks` varchar(1024) DEFAULT NULL,
+  `winning_bid` int(2) DEFAULT '0' COMMENT '是否中标；0-否；1-是；(作废)',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8 COMMENT='入单 业务员接单';
+
+-- ----------------------------
+-- Records of t_order
+-- ----------------------------
+INSERT INTO `t_order` VALUES ('34', '34', 'order_20180612', '8/8', '0420011059', '2018-06-11 00:00:00', '1', 'HU81804004', '7GG 2根', '一字领套衬', '2', '90抗起球澎体涤纶', '杭州商大服有限公司', 'sungin group', 'http://47.98.232.164:8080/images/upload/c8e1e9f4-6106-4931-9706-19c4ddab4892.jpg,http://47.98.232.164:8080/images/upload/17d90bf4-8675-4907-986e-8671bbf60e07.jpg,http://47.98.232.164:8080/images/upload/9f15502c-4d43-4951-b533-a0ee6929214f.jpg', '0', '2018-06-12 09:22:03', '2018-06-12 09:22:03', '2', '2', '大家努力干', '0');
+INSERT INTO `t_order` VALUES ('35', '34', 'order_20180611', '09/01', 'EGRE43536GW', '2018-06-10 00:00:00', '1', 'HU81804004', '7GG 2根', '一字领套衬', '2', '90抗起球澎体涤纶', '杭州商大服有限公司', 'sungin group', 'http://47.98.232.164:8080/images/upload/c8e1e9f4-6106-4931-9706-19c4ddab4892.jpg,http://47.98.232.164:8080/images/upload/17d90bf4-8675-4907-986e-8671bbf60e07.jpg,http://47.98.232.164:8080/images/upload/9f15502c-4d43-4951-b533-a0ee6929214f.jpg', '0', '2018-06-12 19:12:59', '2018-06-12 19:12:59', '2', null, '', '0');
+
+-- ----------------------------
+-- Table structure for t_order_batch
+-- ----------------------------
+DROP TABLE IF EXISTS `t_order_batch`;
+CREATE TABLE `t_order_batch` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `order_id` int(11) DEFAULT NULL COMMENT '订单id',
+  `delivery_number` varchar(20) DEFAULT NULL COMMENT '交货号',
+  `po_number` varchar(100) DEFAULT NULL COMMENT 'po号',
+  `color` varchar(50) DEFAULT NULL COMMENT '颜色',
+  `is_deleted` int(2) DEFAULT '0',
   `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `update_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `creater` int(11) DEFAULT NULL,
   `modifier` int(11) DEFAULT NULL,
   `remarks` varchar(1024) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COMMENT='入单 业务员接单';
+) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8 COMMENT='入单 业务员接单';
 
-CREATE TABLE `t_plan` (
+-- ----------------------------
+-- Records of t_order_batch
+-- ----------------------------
+INSERT INTO `t_order_batch` VALUES ('47', '34', '07/12', '0420011047', '黑色', '0', '2018-06-12 00:51:10', null, '2', null, null);
+INSERT INTO `t_order_batch` VALUES ('48', '34', '8/8', '0420011059', '蓝色', '0', '2018-06-12 00:51:10', null, '2', null, null);
+INSERT INTO `t_order_batch` VALUES ('49', '35', '09/01', 'EGRE43536GW', '蓝色', '0', '2018-06-12 00:58:34', null, '2', null, null);
+
+-- ----------------------------
+-- Table structure for t_order_detail
+-- ----------------------------
+DROP TABLE IF EXISTS `t_order_detail`;
+CREATE TABLE `t_order_detail` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `order_id` int(11) DEFAULT NULL COMMENT '订单id',
-  `plan_name` varchar(50) DEFAULT NULL COMMENT '计划代号',
-  `dept_name` varchar(50) DEFAULT NULL COMMENT '生产部门',
-  `product_name` varchar(50) DEFAULT NULL COMMENT '产品名称',
-  `batch_no` varchar(50) DEFAULT NULL COMMENT '生产批次',
-  `begin_date` datetime DEFAULT NULL COMMENT '开始生产时间',
-  `end_date` datetime DEFAULT NULL COMMENT '结束生产时间',
-  `num` int(11) DEFAULT NULL COMMENT '生产数量',
-  `status` int(2) DEFAULT '0' COMMENT '0-新增；1-生产；2-完成；',
+  `order_id` int(11) DEFAULT NULL COMMENT '表t_order_batch中的id',
+  `size_type` varchar(10) DEFAULT NULL COMMENT '尺寸类型4/6/8/12/14/16/18等尺码',
+  `num` int(11) DEFAULT NULL COMMENT '订单数量',
+  `color` varchar(10) DEFAULT NULL COMMENT '颜色',
   `is_deleted` int(2) DEFAULT '0',
   `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `update_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
@@ -103,8 +296,455 @@ CREATE TABLE `t_plan` (
   `modifier` int(255) DEFAULT NULL,
   `remarks` varchar(512) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=267 DEFAULT CHARSET=utf8 COMMENT='订单详情';
 
+-- ----------------------------
+-- Records of t_order_detail
+-- ----------------------------
+INSERT INTO `t_order_detail` VALUES ('241', '47', '4', '58', null, '0', '2018-06-12 08:51:09', null, '2', null, null);
+INSERT INTO `t_order_detail` VALUES ('242', '47', '6', '130', null, '0', '2018-06-12 08:51:09', null, '2', null, null);
+INSERT INTO `t_order_detail` VALUES ('243', '47', '8', '302', null, '0', '2018-06-12 08:51:09', null, '2', null, null);
+INSERT INTO `t_order_detail` VALUES ('244', '47', '10', '0', null, '0', '2018-06-12 08:51:09', null, '2', null, null);
+INSERT INTO `t_order_detail` VALUES ('245', '47', '12', '311', null, '0', '2018-06-12 08:51:09', null, '2', null, null);
+INSERT INTO `t_order_detail` VALUES ('246', '47', '14', '193', null, '0', '2018-06-12 08:51:09', null, '2', null, null);
+INSERT INTO `t_order_detail` VALUES ('247', '47', '16', '88', null, '0', '2018-06-12 08:51:09', null, '2', null, null);
+INSERT INTO `t_order_detail` VALUES ('248', '47', '20', '34', null, '0', '2018-06-12 08:51:09', null, '2', null, null);
+INSERT INTO `t_order_detail` VALUES ('249', '47', '18', '50', null, '0', '2018-06-12 08:51:09', null, '2', null, null);
+INSERT INTO `t_order_detail` VALUES ('250', '48', '4', '38', null, '0', '2018-06-12 08:51:09', null, '2', null, null);
+INSERT INTO `t_order_detail` VALUES ('251', '48', '6', '87', null, '0', '2018-06-12 08:51:09', null, '2', null, null);
+INSERT INTO `t_order_detail` VALUES ('252', '48', '8', '201', null, '0', '2018-06-12 08:51:09', null, '2', null, null);
+INSERT INTO `t_order_detail` VALUES ('253', '48', '10', '0', null, '0', '2018-06-12 08:51:09', null, '2', null, null);
+INSERT INTO `t_order_detail` VALUES ('254', '48', '12', '207', null, '0', '2018-06-12 08:51:09', null, '2', null, null);
+INSERT INTO `t_order_detail` VALUES ('255', '48', '14', '129', null, '0', '2018-06-12 08:51:09', null, '2', null, null);
+INSERT INTO `t_order_detail` VALUES ('256', '48', '16', '59', null, '0', '2018-06-12 08:51:09', null, '2', null, null);
+INSERT INTO `t_order_detail` VALUES ('257', '48', '20', '22', null, '0', '2018-06-12 08:51:09', null, '2', null, null);
+INSERT INTO `t_order_detail` VALUES ('258', '48', '18', '325', null, '0', '2018-06-12 08:51:09', null, '2', null, null);
+INSERT INTO `t_order_detail` VALUES ('259', '49', '4', '0', null, '0', '2018-06-12 08:58:34', null, '2', null, null);
+INSERT INTO `t_order_detail` VALUES ('260', '49', '6', '0', null, '0', '2018-06-12 08:58:34', null, '2', null, null);
+INSERT INTO `t_order_detail` VALUES ('261', '49', '8', '500', null, '0', '2018-06-12 08:58:34', null, '2', null, null);
+INSERT INTO `t_order_detail` VALUES ('262', '49', '12', '0', null, '0', '2018-06-12 08:58:34', null, '2', null, null);
+INSERT INTO `t_order_detail` VALUES ('263', '49', '14', '0', null, '0', '2018-06-12 08:58:34', null, '2', null, null);
+INSERT INTO `t_order_detail` VALUES ('264', '49', '16', '399', null, '0', '2018-06-12 08:58:34', null, '2', null, null);
+INSERT INTO `t_order_detail` VALUES ('265', '49', '18', '0', null, '0', '2018-06-12 08:58:34', null, '2', null, null);
+INSERT INTO `t_order_detail` VALUES ('266', '49', '', '0', null, '0', '2018-06-12 08:58:34', null, '2', null, null);
+
+-- ----------------------------
+-- Table structure for t_order_outgoing
+-- ----------------------------
+DROP TABLE IF EXISTS `t_order_outgoing`;
+CREATE TABLE `t_order_outgoing` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `order_id` int(11) DEFAULT NULL COMMENT '计划单id',
+  `order_code` varchar(50) DEFAULT NULL COMMENT '订单code',
+  `sample_code` varchar(50) DEFAULT NULL COMMENT '款号',
+  `product_name` varchar(100) DEFAULT NULL COMMENT '产品名称',
+  `specification` varchar(50) DEFAULT NULL COMMENT '规格',
+  `num` int(11) DEFAULT NULL COMMENT '数量',
+  `outgoing_time` datetime DEFAULT NULL COMMENT '外发时间',
+  `dept_id` int(11) DEFAULT NULL COMMENT '部门id',
+  `dept_name` varchar(50) DEFAULT NULL COMMENT '生产部门',
+  `user` varchar(50) DEFAULT NULL COMMENT '经办人',
+  `status` int(11) DEFAULT '0' COMMENT '0-草稿；1-已外发；-1-作废',
+  `company` varchar(100) DEFAULT NULL COMMENT '外发单位',
+  `is_deleted` int(2) DEFAULT '0',
+  `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `update_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `creater` int(11) DEFAULT NULL,
+  `modifier` int(11) DEFAULT NULL,
+  `remarks` varchar(1024) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8 COMMENT='订单外发表';
+
+-- ----------------------------
+-- Records of t_order_outgoing
+-- ----------------------------
+INSERT INTO `t_order_outgoing` VALUES ('28', '25', '325436', '324', '45645', '543', '543', '2018-06-27 00:00:00', '3', '计划科', '超级管理员', '0', '543543', '0', '2018-06-07 18:35:57', '2018-06-07 18:35:57', '2', null, '5436564');
+INSERT INTO `t_order_outgoing` VALUES ('29', '24', '342', 'HU81804004', '45饿', '热舞', '2', '2018-06-22 00:00:00', '3', '计划科', '超级管理员', '1', '435435', '0', '2018-06-07 10:36:30', '2018-06-07 10:40:45', '2', '2', '日3人');
+INSERT INTO `t_order_outgoing` VALUES ('32', '14', 'order_20180612', 'HU81804004', '夏季森马', '435', '543', '2018-06-21 00:00:00', '2', '总经理', '超级管理员', '0', '543', '0', '2018-06-12 01:54:39', null, '2', null, '543');
+
+-- ----------------------------
+-- Table structure for t_outbound_material
+-- ----------------------------
+DROP TABLE IF EXISTS `t_outbound_material`;
+CREATE TABLE `t_outbound_material` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `outbound_id` int(11) DEFAULT NULL COMMENT '原材料出货id',
+  `material_name` varchar(100) DEFAULT NULL COMMENT '原材料名称',
+  `color` varchar(10) DEFAULT NULL COMMENT '颜色',
+  `num` int(11) DEFAULT NULL COMMENT '数量',
+  `is_deleted` int(2) DEFAULT '0',
+  `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `update_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `creater` int(11) DEFAULT NULL,
+  `modifier` int(255) DEFAULT NULL,
+  `remarks` varchar(512) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=82 DEFAULT CHARSET=utf8 COMMENT='原材料出货申请详情';
+
+-- ----------------------------
+-- Records of t_outbound_material
+-- ----------------------------
+INSERT INTO `t_outbound_material` VALUES ('49', '9', '432', '蓝色', '432', '0', '2018-06-06 13:03:01', null, '2', null, null);
+INSERT INTO `t_outbound_material` VALUES ('50', '9', '4325', '白色', '423', '0', '2018-06-06 13:03:01', null, '2', null, null);
+INSERT INTO `t_outbound_material` VALUES ('51', '10', '白纱布', '白色', '1', '0', '2018-06-06 18:39:38', null, '2', null, null);
+INSERT INTO `t_outbound_material` VALUES ('59', '12', '黑线', '黑色', '3', '0', '2018-06-07 08:54:09', null, '2', null, null);
+INSERT INTO `t_outbound_material` VALUES ('60', '12', '麻布', '红色', '11', '0', '2018-06-07 08:54:09', null, '2', null, null);
+INSERT INTO `t_outbound_material` VALUES ('61', '12', '324', '蓝色', '432', '0', '2018-06-07 08:54:09', null, '2', null, null);
+INSERT INTO `t_outbound_material` VALUES ('62', '12', '2345678', '紫色', '45', '0', '2018-06-07 08:54:09', null, '2', null, null);
+INSERT INTO `t_outbound_material` VALUES ('67', '16', '黑线', '黑色', '3', '0', '2018-06-09 18:43:42', null, '2', null, null);
+INSERT INTO `t_outbound_material` VALUES ('68', '16', '麻布', '红色', '11', '0', '2018-06-09 18:43:42', null, '2', null, null);
+INSERT INTO `t_outbound_material` VALUES ('69', '16', '324', '蓝色', '432', '0', '2018-06-09 18:43:42', null, '2', null, null);
+INSERT INTO `t_outbound_material` VALUES ('70', '16', '2345678', '紫色', '45', '0', '2018-06-09 18:43:42', null, '2', null, null);
+INSERT INTO `t_outbound_material` VALUES ('75', '17', '黑线', '黑色', '3', '0', '2018-06-09 18:44:07', null, '2', null, null);
+INSERT INTO `t_outbound_material` VALUES ('76', '17', '麻布', '红色', '11', '0', '2018-06-09 18:44:07', null, '2', null, null);
+INSERT INTO `t_outbound_material` VALUES ('77', '17', '324', '蓝色', '432', '0', '2018-06-09 18:44:07', null, '2', null, null);
+INSERT INTO `t_outbound_material` VALUES ('78', '17', '2345678', '紫色', '45', '0', '2018-06-09 18:44:07', null, '2', null, null);
+INSERT INTO `t_outbound_material` VALUES ('79', '18', '20180610', '红色', '10', '0', '2018-06-10 07:02:43', null, '2', null, null);
+INSERT INTO `t_outbound_material` VALUES ('80', '19', '62A24N10W4SP', '红色', '30', '0', '2018-06-12 12:18:10', null, '2', null, null);
+INSERT INTO `t_outbound_material` VALUES ('81', '19', '969', '绿色', '87', '0', '2018-06-12 12:18:10', null, '2', null, null);
+
+-- ----------------------------
+-- Table structure for t_plan
+-- ----------------------------
+DROP TABLE IF EXISTS `t_plan`;
+CREATE TABLE `t_plan` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `order_id` int(11) DEFAULT NULL COMMENT '订单id',
+  `sample_code` varchar(50) DEFAULT NULL COMMENT '款号',
+  `order_code` varchar(50) DEFAULT NULL COMMENT '订单编号',
+  `product_name` varchar(50) DEFAULT NULL COMMENT '产品名',
+  `photo_url` varchar(5000) DEFAULT NULL COMMENT '照片 以逗号分隔',
+  `dept_id` int(11) DEFAULT NULL COMMENT '部门id',
+  `dept_name` varchar(50) DEFAULT NULL COMMENT '生产部门',
+  `production_processes` varchar(50) DEFAULT NULL COMMENT '生产工序',
+  `billing_id` int(11) DEFAULT NULL COMMENT '开单人',
+  `billing_user` varchar(50) DEFAULT NULL COMMENT '开单人',
+  `billing_date` datetime DEFAULT NULL COMMENT '开单日期',
+  `audit_id` int(11) DEFAULT NULL COMMENT '审核人',
+  `audit_user` varchar(50) DEFAULT NULL COMMENT '审核人',
+  `audit_date` datetime DEFAULT NULL COMMENT '结束生产时间',
+  `num` int(11) DEFAULT NULL COMMENT '生产数量',
+  `status` int(2) DEFAULT '0' COMMENT '0-新增；1-审核；2-生产；3-完成；4-驳回;',
+  `is_deleted` int(2) DEFAULT '0',
+  `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `update_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `creater` int(11) DEFAULT NULL,
+  `modifier` int(255) DEFAULT NULL,
+  `remarks` varchar(512) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8 COMMENT='生产计划';
+
+-- ----------------------------
+-- Records of t_plan
+-- ----------------------------
+INSERT INTO `t_plan` VALUES ('14', '34', 'HU81804004', 'order_20180612', '夏季森马', 'http://47.98.232.164:8080/images/upload/c8e1e9f4-6106-4931-9706-19c4ddab4892.jpg,http://47.98.232.164:8080/images/upload/17d90bf4-8675-4907-986e-8671bbf60e07.jpg,http://47.98.232.164:8080/images/upload/9f15502c-4d43-4951-b533-a0ee6929214f.jpg', '4', '生产部', '织片', '2', '超级管理员', '2018-06-12 01:02:52', null, null, null, '87', '1', '0', '2018-06-12 01:02:52', '2018-06-12 01:22:04', '2', '2', '一周内');
+INSERT INTO `t_plan` VALUES ('15', '34', 'HU81804004', 'order_20180612', '2018新款', 'http://47.98.232.164:8080/images/upload/c8e1e9f4-6106-4931-9706-19c4ddab4892.jpg,http://47.98.232.164:8080/images/upload/17d90bf4-8675-4907-986e-8671bbf60e07.jpg,http://47.98.232.164:8080/images/upload/9f15502c-4d43-4951-b533-a0ee6929214f.jpg', '4', '生产部', '一捅到底', '2', '超级管理员', '2018-06-12 01:21:35', null, null, null, '3', '0', '0', '2018-06-12 01:21:35', null, '2', null, '45436564764');
+INSERT INTO `t_plan` VALUES ('16', '35', 'HU81804004', 'order_20180611', 'test', 'http://47.98.232.164:8080/images/upload/c8e1e9f4-6106-4931-9706-19c4ddab4892.jpg,http://47.98.232.164:8080/images/upload/17d90bf4-8675-4907-986e-8671bbf60e07.jpg,http://47.98.232.164:8080/images/upload/9f15502c-4d43-4951-b533-a0ee6929214f.jpg', '4', '生产部', 'test', '2', '超级管理员', '2018-06-12 11:01:45', null, null, null, '10', '2', '0', '2018-06-12 19:14:07', '2018-06-13 00:32:59', '2', '2', '325436');
+INSERT INTO `t_plan` VALUES ('17', '35', 'HU81804004', 'order_20180611', '12345678', 'http://47.98.232.164:8080/images/upload/c8e1e9f4-6106-4931-9706-19c4ddab4892.jpg,http://47.98.232.164:8080/images/upload/17d90bf4-8675-4907-986e-8671bbf60e07.jpg,http://47.98.232.164:8080/images/upload/9f15502c-4d43-4951-b533-a0ee6929214f.jpg', '5', '采购部', '765432', '2', '超级管理员', '2018-06-13 01:08:53', null, null, null, '0', '0', '0', '2018-06-13 01:08:53', '2018-06-13 01:17:37', '2', '2', '');
+
+-- ----------------------------
+-- Table structure for t_plan_detail
+-- ----------------------------
+DROP TABLE IF EXISTS `t_plan_detail`;
+CREATE TABLE `t_plan_detail` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `plan_id` int(11) DEFAULT NULL COMMENT '计划id',
+  `size_type` varchar(10) DEFAULT NULL COMMENT '尺寸类型4/6/8/12/14/16/18等尺码',
+  `order_num` int(11) DEFAULT NULL COMMENT '订单数量',
+  `maneuvering_number` int(11) DEFAULT NULL COMMENT '机动数',
+  `color` varchar(10) DEFAULT NULL COMMENT '颜色',
+  `is_deleted` int(2) DEFAULT '0',
+  `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `update_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `creater` int(11) DEFAULT NULL,
+  `modifier` int(255) DEFAULT NULL,
+  `remarks` varchar(512) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=157 DEFAULT CHARSET=utf8 COMMENT='生产计划详情';
+
+-- ----------------------------
+-- Records of t_plan_detail
+-- ----------------------------
+INSERT INTO `t_plan_detail` VALUES ('129', '14', '4', '127', '7', '白色', '0', '2018-06-12 09:19:40', null, '2', null, null);
+INSERT INTO `t_plan_detail` VALUES ('130', '14', '6', '288', '-15', '黑色', '0', '2018-06-12 09:19:40', null, '2', null, null);
+INSERT INTO `t_plan_detail` VALUES ('131', '14', '8', '0', '0', '', '0', '2018-06-12 09:19:40', null, '2', null, null);
+INSERT INTO `t_plan_detail` VALUES ('132', '14', '12', '0', '0', '', '0', '2018-06-12 09:19:40', null, '2', null, null);
+INSERT INTO `t_plan_detail` VALUES ('133', '14', '14', '0', '0', '', '0', '2018-06-12 09:19:40', null, '2', null, null);
+INSERT INTO `t_plan_detail` VALUES ('134', '14', '16', '0', '0', '', '0', '2018-06-12 09:19:40', null, '2', null, null);
+INSERT INTO `t_plan_detail` VALUES ('135', '14', '18', '0', '0', '', '0', '2018-06-12 09:19:40', null, '2', null, null);
+INSERT INTO `t_plan_detail` VALUES ('136', '14', '', '0', '0', '', '0', '2018-06-12 09:19:40', null, '2', null, null);
+INSERT INTO `t_plan_detail` VALUES ('137', '15', '4', '0', '0', '', '0', '2018-06-12 09:21:35', null, '2', null, null);
+INSERT INTO `t_plan_detail` VALUES ('138', '15', '6', '0', '0', '', '0', '2018-06-12 09:21:35', null, '2', null, null);
+INSERT INTO `t_plan_detail` VALUES ('139', '15', '8', '0', '0', '', '0', '2018-06-12 09:21:35', null, '2', null, null);
+INSERT INTO `t_plan_detail` VALUES ('140', '15', '12', '0', '0', '', '0', '2018-06-12 09:21:35', null, '2', null, null);
+INSERT INTO `t_plan_detail` VALUES ('141', '15', '14', '400', '5', '蓝色', '0', '2018-06-12 09:21:35', null, '2', null, null);
+INSERT INTO `t_plan_detail` VALUES ('142', '15', '16', '0', '0', '', '0', '2018-06-12 09:21:35', null, '2', null, null);
+INSERT INTO `t_plan_detail` VALUES ('143', '15', '18', '0', '0', '', '0', '2018-06-12 09:21:35', null, '2', null, null);
+INSERT INTO `t_plan_detail` VALUES ('144', '15', '', '0', '0', '', '0', '2018-06-12 09:21:35', null, '2', null, null);
+INSERT INTO `t_plan_detail` VALUES ('145', '16', '4', '50', '2', '白色', '0', '2018-06-12 19:01:45', null, '2', null, null);
+INSERT INTO `t_plan_detail` VALUES ('146', '16', '6', '0', '0', '', '0', '2018-06-12 19:01:45', null, '2', null, null);
+INSERT INTO `t_plan_detail` VALUES ('147', '16', '8', '0', '0', '', '0', '2018-06-12 19:01:45', null, '2', null, null);
+INSERT INTO `t_plan_detail` VALUES ('148', '16', '12', '0', '0', '', '0', '2018-06-12 19:01:45', null, '2', null, null);
+INSERT INTO `t_plan_detail` VALUES ('149', '16', '14', '50', '3', '绿色', '0', '2018-06-12 19:01:45', null, '2', null, null);
+INSERT INTO `t_plan_detail` VALUES ('150', '16', '16', '0', '0', '', '0', '2018-06-12 19:01:45', null, '2', null, null);
+INSERT INTO `t_plan_detail` VALUES ('151', '16', '18', '0', '0', '', '0', '2018-06-12 19:01:45', null, '2', null, null);
+INSERT INTO `t_plan_detail` VALUES ('152', '16', '', '0', '0', '', '0', '2018-06-12 19:01:45', null, '2', null, null);
+INSERT INTO `t_plan_detail` VALUES ('156', '17', '5', '5', '4', '白色', '0', '2018-06-13 09:17:37', null, '2', null, null);
+
+-- ----------------------------
+-- Table structure for t_plan_material
+-- ----------------------------
+DROP TABLE IF EXISTS `t_plan_material`;
+CREATE TABLE `t_plan_material` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `plan_id` int(11) DEFAULT NULL COMMENT '计划id',
+  `material_name` varchar(100) DEFAULT NULL COMMENT '原材料名称',
+  `color` varchar(10) DEFAULT NULL COMMENT '颜色',
+  `num` int(11) DEFAULT NULL COMMENT '数量',
+  `is_deleted` int(2) DEFAULT '0',
+  `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `update_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `creater` int(11) DEFAULT NULL,
+  `modifier` int(255) DEFAULT NULL,
+  `remarks` varchar(512) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=78 DEFAULT CHARSET=utf8 COMMENT='生产计划所需原材料';
+
+-- ----------------------------
+-- Records of t_plan_material
+-- ----------------------------
+INSERT INTO `t_plan_material` VALUES ('71', '14', '62A24N10W4SP', '红色', '30', '0', '2018-06-12 09:19:40', null, '2', null, null);
+INSERT INTO `t_plan_material` VALUES ('72', '14', '969', '绿色', '87', '0', '2018-06-12 09:19:40', null, '2', null, null);
+INSERT INTO `t_plan_material` VALUES ('73', '15', '黑线', '黑色', '4', '0', '2018-06-12 09:21:35', null, '2', null, null);
+INSERT INTO `t_plan_material` VALUES ('74', '15', '2345678', '白色', '3', '0', '2018-06-12 09:21:35', null, '2', null, null);
+INSERT INTO `t_plan_material` VALUES ('75', '16', '黑线', '黑色', '10', '0', '2018-06-12 19:01:45', null, '2', null, null);
+INSERT INTO `t_plan_material` VALUES ('77', '17', '', '', '0', '0', '2018-06-13 09:17:37', null, '2', null, null);
+
+-- ----------------------------
+-- Table structure for t_product
+-- ----------------------------
+DROP TABLE IF EXISTS `t_product`;
+CREATE TABLE `t_product` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `sample_code` varchar(50) DEFAULT NULL COMMENT '款号',
+  `order_id` int(11) DEFAULT NULL COMMENT '订单id',
+  `order_code` varchar(50) DEFAULT NULL COMMENT '订单编号',
+  `product_name` varchar(50) DEFAULT NULL COMMENT '产品名',
+  `photo_url` varchar(5000) DEFAULT NULL COMMENT '照片 以逗号分隔',
+  `status` int(2) DEFAULT '0' COMMENT '0-正常；1-',
+  `is_deleted` int(2) DEFAULT '0',
+  `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `update_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `creater` int(11) DEFAULT NULL,
+  `modifier` int(255) DEFAULT NULL,
+  `remarks` varchar(512) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COMMENT='成品入库申请单(库存)';
+
+-- ----------------------------
+-- Records of t_product
+-- ----------------------------
+INSERT INTO `t_product` VALUES ('14', '324', '25', '325436', '一个产品', 'http://47.98.232.164:8080/images/upload/c146584e-228c-434c-85a1-34df74917fac.jpg', '0', '0', '2018-06-10 04:03:09', null, '2', null, null);
+
+-- ----------------------------
+-- Table structure for t_product_apply
+-- ----------------------------
+DROP TABLE IF EXISTS `t_product_apply`;
+CREATE TABLE `t_product_apply` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `plan_id` int(11) DEFAULT NULL COMMENT '生产计划id',
+  `sample_code` varchar(50) DEFAULT NULL COMMENT '款号',
+  `order_id` int(11) DEFAULT NULL COMMENT '订单id',
+  `order_code` varchar(50) DEFAULT NULL COMMENT '订单编号',
+  `product_name` varchar(50) DEFAULT NULL COMMENT '产品名',
+  `photo_url` varchar(5000) DEFAULT NULL COMMENT '照片 以逗号分隔',
+  `production_processes` varchar(50) DEFAULT NULL COMMENT '生产工序(作废)',
+  `billing_user` varchar(50) DEFAULT NULL COMMENT '入库经办人',
+  `warehouse_user` varchar(50) DEFAULT NULL COMMENT '仓储经办人',
+  `warehouse_date` datetime DEFAULT NULL COMMENT '入库时间',
+  `status` int(2) DEFAULT '0' COMMENT '0-草稿；1-待入库；2-已入库；3-待出货；4-已出货；5-驳回',
+  `is_deleted` int(2) DEFAULT '0',
+  `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `update_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `creater` int(11) DEFAULT NULL,
+  `modifier` int(255) DEFAULT NULL,
+  `remarks` varchar(512) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COMMENT='成品入库申请单';
+
+-- ----------------------------
+-- Records of t_product_apply
+-- ----------------------------
+INSERT INTO `t_product_apply` VALUES ('13', '11', '324', '25', '325436', '一个产品', 'http://47.98.232.164:8080/images/upload/c146584e-228c-434c-85a1-34df74917fac.jpg', null, '超级管理员', null, null, '1', '0', '2018-06-08 13:32:52', '2018-06-10 04:01:10', '2', '2', '3456798');
+INSERT INTO `t_product_apply` VALUES ('14', '11', '324', '25', '325436', '一个产品', 'http://47.98.232.164:8080/images/upload/c146584e-228c-434c-85a1-34df74917fac.jpg', null, '超级管理员', null, null, '0', '0', '2018-06-10 03:06:24', null, '2', null, '');
+
+-- ----------------------------
+-- Table structure for t_product_apply_detail
+-- ----------------------------
+DROP TABLE IF EXISTS `t_product_apply_detail`;
+CREATE TABLE `t_product_apply_detail` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `product_id` int(11) DEFAULT NULL COMMENT '计划id',
+  `size_type` varchar(10) DEFAULT NULL COMMENT '尺寸类型4/6/8/12/14/16/18等尺码',
+  `order_num` int(11) DEFAULT NULL COMMENT '订单数量',
+  `warehouse_num` int(11) DEFAULT NULL COMMENT '入库数',
+  `color` varchar(10) DEFAULT NULL COMMENT '颜色',
+  `is_deleted` int(2) DEFAULT '0',
+  `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `update_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `creater` int(11) DEFAULT NULL,
+  `modifier` int(255) DEFAULT NULL,
+  `remarks` varchar(512) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=103 DEFAULT CHARSET=utf8 COMMENT='成品入库申请详情';
+
+-- ----------------------------
+-- Records of t_product_apply_detail
+-- ----------------------------
+INSERT INTO `t_product_apply_detail` VALUES ('99', '13', '4', '40', '45', '黑色', '0', '2018-06-10 08:19:19', null, '2', null, null);
+INSERT INTO `t_product_apply_detail` VALUES ('100', '13', '6', '60', '55', '红色', '0', '2018-06-10 08:19:19', null, '2', null, null);
+INSERT INTO `t_product_apply_detail` VALUES ('101', '14', '4', '40', '50', '黑色', '0', '2018-06-10 11:06:24', null, '2', null, null);
+INSERT INTO `t_product_apply_detail` VALUES ('102', '14', '6', '60', '70', '红色', '0', '2018-06-10 11:06:24', null, '2', null, null);
+
+-- ----------------------------
+-- Table structure for t_product_detail
+-- ----------------------------
+DROP TABLE IF EXISTS `t_product_detail`;
+CREATE TABLE `t_product_detail` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `product_id` int(11) DEFAULT NULL COMMENT '计划id',
+  `size_type` varchar(10) DEFAULT NULL COMMENT '尺寸类型4/6/8/12/14/16/18等尺码',
+  `order_num` int(11) DEFAULT NULL COMMENT '订单数量',
+  `warehouse_num` int(11) DEFAULT NULL COMMENT '库存数',
+  `color` varchar(10) DEFAULT NULL COMMENT '颜色',
+  `is_deleted` int(2) DEFAULT '0',
+  `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `update_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `creater` int(11) DEFAULT NULL,
+  `modifier` int(255) DEFAULT NULL,
+  `remarks` varchar(512) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=103 DEFAULT CHARSET=utf8 COMMENT='成品库存详情';
+
+-- ----------------------------
+-- Records of t_product_detail
+-- ----------------------------
+INSERT INTO `t_product_detail` VALUES ('101', '14', '4', '40', '45', '黑色', '0', '2018-06-10 12:03:08', null, '2', null, null);
+INSERT INTO `t_product_detail` VALUES ('102', '14', '6', '60', '55', '红色', '0', '2018-06-10 12:03:08', null, '2', null, null);
+
+-- ----------------------------
+-- Table structure for t_product_outbound
+-- ----------------------------
+DROP TABLE IF EXISTS `t_product_outbound`;
+CREATE TABLE `t_product_outbound` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `po_number` varchar(100) DEFAULT NULL COMMENT 'po号',
+  `delivery_number` varchar(20) DEFAULT NULL COMMENT '交货号',
+  `sample_code` varchar(50) DEFAULT NULL COMMENT '款号',
+  `order_id` int(11) DEFAULT NULL COMMENT '订单id',
+  `order_code` varchar(50) DEFAULT NULL COMMENT '订单编号',
+  `product_name` varchar(50) DEFAULT NULL COMMENT '产品名',
+  `photo_url` varchar(5000) DEFAULT NULL COMMENT '照片 以逗号分隔',
+  `company` varchar(50) DEFAULT NULL COMMENT '公司',
+  `warehouse_user` varchar(50) DEFAULT NULL COMMENT '仓储经办人',
+  `warehouse_date` datetime DEFAULT NULL COMMENT '出库时间',
+  `status` int(2) DEFAULT '0' COMMENT '0-草稿；1-待出库；2-已出库；3-驳回',
+  `is_deleted` int(2) DEFAULT '0',
+  `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `update_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `creater` int(11) DEFAULT NULL,
+  `modifier` int(255) DEFAULT NULL,
+  `remarks` varchar(512) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8 COMMENT='成品出库申请单';
+
+-- ----------------------------
+-- Records of t_product_outbound
+-- ----------------------------
+INSERT INTO `t_product_outbound` VALUES ('15', '543', '543', 'HU81804004', null, '435435', null, 'http://47.98.232.164:8080/images/upload/c02e880b-c0c7-42ee-a246-ad0584d67c6e.jpg,http://47.98.232.164:8080/images/upload/639cafe3-b8f1-4ca2-af6f-8d5d986e3d78.jpg', '杭州大服饰有限公司', null, null, '1', '0', '2018-06-10 06:42:47', '2018-06-10 09:08:46', '2', '2', '');
+INSERT INTO `t_product_outbound` VALUES ('16', '3435', '543', 'HU81804004', null, '342', null, 'http://47.98.232.164:8080/images/upload/c02e880b-c0c7-42ee-a246-ad0584d67c6e.jpg,http://47.98.232.164:8080/images/upload/639cafe3-b8f1-4ca2-af6f-8d5d986e3d78.jpg', '杭州大服饰有限公司', null, null, '0', '0', '2018-06-10 06:51:19', '2018-06-10 06:58:41', '2', '2', '');
+
+-- ----------------------------
+-- Table structure for t_product_outbound_detail
+-- ----------------------------
+DROP TABLE IF EXISTS `t_product_outbound_detail`;
+CREATE TABLE `t_product_outbound_detail` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `outbound_id` int(11) DEFAULT NULL COMMENT '出货申请id',
+  `size_type` varchar(10) DEFAULT NULL COMMENT '尺寸类型4/6/8/12/14/16/18等尺码',
+  `order_num` int(11) DEFAULT NULL COMMENT '订单数量',
+  `warehouse_num` int(11) DEFAULT NULL COMMENT '入库数',
+  `color` varchar(10) DEFAULT NULL COMMENT '颜色',
+  `is_deleted` int(2) DEFAULT '0',
+  `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `update_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `creater` int(11) DEFAULT NULL,
+  `modifier` int(255) DEFAULT NULL,
+  `remarks` varchar(512) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=129 DEFAULT CHARSET=utf8 COMMENT='成品出库申请详情';
+
+-- ----------------------------
+-- Records of t_product_outbound_detail
+-- ----------------------------
+INSERT INTO `t_product_outbound_detail` VALUES ('103', '15', '4', '43', '543', '蓝色', '0', '2018-06-10 14:44:17', '2018-06-10 14:44:17', '2', null, null);
+INSERT INTO `t_product_outbound_detail` VALUES ('104', null, '4', '10', '543', '红色', '0', '2018-06-10 14:51:19', null, '2', null, null);
+INSERT INTO `t_product_outbound_detail` VALUES ('105', null, '6', '20', '543', '白色', '0', '2018-06-10 14:51:19', null, '2', null, null);
+INSERT INTO `t_product_outbound_detail` VALUES ('106', null, '8', '30', '543', '黑色', '0', '2018-06-10 14:51:19', null, '2', null, null);
+INSERT INTO `t_product_outbound_detail` VALUES ('107', null, '12', '40', '432', '绿色', '0', '2018-06-10 14:51:19', null, '2', null, null);
+INSERT INTO `t_product_outbound_detail` VALUES ('108', null, '14', '50', null, '金黄色', '0', '2018-06-10 14:51:19', null, '2', null, null);
+INSERT INTO `t_product_outbound_detail` VALUES ('109', null, '16', '60', null, '蓝色', '0', '2018-06-10 14:51:19', null, '2', null, null);
+INSERT INTO `t_product_outbound_detail` VALUES ('110', null, '18', '90', null, '橙色', '0', '2018-06-10 14:51:19', null, '2', null, null);
+INSERT INTO `t_product_outbound_detail` VALUES ('111', null, '20', '800', null, '粉红色', '0', '2018-06-10 14:51:19', null, '2', null, null);
+INSERT INTO `t_product_outbound_detail` VALUES ('121', '16', '4', '10', '4', '红色', '0', '2018-06-10 14:58:40', null, '2', null, null);
+INSERT INTO `t_product_outbound_detail` VALUES ('122', '16', '6', '20', '4', '白色', '0', '2018-06-10 14:58:40', null, '2', null, null);
+INSERT INTO `t_product_outbound_detail` VALUES ('123', '16', '8', '30', '4', '黑色', '0', '2018-06-10 14:58:40', null, '2', null, null);
+INSERT INTO `t_product_outbound_detail` VALUES ('124', '16', '12', '40', '4', '绿色', '0', '2018-06-10 14:58:40', null, '2', null, null);
+INSERT INTO `t_product_outbound_detail` VALUES ('125', '16', '14', '50', '3', '金黄色', '0', '2018-06-10 14:58:40', null, '2', null, null);
+INSERT INTO `t_product_outbound_detail` VALUES ('126', '16', '16', '60', '4', '蓝色', '0', '2018-06-10 14:58:40', null, '2', null, null);
+INSERT INTO `t_product_outbound_detail` VALUES ('127', '16', '18', '90', '3', '橙色', '0', '2018-06-10 14:58:40', null, '2', null, null);
+INSERT INTO `t_product_outbound_detail` VALUES ('128', '16', '20', '800', '342', '粉红色', '0', '2018-06-10 14:58:40', null, '2', null, null);
+
+-- ----------------------------
+-- Table structure for t_purchase_order
+-- ----------------------------
+DROP TABLE IF EXISTS `t_purchase_order`;
+CREATE TABLE `t_purchase_order` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `order_id` int(11) DEFAULT NULL COMMENT '订单id',
+  `purchase_code` varchar(50) DEFAULT NULL COMMENT '采购单编号',
+  `order_code` varchar(50) DEFAULT NULL COMMENT '订单编号',
+  `product_name` varchar(50) DEFAULT NULL COMMENT '原材料名称',
+  `ingredients` varchar(100) DEFAULT NULL COMMENT '成份',
+  `color` varchar(10) DEFAULT NULL COMMENT '货物颜色',
+  `batch_no` varchar(100) DEFAULT NULL COMMENT '批次',
+  `weight` int(11) DEFAULT NULL COMMENT '重量',
+  `num` int(11) DEFAULT NULL COMMENT '货物数量 件(箱)数',
+  `company` varchar(50) DEFAULT NULL COMMENT '货源公司',
+  `user` varchar(10) DEFAULT NULL COMMENT '制单人',
+  `warehouser` varchar(15) DEFAULT NULL COMMENT '入库负责人',
+  `inbound_date` datetime DEFAULT NULL COMMENT '生产日期',
+  `status` int(2) DEFAULT '0' COMMENT '0-草稿；1-采购中；2-待入库；3-已入库；4-驳回；',
+  `is_deleted` int(2) DEFAULT '0',
+  `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `update_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `creater` int(11) DEFAULT NULL,
+  `modifier` int(255) DEFAULT NULL,
+  `remarks` varchar(512) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8 COMMENT='采购单';
+
+-- ----------------------------
+-- Records of t_purchase_order
+-- ----------------------------
+INSERT INTO `t_purchase_order` VALUES ('26', '34', 'pc_20180612121153939', 'order_20180612', '麻布', '3254', '黑色', '4365476', '20', '500', '批发市场', '超级管理员', null, null, '3', '0', '2018-06-12 04:12:20', '2018-06-12 04:12:58', '2', '2', '');
+INSERT INTO `t_purchase_order` VALUES ('27', null, 'pc_2018061212144028', '', '62A24N10W4SP', '435', '红色', '543', '43', '50', '435435', '超级管理员', null, null, '3', '0', '2018-06-12 04:15:40', '2018-06-12 04:17:58', '2', '2', '4354363');
+INSERT INTO `t_purchase_order` VALUES ('28', null, 'pc_20180612121548182', '', '969', '4365', '绿色', '543', '45', '60', '543', '超级管理员', null, null, '3', '0', '2018-06-12 04:16:02', '2018-06-12 04:17:55', '2', '2', '435');
+
+-- ----------------------------
+-- Table structure for t_role
+-- ----------------------------
+DROP TABLE IF EXISTS `t_role`;
 CREATE TABLE `t_role` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `role_name` varchar(50) DEFAULT NULL COMMENT '角色名称',
@@ -116,8 +756,19 @@ CREATE TABLE `t_role` (
   `modifier` int(11) DEFAULT NULL,
   `remarks` varchar(512) CHARACTER SET latin1 DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='角色';
 
+-- ----------------------------
+-- Records of t_role
+-- ----------------------------
+INSERT INTO `t_role` VALUES ('1', '超级管理员', '1111', '0', '2018-05-15 19:44:38', '2018-05-15 19:44:38', '2', '2', null);
+INSERT INTO `t_role` VALUES ('2', '管理员', '324324', '0', '2018-05-15 19:45:38', '2018-05-15 19:45:38', '2', '2', null);
+INSERT INTO `t_role` VALUES ('3', '普通员工', 'ptyg', '0', '2018-05-16 13:06:21', null, '2', null, null);
+
+-- ----------------------------
+-- Table structure for t_role_menu
+-- ----------------------------
+DROP TABLE IF EXISTS `t_role_menu`;
 CREATE TABLE `t_role_menu` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `r_id` int(11) DEFAULT NULL COMMENT '角色id',
@@ -129,33 +780,81 @@ CREATE TABLE `t_role_menu` (
   `modifier` int(11) DEFAULT NULL,
   `remarks` varchar(512) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=105 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=592 DEFAULT CHARSET=utf8 COMMENT='角色菜单关联表';
 
+-- ----------------------------
+-- Records of t_role_menu
+-- ----------------------------
+INSERT INTO `t_role_menu` VALUES ('42', '2', '1', '0', '2018-05-16 19:06:33', null, '2', null, null);
+INSERT INTO `t_role_menu` VALUES ('43', '2', '2', '0', '2018-05-16 19:06:33', null, '2', null, null);
+INSERT INTO `t_role_menu` VALUES ('566', '1', '8', '0', '2018-06-13 13:06:25', null, '2', null, null);
+INSERT INTO `t_role_menu` VALUES ('567', '1', '13', '0', '2018-06-13 13:06:25', null, '2', null, null);
+INSERT INTO `t_role_menu` VALUES ('568', '1', '11', '0', '2018-06-13 13:06:25', null, '2', null, null);
+INSERT INTO `t_role_menu` VALUES ('569', '1', '18', '0', '2018-06-13 13:06:25', null, '2', null, null);
+INSERT INTO `t_role_menu` VALUES ('570', '1', '21', '0', '2018-06-13 13:06:25', null, '2', null, null);
+INSERT INTO `t_role_menu` VALUES ('571', '1', '19', '0', '2018-06-13 13:06:25', null, '2', null, null);
+INSERT INTO `t_role_menu` VALUES ('572', '1', '24', '0', '2018-06-13 13:06:25', null, '2', null, null);
+INSERT INTO `t_role_menu` VALUES ('573', '1', '20', '0', '2018-06-13 13:06:25', null, '2', null, null);
+INSERT INTO `t_role_menu` VALUES ('574', '1', '12', '0', '2018-06-13 13:06:25', null, '2', null, null);
+INSERT INTO `t_role_menu` VALUES ('575', '1', '15', '0', '2018-06-13 13:06:25', null, '2', null, null);
+INSERT INTO `t_role_menu` VALUES ('576', '1', '27', '0', '2018-06-13 13:06:25', null, '2', null, null);
+INSERT INTO `t_role_menu` VALUES ('577', '1', '5', '0', '2018-06-13 13:06:25', null, '2', null, null);
+INSERT INTO `t_role_menu` VALUES ('578', '1', '22', '0', '2018-06-13 13:06:25', null, '2', null, null);
+INSERT INTO `t_role_menu` VALUES ('579', '1', '6', '0', '2018-06-13 13:06:25', null, '2', null, null);
+INSERT INTO `t_role_menu` VALUES ('580', '1', '25', '0', '2018-06-13 13:06:25', null, '2', null, null);
+INSERT INTO `t_role_menu` VALUES ('581', '1', '28', '0', '2018-06-13 13:06:25', null, '2', null, null);
+INSERT INTO `t_role_menu` VALUES ('582', '1', '7', '0', '2018-06-13 13:06:25', null, '2', null, null);
+INSERT INTO `t_role_menu` VALUES ('583', '1', '26', '0', '2018-06-13 13:06:25', null, '2', null, null);
+INSERT INTO `t_role_menu` VALUES ('584', '1', '30', '0', '2018-06-13 13:06:25', null, '2', null, null);
+INSERT INTO `t_role_menu` VALUES ('585', '1', '29', '0', '2018-06-13 13:06:25', null, '2', null, null);
+INSERT INTO `t_role_menu` VALUES ('586', '1', '31', '0', '2018-06-13 13:06:25', null, '2', null, null);
+INSERT INTO `t_role_menu` VALUES ('587', '1', '32', '0', '2018-06-13 13:06:25', null, '2', null, null);
+INSERT INTO `t_role_menu` VALUES ('588', '1', '1', '0', '2018-06-13 13:06:25', null, '2', null, null);
+INSERT INTO `t_role_menu` VALUES ('589', '1', '2', '0', '2018-06-13 13:06:25', null, '2', null, null);
+INSERT INTO `t_role_menu` VALUES ('590', '1', '3', '0', '2018-06-13 13:06:25', null, '2', null, null);
+INSERT INTO `t_role_menu` VALUES ('591', '1', '4', '0', '2018-06-13 13:06:25', null, '2', null, null);
+
+-- ----------------------------
+-- Table structure for t_sample
+-- ----------------------------
+DROP TABLE IF EXISTS `t_sample`;
 CREATE TABLE `t_sample` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `order_id` int(11) DEFAULT NULL COMMENT '订单id',
+  `sample_code` varchar(50) DEFAULT NULL COMMENT '款号',
+  `needle` varchar(100) DEFAULT NULL COMMENT '针形',
   `sample_name` varchar(50) DEFAULT NULL,
-  `sample_code` varchar(20) DEFAULT NULL COMMENT '样品型号',
+  `style` varchar(50) DEFAULT NULL COMMENT '款式',
+  `material` varchar(100) DEFAULT NULL COMMENT '材料',
+  `company` varchar(100) DEFAULT NULL COMMENT '公司',
+  `brand` varchar(50) DEFAULT NULL COMMENT '品牌',
   `photo_url` varchar(5000) DEFAULT NULL COMMENT '照片 以逗号分隔',
-  `status` int(2) DEFAULT '0' COMMENT '0-新建；1-完成；2-计划生产阶段',
-  `is_deleted` int(255) DEFAULT NULL,
+  `color` varchar(20) DEFAULT NULL,
+  `status` int(2) DEFAULT '0' COMMENT '0-新建；1-完成；',
+  `is_deleted` int(255) DEFAULT '0',
   `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `update_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `creater` int(11) DEFAULT NULL,
   `modifier` int(11) DEFAULT NULL,
   `remarks` varchar(1024) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COMMENT='样品表 打样';
+) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8 COMMENT='样品表 打样';
 
-CREATE TABLE `t_sample_material` (
+-- ----------------------------
+-- Records of t_sample
+-- ----------------------------
+INSERT INTO `t_sample` VALUES ('34', 'HU81804004', '7GG 2根', null, '一字领套衬', '90抗起球澎体涤纶', '杭州商大服有限公司', 'sungin group', 'http://47.98.232.164:8080/images/upload/c8e1e9f4-6106-4931-9706-19c4ddab4892.jpg,http://47.98.232.164:8080/images/upload/17d90bf4-8675-4907-986e-8671bbf60e07.jpg,http://47.98.232.164:8080/images/upload/9f15502c-4d43-4951-b533-a0ee6929214f.jpg', '黑色', '1', '0', '2018-06-12 00:38:01', '2018-06-12 00:40:28', '2', '2', '前片和后片一个整片');
+INSERT INTO `t_sample` VALUES ('35', '20180612', 'DFFG', null, 'super', '麻布', '杭州服装有限公司', '森马', 'http://47.98.232.164:8080/images/upload/6ccddd97-bc2d-45eb-ba31-4d9711917ca0.jpg,http://47.98.232.164:8080/images/upload/97a83d4d-0b97-4c3b-8d5e-baa27f2164d4.jpg', '紫色', '0', '0', '2018-06-12 00:40:18', null, '2', null, '女装');
+
+-- ----------------------------
+-- Table structure for t_sample_detail
+-- ----------------------------
+DROP TABLE IF EXISTS `t_sample_detail`;
+CREATE TABLE `t_sample_detail` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `simple_id` int(11) DEFAULT NULL,
-  `goods_id` int(11) DEFAULT NULL,
-  `goods_name` varchar(255) DEFAULT NULL,
-  `goods_model` varchar(50) DEFAULT NULL COMMENT '货物型号',
-  `num` int(11) DEFAULT NULL COMMENT '货物数量',
-  `color` varchar(10) DEFAULT NULL COMMENT '货物颜色',
-  `unit` varchar(10) DEFAULT NULL COMMENT '货物单位',
+  `sample_id` int(11) DEFAULT NULL COMMENT '样品id',
+  `attribute` varchar(100) DEFAULT NULL COMMENT '工艺尺寸',
+  `value` varchar(50) DEFAULT NULL COMMENT '值',
+  `unit` varchar(20) DEFAULT NULL COMMENT '单位',
   `is_deleted` int(2) DEFAULT '0',
   `create_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `update_time` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
@@ -163,8 +862,22 @@ CREATE TABLE `t_sample_material` (
   `modifier` int(255) DEFAULT NULL,
   `remarks` varchar(512) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8 COMMENT='样品工艺尺寸表';
 
+-- ----------------------------
+-- Records of t_sample_detail
+-- ----------------------------
+INSERT INTO `t_sample_detail` VALUES ('31', '34', '前衣长', '120', 'cm', '0', '2018-06-12 08:38:42', null, '2', null, null);
+INSERT INTO `t_sample_detail` VALUES ('32', '34', '后衣长', '120', 'cm', '0', '2018-06-12 08:38:42', null, '2', null, null);
+INSERT INTO `t_sample_detail` VALUES ('33', '34', '领宽', '26', 'cm', '0', '2018-06-12 08:38:42', null, '2', null, null);
+INSERT INTO `t_sample_detail` VALUES ('34', '34', '肩宽', '89', 'cm', '0', '2018-06-12 08:38:42', null, '2', null, null);
+INSERT INTO `t_sample_detail` VALUES ('35', '35', '胸围', '80', 'cm', '0', '2018-06-12 08:40:17', null, '2', null, null);
+INSERT INTO `t_sample_detail` VALUES ('36', '35', '腰围', '60', 'cm', '0', '2018-06-12 08:40:17', null, '2', null, null);
+
+-- ----------------------------
+-- Table structure for t_user
+-- ----------------------------
+DROP TABLE IF EXISTS `t_user`;
 CREATE TABLE `t_user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `login_name` varchar(50) DEFAULT NULL COMMENT '员工id',
@@ -183,8 +896,32 @@ CREATE TABLE `t_user` (
   `remarks` varchar(512) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `login_name` (`login_name`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8 COMMENT='用户表';
 
+-- ----------------------------
+-- Records of t_user
+-- ----------------------------
+INSERT INTO `t_user` VALUES ('1', null, '李四', 'e10adc3949ba59abbe56e057f20f883e', '18888888888', '86@163.com', '2', null, null, '1', '2018-05-16 19:11:29', '2018-05-16 19:11:29', null, '2', '5435');
+INSERT INTO `t_user` VALUES ('2', 'admin', '超级管理员', 'e10adc3949ba59abbe56e057f20f883e', '18888888888', '1888888888@163.com', '1', '1', '董事长办公室', '0', '2018-05-14 00:33:42', '2018-06-09 07:36:05', null, '2', '超级管理员');
+INSERT INTO `t_user` VALUES ('3', null, '王老五', 'e10adc3949ba59abbe56e057f20f883e', '13167579876', '1111@163.com', null, null, null, '1', '2018-05-16 19:11:37', '2018-05-16 19:11:37', null, '2', '324253');
+INSERT INTO `t_user` VALUES ('4', null, '乱七八糟', 'e10adc3949ba59abbe56e057f20f883e', '13145678900', '7788@sina.com', '0', null, null, '1', '2018-05-16 19:11:37', '2018-05-16 19:11:37', null, '2', '43567');
+INSERT INTO `t_user` VALUES ('11', null, '张三', 'e10adc3949ba59abbe56e057f20f883e', '15868888888', '564fwd@163.com', null, null, null, '1', '2018-06-07 18:56:21', '2018-06-07 18:56:21', null, '2', null);
+INSERT INTO `t_user` VALUES ('12', '15688888881', 'test12', 'e10adc3949ba59abbe56e057f20f883e', '15688888888', '34253654@163.com', '0', '2', '总经理', '0', '2018-05-17 09:04:48', '2018-06-11 01:27:05', '2', '2', '5435');
+INSERT INTO `t_user` VALUES ('13', '15688888882', 'test5', 'e10adc3949ba59abbe56e057f20f883e', '15688888888', '34253654@163.com', null, null, null, '0', '2018-05-17 09:04:53', '2018-05-17 09:04:53', '2', '2', '5435');
+INSERT INTO `t_user` VALUES ('14', '15888888883', 'tests', 'e10adc3949ba59abbe56e057f20f883e', '15888888888', '86@163.com', null, null, null, '0', '2018-05-17 09:04:55', '2018-05-17 09:04:55', '2', '2', '5435');
+INSERT INTO `t_user` VALUES ('15', '18888888888', '赵六', 'e10adc3949ba59abbe56e057f20f883e', '18888888888', '43536@163.com', '0', null, null, '0', '2018-05-14 11:22:08', null, '2', null, '123457');
+INSERT INTO `t_user` VALUES ('16', '18777777774', '老七', 'e10adc3949ba59abbe56e057f20f883e', '18777777777', '24356@163.com', '1', null, null, '0', '2018-05-17 09:04:58', '2018-05-17 09:04:58', null, '2', '435353');
+INSERT INTO `t_user` VALUES ('17', '18777777777', '老七', 'e10adc3949ba59abbe56e057f20f883e', '18777777777', '24356@163.com', '1', null, null, '0', '2018-05-15 08:43:11', '2018-05-15 08:43:11', null, '2', '435353');
+INSERT INTO `t_user` VALUES ('19', '123456', '12345', 'e10adc3949ba59abbe56e057f20f883e', '18888888881', '111@163.com', '1', null, null, '0', '2018-05-16 11:01:15', null, '2', null, '234567');
+INSERT INTO `t_user` VALUES ('20', 'cgy01', '采购员', 'e10adc3949ba59abbe56e057f20f883e', '18888888882', '234@sina.com', '2', '5', '采购部', '0', '2018-05-16 11:39:42', '2018-05-16 11:42:15', '2', '2', '但是发达省份');
+INSERT INTO `t_user` VALUES ('21', '54254', '23452', 'e10adc3949ba59abbe56e057f20f883e', '18888883764', '43243@sina.com', '1', '4', '生产部', '0', '2018-05-16 11:45:22', '2018-05-16 11:45:30', '2', '2', '34235435');
+INSERT INTO `t_user` VALUES ('22', '23457', '23456789', 'e10adc3949ba59abbe56e057f20f883e', '18888888999', '1234@234.com', '1', '3', '计划科', '0', '2018-05-17 00:29:38', null, '2', null, '');
+INSERT INTO `t_user` VALUES ('23', '32425', '不知道叫啥', 'e10adc3949ba59abbe56e057f20f883e', '18888888888', 'fre@163.com', '1', '4', '生产部', '0', '2018-05-17 11:40:51', null, '2', null, '43543543543任');
+
+-- ----------------------------
+-- Table structure for t_user_role
+-- ----------------------------
+DROP TABLE IF EXISTS `t_user_role`;
 CREATE TABLE `t_user_role` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `u_id` int(11) DEFAULT NULL COMMENT '用户id',
@@ -196,5 +933,10 @@ CREATE TABLE `t_user_role` (
   `modifier` int(11) DEFAULT NULL,
   `remarks` varchar(512) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8 COMMENT='用户角色关联表';
 
+-- ----------------------------
+-- Records of t_user_role
+-- ----------------------------
+INSERT INTO `t_user_role` VALUES ('18', '2', '2', '0', '2018-05-16 04:47:38', null, '2', null, null);
+INSERT INTO `t_user_role` VALUES ('19', '2', '1', '0', '2018-05-16 05:03:38', null, '2', null, null);

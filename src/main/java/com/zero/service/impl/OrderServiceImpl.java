@@ -4,10 +4,13 @@ import com.zero.common.BusinessException;
 import com.zero.common.enmu.DeletedEnum;
 import com.zero.common.enmu.OrderStatus;
 import com.zero.common.utils.BeanUtils;
+import com.zero.mapper.OrderBatchMapper;
 import com.zero.mapper.OrderDetailMapper;
 import com.zero.mapper.OrderMapper;
 import com.zero.model.Order;
+import com.zero.model.OrderBatch;
 import com.zero.model.OrderDetail;
+import com.zero.model.example.OrderBatchExample;
 import com.zero.model.example.OrderDetailExample;
 import com.zero.model.example.OrderExample;
 import com.zero.model.verify.OrderDetails;
@@ -33,6 +36,8 @@ public class OrderServiceImpl implements IOrderService {
     private OrderMapper orderMapper;
     @Resource
     private OrderDetailMapper orderDetailMapper;
+    @Resource
+    private OrderBatchMapper orderBatchMapper;
 
     @Override
     public List<Order> findOrderByPage(String orderCode, String sampleCode, List<Integer> status, Integer pageNum, Integer pageSize) {
@@ -85,16 +90,24 @@ public class OrderServiceImpl implements IOrderService {
             return 0;
         }
         int orderId = order.getId();
-        List<OrderDetail> detailList = orderDetails.getDetailList();
+        List<OrderBatch> detailList = orderDetails.getDetailList();
         detailList.forEach(d -> {
             d.setOrderId(orderId);
             d.setCreater(loginId);
             d.setCreateTime(new Date());
+            if(orderBatchMapper.insertSelective(d) <= 0){
+                LOGGER.error("批量创建op号/交货号失败！");
+                throw new BusinessException("批量创建op号/交货号异常");
+            } else {
+                List<OrderDetail> list = d.getDetails();
+                list.forEach(dd -> dd.setOrderId(d.getId()));
+                if(orderDetailMapper.insertBatch(list, loginId) != list.size()){
+                    LOGGER.error("批量创建尺寸失败！");
+                    throw new BusinessException("批量创建尺寸异常");
+                }
+            }
         });
-        if(orderDetailMapper.insertBatch(detailList, loginId) != detailList.size()){
-            LOGGER.error("批量创建尺寸失败！");
-            throw new BusinessException("批量创建尺寸异常");
-        }
+
         return 1;
     }
 
@@ -116,24 +129,41 @@ public class OrderServiceImpl implements IOrderService {
             LOGGER.error("修改订单失败！");
             return 0;
         }
-        OrderDetailExample detailExample = new OrderDetailExample();
-        OrderDetailExample.Criteria criteria = detailExample.createCriteria();
-        criteria.andOrderIdEqualTo(order.getId());
-        if(orderDetailMapper.deleteByExample(detailExample) <= 0){
-            LOGGER.error("批量删除尺寸失败！");
-            throw new BusinessException("批量删除尺寸异常");
+        OrderBatchExample batchExample = new OrderBatchExample();
+        OrderBatchExample.Criteria criteria2 = batchExample.createCriteria();
+        criteria2.andOrderIdEqualTo(order.getId());
+        List<OrderBatch> list = orderBatchMapper.selectByExample(batchExample);
+        if(!CollectionUtils.isEmpty(list)){
+            list.forEach(l -> {
+                OrderDetailExample detailExample = new OrderDetailExample();
+                OrderDetailExample.Criteria criteria = detailExample.createCriteria();
+                criteria.andOrderIdEqualTo(l.getId());
+                if(orderDetailMapper.deleteByExample(detailExample) <= 0){
+                    LOGGER.error("批量删除尺寸失败！");
+                    throw new BusinessException("批量删除尺寸异常");
+                }
+            });
         }
+        orderBatchMapper.deleteByExample(batchExample);
+
         int orderId = order.getId();
-        List<OrderDetail> detailList = orderDetails.getDetailList();
+        List<OrderBatch> detailList = orderDetails.getDetailList();
         detailList.forEach(d -> {
             d.setOrderId(orderId);
             d.setCreater(loginId);
             d.setCreateTime(new Date());
+            if(orderBatchMapper.insertSelective(d) <= 0){
+                LOGGER.error("批量创建op号/交货号失败！");
+                throw new BusinessException("批量创建op号/交货号异常");
+            } else {
+                List<OrderDetail> list2 = d.getDetails();
+                list2.forEach(dd -> dd.setOrderId(d.getId()));
+                if(orderDetailMapper.insertBatch(list2, loginId) != list2.size()){
+                    LOGGER.error("批量创建尺寸失败！");
+                    throw new BusinessException("批量创建尺寸异常");
+                }
+            }
         });
-        if(orderDetailMapper.insertBatch(detailList, loginId) != detailList.size()){
-            LOGGER.error("批量创建尺寸失败！");
-            throw new BusinessException("批量创建尺寸异常");
-        }
         return 1;
     }
 
@@ -154,12 +184,29 @@ public class OrderServiceImpl implements IOrderService {
             LOGGER.info("删除订单失败！");
             return 0;
         }
-        OrderDetail orderDetail = new OrderDetail();
-        orderDetail.setIsDeleted(DeletedEnum.YES.getKey());
-        OrderDetailExample updateExample = new OrderDetailExample();
-        OrderDetailExample.Criteria criteria = updateExample.createCriteria();
-        criteria.andOrderIdEqualTo(id);
-        orderDetailMapper.updateByExampleSelective(orderDetail, updateExample);
+
+        OrderBatchExample batchExample = new OrderBatchExample();
+        OrderBatchExample.Criteria criteria2 = batchExample.createCriteria();
+        criteria2.andOrderIdEqualTo(order.getId());
+        List<OrderBatch> list = orderBatchMapper.selectByExample(batchExample);
+        if(!CollectionUtils.isEmpty(list)){
+            list.forEach(l -> {
+                OrderDetail orderDetail = new OrderDetail();
+                orderDetail.setIsDeleted(DeletedEnum.YES.getKey());
+                OrderDetailExample updateExample = new OrderDetailExample();
+                OrderDetailExample.Criteria criteria = updateExample.createCriteria();
+                criteria.andOrderIdEqualTo(l.getId());
+                orderDetailMapper.updateByExampleSelective(orderDetail, updateExample);
+            });
+        }
+
+        OrderBatchExample updateBatchExample = new OrderBatchExample();
+        OrderBatchExample.Criteria criteria3 = batchExample.createCriteria();
+        criteria2.andOrderIdEqualTo(order.getId());
+        OrderBatch orderBatch = new OrderBatch();
+        orderBatch.setIsDeleted(DeletedEnum.YES.getKey());
+        orderBatchMapper.updateByExampleSelective(orderBatch, updateBatchExample);
+
         return 1;
     }
 

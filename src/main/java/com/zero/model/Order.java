@@ -7,6 +7,7 @@ import org.springframework.util.CollectionUtils;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Order {
     private Integer id;
@@ -56,7 +57,7 @@ public class Order {
 
     private Integer totalNum;
 
-    private List<OrderDetail> details;
+    private List<OrderBatch> batchDetails;
 
     public Integer getId() {
         return id;
@@ -234,20 +235,32 @@ public class Order {
         this.winningBid = winningBid;
     }
 
-    public List<OrderDetail> getDetails() {
-        return details;
-    }
-
-    public void setDetails(List<OrderDetail> details) {
-        this.details = details;
-    }
-
     public Integer getTotalNum() {
-        if(CollectionUtils.isEmpty(this.getDetails())){
+        if(CollectionUtils.isEmpty(this.batchDetails)){
             return 0;
         }
-        return Optional.ofNullable(this.getDetails()).orElse(Lists.newArrayList()).stream()
-            .map(OrderDetail::getNum).reduce((a, b) -> a + b).get();
+        AtomicInteger num = new AtomicInteger(0);
+        batchDetails.forEach(b -> {
+            List<OrderDetail> list = b.getDetails();
+            if(!CollectionUtils.isEmpty(list)){
+                list.forEach(d -> {
+                    num.getAndAdd(d.getNum());
+                });
+            }
+        });
+        return num.get();
+    }
+
+    public void setTotalNum(Integer totalNum) {
+        this.totalNum = totalNum;
+    }
+
+    public List<OrderBatch> getBatchDetails() {
+        return batchDetails;
+    }
+
+    public void setBatchDetails(List<OrderBatch> batchDetails) {
+        this.batchDetails = batchDetails;
     }
 
     @Override

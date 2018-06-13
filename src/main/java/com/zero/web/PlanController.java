@@ -110,6 +110,14 @@ public class PlanController {
         return Result.resultSuccess(result);
     }
 
+    @PutMapping("updateToAudit/{id}")
+    public Result<String> updateToAudit(HttpServletRequest request, @PathVariable("id") int id){
+        if(planService.updateToAudit(id, SessionUtils.getCurrentUserId(request)) <= 0){
+            return Result.resultFailure("生产计划单提交审核失败！");
+        }
+        return Result.resultSuccess("生产计划单已提交审核！");
+    }
+
     /**
      * 进入生产
      * @param request
@@ -130,5 +138,13 @@ public class PlanController {
             return Result.resultFailure("操作生产计划失败！");
         }
         return Result.resultSuccess("操作生产计划成功！");
+    }
+
+    @PutMapping("updateToReject/{id}")
+    public Result<String> updateToReject(HttpServletRequest request, @PathVariable("id") int id){
+        if(planService.updateToReject(id, SessionUtils.getCurrentUserId(request)) <= 0){
+            return Result.resultFailure("生产计划驳回失败！");
+        }
+        return Result.resultSuccess("生产计划驳回成功！");
     }
 }

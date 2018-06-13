@@ -11,8 +11,10 @@ import java.util.stream.Stream;
 @AllArgsConstructor
 public enum  PlanStatus implements EnumDict {
     SAVE(0, "新建"),
-    PRODUCE(1, "生产"),
-    FINISHED(2, "完成");
+    AUDIT(1, "审核"),
+    PRODUCE(2, "生产"),
+    FINISHED(3, "完成"),
+    REJECT(4, "驳回");
 
     int key;
     String desc;

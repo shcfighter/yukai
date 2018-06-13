@@ -14,7 +14,7 @@ public interface IDeptService {
 
     int delete(int id, int userId);
 
-    long findRowNNum(String deptName, String deptCode);
+    long findRowNum(String deptName, String deptCode);
 
     List<Dept> findDeptPage(String deptName, String deptCode, int pageNum, int pageSize);
 

@@ -34,7 +34,7 @@ public class DeptController {
 	public Result<List<Dept>> findDeptPage(String deptName, String deptCode,
 										   @RequestParam(value = "page", defaultValue = "1") int pageNum,
 										   @RequestParam(value = "limit", defaultValue = "10") int pageSize){
-		return Result.resultSuccess(deptService.findRowNNum(deptName, deptCode), deptService.findDeptPage(deptName, deptCode, pageNum, pageSize));
+		return Result.resultSuccess(deptService.findRowNum(deptName, deptCode), deptService.findDeptPage(deptName, deptCode, pageNum, pageSize));
 	}
 
 	@PostMapping("/insertDept")

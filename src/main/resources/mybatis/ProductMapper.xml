@@ -337,8 +337,8 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
-  <resultMap type="com.zero.model.ProductApply" id="productAndDetailResultMap" extends="BaseResultMap">
-    <collection property="detailList" ofType="com.zero.model.ProductApplyDetail">
+  <resultMap type="com.zero.model.Product" id="productAndDetailResultMap" extends="BaseResultMap">
+    <collection property="detailList" ofType="com.zero.model.ProductDetail">
       <id column="detail_id" jdbcType="INTEGER" property="id" />
       <result column="detail_product_id" jdbcType="INTEGER" property="productId" />
       <result column="detail_size_type" jdbcType="VARCHAR" property="sizeType" />
@@ -355,6 +355,37 @@
   </resultMap>
   <!-- 查询订单关联查询用户及订单明细 -->
   <select id="findProductAndDetailList" parameterType="com.zero.model.example.ProductExample" resultMap="productAndDetailResultMap">
+    SELECT
+    t1.*,
+    t2.id detail_id,
+    t2.product_id detail_product_id,
+    t2.size_type detail_size_type,
+    t2.order_num detail_order_num,
+    t2.warehouse_num detail_warehouse_num,
+    t2.color detail_color,
+    t2.create_time detail_create_time,
+    t2.update_time detail_update_time,
+    t2.creater detail_creater,
+    t2.modifier detail_modifier,
+    t2.remarks detail_remarks
+    FROM
+    (
+    select * from t_product
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null and offset != null">
+      limit #{limit} offset #{offset}
+    </if>
+    ) t1 left join t_product_detail t2
+    on (t1.id = t2.product_id and t2.is_deleted = 0)
+    order by t1.create_time desc, t2.size_type*1 asc
+  </select>
+
+  <select id="findProductList" parameterType="com.zero.model.example.ProductExample" resultType="java.util.Map">
     SELECT
     t1.*,
     t2.id detail_id,

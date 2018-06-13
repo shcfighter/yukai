@@ -9,4 +9,5 @@ public interface IProductDetailService {
 
     List<ProductDetail> getProductDetailByProductId(int productId);
 
+    long selectTotal();
 }

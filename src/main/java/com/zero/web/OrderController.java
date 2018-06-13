@@ -46,7 +46,7 @@ public class OrderController {
 	public Result<Map<String, Object>> getOrderAndDetails(@PathVariable("id") int id){
 		Map<String, Object> result = Maps.newHashMap();
 		result.put("order", orderService.getOrderById(id));
-		result.put("orderDetails", orderDetailService.getOrderDetailByOrderId(id));
+		result.put("orderDetails", orderDetailService.getOrderBatchByOrderId(id));
 		return Result.resultSuccess(result);
 	}
 
@@ -76,6 +76,14 @@ public class OrderController {
 	@PostMapping("/insertOrder")
 	public Result<String> insertOrder(HttpServletRequest request, @RequestBody OrderDetails orderDetails,
 									 BindingResult bindingResult){
+		LOGGER.info("订单：{}", orderDetails.getOrder());
+		LOGGER.info("订单详情：{}", orderDetails.getDetailList());
+		orderDetails.getDetailList().forEach(d -> {
+			LOGGER.info("订单num：{}", d);
+			d.getDetails().forEach(m -> {
+				LOGGER.info("订单ddd：{}", m);
+			});
+		});
 		if(bindingResult.hasErrors()){
 			LOGGER.error("新增订单信息错误：{}", bindingResult.getFieldError().getDefaultMessage());
 			return Result.resultFailure(bindingResult.getFieldError().getDefaultMessage());

@@ -62,7 +62,7 @@ public class DeptServiceImpl implements IDeptService {
     }
 
     @Override
-    public long findRowNNum(String deptName, String deptCode) {
+    public long findRowNum(String deptName, String deptCode) {
         DeptExample example = new DeptExample();
         DeptExample.Criteria criteria = example.createCriteria();
         criteria.andIsDeletedEqualTo(DeletedEnum.NO.getKey());

@@ -18,4 +18,6 @@ public interface IMaterialService {
 
 	Map<String, Object> outbound(int outboundId, int loginId, String loginName);
 
+	long selectTotal();
+
 }

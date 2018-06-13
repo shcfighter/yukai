@@ -5,6 +5,7 @@ import com.zero.common.Result;
 import com.zero.common.enmu.MaterialOutBoundStatus;
 import com.zero.common.utils.SessionUtils;
 import com.zero.model.MaterialOutbound;
+import com.zero.model.OutboundMaterial;
 import com.zero.model.verify.MaterialOutboundDetails;
 import com.zero.service.IMaterialOutboundService;
 import com.zero.service.IOutboundMaterialService;
@@ -29,6 +30,16 @@ public class MaterialOutBoundController {
 	private IMaterialOutboundService materialOutboundService;
 	@Resource
 	private IOutboundMaterialService outboundMaterialService;
+
+	/**
+	 * 获取原材料出库申请单详情
+	 * @param id
+	 * @return
+	 */
+	@GetMapping("/getOutboundMaterial/{outboundId}")
+	public Result<OutboundMaterial> getOutboundMaterial(@PathVariable("outboundId") int id){
+		return Result.resultSuccess(outboundMaterialService.getOutboundMaterialByOutboundId(id));
+	}
 
 	@GetMapping("/getMaterialOutbound/{id}")
 	public Result<MaterialOutbound> getMaterialOutbound(@PathVariable("id") int id){

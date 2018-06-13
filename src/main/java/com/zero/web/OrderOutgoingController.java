@@ -23,7 +23,7 @@ public class OrderOutgoingController {
 	@Resource
 	private IOrderOutgoingService orderOutgoingService;
 
-	@GetMapping("/getPurchaseOrder/{id}")
+	@GetMapping("/getOrderOutgoing/{id}")
 	public Result<OrderOutgoing> getOrderOutgoing(@PathVariable("id") int id){
 		return Result.resultSuccess(orderOutgoingService.getOrderOutgoingById(id));
 	}

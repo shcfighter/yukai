@@ -71,7 +71,7 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
-    public List<Product> findProductAndDetailList(String productName, String sampleCode, String orderCode, Integer status, Integer pageNum, Integer pageSize) {
+    public List<Map<String, Object>> findProductAndDetailList(String productName, String sampleCode, String orderCode, Integer status, Integer pageNum, Integer pageSize) {
         ProductExample example = new ProductExample();
         if(Objects.nonNull(pageNum) && Objects.nonNull(pageSize)){
             example.setPage(pageNum);
@@ -91,7 +91,7 @@ public class ProductServiceImpl implements IProductService {
         if(StringUtils.isNotEmpty(orderCode)){
             criteria.andOrderCodeLike("%" + orderCode + "%");
         }
-        return Optional.ofNullable(productMapper.findProductAndDetailList(example)).orElse(Lists.newArrayList());
+        return Optional.ofNullable(productMapper.findProductList(example)).orElse(Lists.newArrayList());
     }
 
     @Override

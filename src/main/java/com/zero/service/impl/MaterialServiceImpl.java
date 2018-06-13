@@ -7,7 +7,6 @@ import com.zero.common.enmu.MaterialOutBoundStatus;
 import com.zero.common.enmu.PurchaseOrderStatus;
 import com.zero.common.enmu.RecordType;
 import com.zero.mapper.MaterialMapper;
-import com.zero.mapper.MaterialOutboundMapper;
 import com.zero.model.Material;
 import com.zero.model.MaterialOutbound;
 import com.zero.model.OutboundMaterial;
@@ -90,9 +89,9 @@ public class MaterialServiceImpl implements IMaterialService {
     public int inbound(int purchaseOrderId, int loginId, String loginName) {
         PurchaseOrder purchaseOrder = purchaseOrderService.getPurchaseOrderById(purchaseOrderId);
         if(Objects.isNull(purchaseOrder)){
+            LOGGER.info("采购单【{}】不存在!", purchaseOrderId);
             return 0;
         }
-        final String productName = purchaseOrder.getProductName();
         List<Material> list = this.findMaterialPage(purchaseOrder.getProductName(), purchaseOrder.getColor(), null, null, null);
         if (CollectionUtils.isEmpty(list)){
             Material material = new Material();
@@ -103,32 +102,25 @@ public class MaterialServiceImpl implements IMaterialService {
             material.setWeight(purchaseOrder.getWeight());
             material.setCreateTime(new Date());
             if(materialMapper.insertSelective(material) <= 0){
-                throw new BusinessException("物品记录新增异常，回滚");
+                LOGGER.info("插入原材料记录异常，");
+                throw new BusinessException("原材料记录新增异常");
             }
             if(purchaseOrderService.updateStatus(purchaseOrderId, PurchaseOrderStatus.FINISHED.getKey(), loginId, PurchaseOrderStatus.AUDIT.getKey()) <= 0){
-                throw new BusinessException("修改采购单失败，回滚");
-            }
-            int goodsNum = goodsRecordService.insert(material.getId(), material.getProductName(), material.getIngredients(), purchaseOrderId + "", material.getNum(),
-                    0, RecordType.INBOUND.getKey(), loginId, purchaseOrder.getCreater());
-            if(goodsNum <= 0){
-                throw new BusinessException("插入物品记录异常，回滚");
+                LOGGER.info("更新采购单【{}】异常", purchaseOrderId);
+                throw new BusinessException("修改采购单失败");
             }
             return 1;
         }
         Material material = list.get(0);
-        int originalNum = material.getNum();
         material.setNum(material.getNum() + purchaseOrder.getNum());
         material.setUpdateTime(new Date());
         if(materialMapper.updateByPrimaryKeySelective(material) <= 0){
-            throw new BusinessException("物品记录修改异常，回滚");
+            LOGGER.info("修改原材料【{}】数量异常", material.getId());
+            throw new BusinessException("原材料记录修改异常");
         }
         if(purchaseOrderService.updateStatus(purchaseOrderId, PurchaseOrderStatus.FINISHED.getKey(), loginId, PurchaseOrderStatus.AUDIT.getKey()) <= 0){
-            throw new BusinessException("修改采购单失败，回滚");
-        }
-        int goodsNum = goodsRecordService.insert(material.getId(), material.getProductName(), material.getIngredients(), purchaseOrderId + "", material.getNum(),
-                originalNum, RecordType.INBOUND.getKey(), loginId, purchaseOrder.getCreater());
-        if(goodsNum <= 0){
-            throw new BusinessException("插入物品记录异常，回滚");
+            LOGGER.info("更新采购单【{}】异常", purchaseOrderId);
+            throw new BusinessException("修改采购单失败");
         }
         return 1;
     }
@@ -173,16 +165,21 @@ public class MaterialServiceImpl implements IMaterialService {
                 result.put("success", 0);
                 return result;
             }
-            int outNum = materialOutboundService.updateStatus(outboundId, loginId, MaterialOutBoundStatus.FINISHED.getKey(), MaterialOutBoundStatus.AUDIT.getKey());
-            if(outNum <= 0){
-                LOGGER.info("更新原材料申请单状态【{}】数量失败！", outboundId);
-                throw new BusinessException("更新原材料申请单状态异常，回滚");
-            }
-            goodsRecordService.insert(material.getId(), material.getProductName(), material.getColor(), outboundId + "", material.getNum(),
+            goodsRecordService.insert(material.getId(), "原材料：" + material.getProductName(), material.getColor(), outboundId + "", material.getNum(),
                     originalNum, RecordType.OUTBOUND.getKey(), loginId, materialOutbound.getCreater());
+        }
+        int outNum = materialOutboundService.updateStatus(outboundId, MaterialOutBoundStatus.FINISHED.getKey(), loginId, MaterialOutBoundStatus.AUDIT.getKey());
+        if(outNum <= 0){
+            LOGGER.info("更新原材料申请单状态【{}】数量失败！", outboundId);
+            throw new BusinessException("更新原材料申请单状态异常");
         }
         result.put("message", "原材料出库成功");
         result.put("success", 1);
         return result;
+    }
+
+    @Override
+    public long selectTotal() {
+        return materialMapper.selectTotal();
     }
 }

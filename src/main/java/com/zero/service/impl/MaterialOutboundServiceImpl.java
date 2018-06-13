@@ -155,7 +155,7 @@ public class MaterialOutboundServiceImpl implements IMaterialOutboundService {
             return 0;
         }
         if(!Stream.of(oldStatus).collect(Collectors.toList()).contains(materialOutbound.getStatus().intValue())){
-            LOGGER.error("采购单【{}】状态【{}】不正确，老状态【{}】！", id, materialOutbound.getStatus(), oldStatus);
+            LOGGER.error("原材料出货单【{}】状态【{}】不正确，老状态【{}】！", id, materialOutbound.getStatus(), oldStatus);
             return -1;
         }
         materialOutbound.setStatus(newStatus);
