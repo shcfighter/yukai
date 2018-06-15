@@ -2,11 +2,14 @@ package com.zero.service.impl;
 
 import com.zero.common.enmu.DeletedEnum;
 import com.zero.common.enmu.GoodsGoodsType;
+import com.zero.common.enmu.MessageType;
 import com.zero.common.enmu.PurchaseOrderStatus;
 import com.zero.common.utils.BeanUtils;
 import com.zero.mapper.PurchaseOrderMapper;
+import com.zero.model.AuditDept;
 import com.zero.model.PurchaseOrder;
 import com.zero.model.example.PurchaseOrderExample;
+import com.zero.service.IMessageService;
 import com.zero.service.IPurchaseOrderService;
 import com.zero.service.IUserService;
 import org.apache.commons.lang3.StringUtils;
@@ -15,6 +18,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -30,6 +34,10 @@ public class PurchaseOrderServiceImpl implements IPurchaseOrderService {
     private PurchaseOrderMapper purchaseOrderMapper;
     @Resource
     private IUserService userService;
+    @Resource
+    private IMessageService messageService;
+    @Resource
+    private AuditDept auditDept;
 
     @Override
     public List<PurchaseOrder> findPurchaseOrderByPage(String purchaseCode, String orderCode, String productName, Integer status, Integer pageNum, Integer pageSize) {
@@ -128,7 +136,19 @@ public class PurchaseOrderServiceImpl implements IPurchaseOrderService {
         purchaseOrder.setStatus(newStatus);
         purchaseOrder.setUpdateTime(new Date());
         purchaseOrder.setModifier(loginId);
-        return purchaseOrderMapper.updateByPrimaryKeySelective(purchaseOrder);
+        if(purchaseOrderMapper.updateByPrimaryKeySelective(purchaseOrder) <= 0){
+            return 0;
+        }
+        if (newStatus == PurchaseOrderStatus.AUDIT.getKey()) {
+            messageService.insert("采购单入库", "您有一个新采购单将要入库，请及时处理！", MessageType.BUSINESS.getKey(), loginId, auditDept.getStorage());
+        }
+        if (newStatus == PurchaseOrderStatus.FINISHED.getKey()) {
+            messageService.insert("采购单入库", "您的采购单已经入库，请及时查看！", MessageType.BUSINESS.getKey(), loginId, Arrays.asList(new Integer[]{purchaseOrder.getCreater()}));
+        }
+        if (newStatus == PurchaseOrderStatus.AUDIT.getKey()) {
+            messageService.insert("采购单驳回", "您的采购单已被驳回，请及时处理！", MessageType.BUSINESS.getKey(), loginId, Arrays.asList(new Integer[]{purchaseOrder.getCreater()}));
+        }
+        return 1;
     }
 
     @Override

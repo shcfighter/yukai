@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.zero.mapper.UserMapper">
-  <resultMap id="BaseResultMap" type="com.zero.model.User">
+<mapper namespace="com.zero.mapper.MessageMapper">
+  <resultMap id="BaseResultMap" type="com.zero.model.Message">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="login_name" jdbcType="VARCHAR" property="loginName" />
-    <result column="real_name" jdbcType="VARCHAR" property="realName" />
-    <result column="password" jdbcType="VARCHAR" property="password" />
-    <result column="phone" jdbcType="VARCHAR" property="phone" />
-    <result column="email" jdbcType="VARCHAR" property="email" />
-    <result column="sex" jdbcType="INTEGER" property="sex" />
-    <result column="dept_id" jdbcType="INTEGER" property="deptId" />
-    <result column="dept_name" jdbcType="VARCHAR" property="deptName" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="sender" jdbcType="VARCHAR" property="sender" />
+    <result column="is_read" jdbcType="INTEGER" property="isRead" />
     <result column="is_deleted" jdbcType="INTEGER" property="isDeleted" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
@@ -77,17 +75,17 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, login_name, real_name, password, phone, email, sex, dept_id, dept_name, is_deleted,
-    create_time, update_time, creater, modifier, remarks
+    id, user_id, type, title, content, sender, is_read, is_deleted, create_time, update_time, 
+    creater, modifier, remarks
   </sql>
-  <select id="selectByExample" parameterType="com.zero.model.example.UserExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.zero.model.example.MessageExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     'true' as QUERYID,
     <include refid="Base_Column_List" />
-    from t_user
+    from t_message
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -99,64 +97,56 @@
     </if>
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select
+    select 
     <include refid="Base_Column_List" />
-    from t_user
+    from t_message
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from t_user
+    delete from t_message
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="com.zero.model.example.UserExample">
-    delete from t_user
+  <delete id="deleteByExample" parameterType="com.zero.model.example.MessageExample">
+    delete from t_message
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.zero.model.User">
-    insert into t_user (id, login_name, real_name,
-      password, phone, email,
-      sex, dept_id, dept_name,
-      is_deleted, create_time, update_time,
-      creater, modifier, remarks
-      )
-    values (#{id,jdbcType=INTEGER}, #{loginName,jdbcType=VARCHAR}, #{realName,jdbcType=VARCHAR},
-      #{password,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR},
-      #{sex,jdbcType=INTEGER}, #{deptId,jdbcType=INTEGER}, #{deptName,jdbcType=VARCHAR},
-      #{isDeleted,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
-      #{creater,jdbcType=INTEGER}, #{modifier,jdbcType=INTEGER}, #{remarks,jdbcType=VARCHAR}
-      )
+  <insert id="insert" parameterType="com.zero.model.Message">
+    insert into t_message (id, user_id, type, 
+      title, content, sender, 
+      is_read, is_deleted, create_time, 
+      update_time, creater, modifier, 
+      remarks)
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{type,jdbcType=INTEGER}, 
+      #{title,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{sender,jdbcType=VARCHAR}, 
+      #{isRead,jdbcType=INTEGER}, #{isDeleted,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{creater,jdbcType=INTEGER}, #{modifier,jdbcType=INTEGER}, 
+      #{remarks,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.zero.model.User">
-    insert into t_user
+  <insert id="insertSelective" parameterType="com.zero.model.Message">
+    insert into t_message
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
       </if>
-      <if test="loginName != null">
-        login_name,
+      <if test="userId != null">
+        user_id,
       </if>
-      <if test="realName != null">
-        real_name,
+      <if test="type != null">
+        type,
       </if>
-      <if test="password != null">
-        password,
+      <if test="title != null">
+        title,
       </if>
-      <if test="phone != null">
-        phone,
+      <if test="content != null">
+        content,
       </if>
-      <if test="email != null">
-        email,
+      <if test="sender != null">
+        sender,
       </if>
-      <if test="sex != null">
-        sex,
-      </if>
-      <if test="deptId != null">
-        dept_id,
-      </if>
-      <if test="deptName != null">
-        dept_name,
+      <if test="isRead != null">
+        is_read,
       </if>
       <if test="isDeleted != null">
         is_deleted,
@@ -181,29 +171,23 @@
       <if test="id != null">
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="loginName != null">
-        #{loginName,jdbcType=VARCHAR},
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
       </if>
-      <if test="realName != null">
-        #{realName,jdbcType=VARCHAR},
+      <if test="type != null">
+        #{type,jdbcType=INTEGER},
       </if>
-      <if test="password != null">
-        #{password,jdbcType=VARCHAR},
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
       </if>
-      <if test="phone != null">
-        #{phone,jdbcType=VARCHAR},
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
       </if>
-      <if test="email != null">
-        #{email,jdbcType=VARCHAR},
+      <if test="sender != null">
+        #{sender,jdbcType=VARCHAR},
       </if>
-      <if test="sex != null">
-        #{sex,jdbcType=INTEGER},
-      </if>
-      <if test="deptId != null">
-        #{deptId,jdbcType=INTEGER},
-      </if>
-      <if test="deptName != null">
-        #{deptName,jdbcType=VARCHAR},
+      <if test="isRead != null">
+        #{isRead,jdbcType=INTEGER},
       </if>
       <if test="isDeleted != null">
         #{isDeleted,jdbcType=INTEGER},
@@ -225,41 +209,35 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.zero.model.example.UserExample" resultType="java.lang.Long">
-    select count(*) from t_user
+  <select id="countByExample" parameterType="com.zero.model.example.MessageExample" resultType="java.lang.Long">
+    select count(*) from t_message
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update t_user
+    update t_message
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=INTEGER},
       </if>
-      <if test="record.loginName != null">
-        login_name = #{record.loginName,jdbcType=VARCHAR},
+      <if test="record.userId != null">
+        user_id = #{record.userId,jdbcType=INTEGER},
       </if>
-      <if test="record.realName != null">
-        real_name = #{record.realName,jdbcType=VARCHAR},
+      <if test="record.type != null">
+        type = #{record.type,jdbcType=INTEGER},
       </if>
-      <if test="record.password != null">
-        password = #{record.password,jdbcType=VARCHAR},
+      <if test="record.title != null">
+        title = #{record.title,jdbcType=VARCHAR},
       </if>
-      <if test="record.phone != null">
-        phone = #{record.phone,jdbcType=VARCHAR},
+      <if test="record.content != null">
+        content = #{record.content,jdbcType=VARCHAR},
       </if>
-      <if test="record.email != null">
-        email = #{record.email,jdbcType=VARCHAR},
+      <if test="record.sender != null">
+        sender = #{record.sender,jdbcType=VARCHAR},
       </if>
-      <if test="record.sex != null">
-        sex = #{record.sex,jdbcType=INTEGER},
-      </if>
-      <if test="record.deptId != null">
-        dept_id = #{record.deptId,jdbcType=INTEGER},
-      </if>
-      <if test="record.deptName != null">
-        dept_name = #{record.deptName,jdbcType=VARCHAR},
+      <if test="record.isRead != null">
+        is_read = #{record.isRead,jdbcType=INTEGER},
       </if>
       <if test="record.isDeleted != null">
         is_deleted = #{record.isDeleted,jdbcType=INTEGER},
@@ -285,52 +263,44 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update t_user
+    update t_message
     set id = #{record.id,jdbcType=INTEGER},
-    login_name = #{record.loginName,jdbcType=VARCHAR},
-    real_name = #{record.realName,jdbcType=VARCHAR},
-    password = #{record.password,jdbcType=VARCHAR},
-    phone = #{record.phone,jdbcType=VARCHAR},
-    email = #{record.email,jdbcType=VARCHAR},
-    sex = #{record.sex,jdbcType=INTEGER},
-    dept_id = #{record.deptId,jdbcType=INTEGER},
-    dept_name = #{record.deptName,jdbcType=VARCHAR},
-    is_deleted = #{record.isDeleted,jdbcType=INTEGER},
-    create_time = #{record.createTime,jdbcType=TIMESTAMP},
-    update_time = #{record.updateTime,jdbcType=TIMESTAMP},
-    creater = #{record.creater,jdbcType=INTEGER},
-    modifier = #{record.modifier,jdbcType=INTEGER},
-    remarks = #{record.remarks,jdbcType=VARCHAR}
+      user_id = #{record.userId,jdbcType=INTEGER},
+      type = #{record.type,jdbcType=INTEGER},
+      title = #{record.title,jdbcType=VARCHAR},
+      content = #{record.content,jdbcType=VARCHAR},
+      sender = #{record.sender,jdbcType=VARCHAR},
+      is_read = #{record.isRead,jdbcType=INTEGER},
+      is_deleted = #{record.isDeleted,jdbcType=INTEGER},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      creater = #{record.creater,jdbcType=INTEGER},
+      modifier = #{record.modifier,jdbcType=INTEGER},
+      remarks = #{record.remarks,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.zero.model.User">
-    update t_user
+  <update id="updateByPrimaryKeySelective" parameterType="com.zero.model.Message">
+    update t_message
     <set>
-      <if test="loginName != null">
-        login_name = #{loginName,jdbcType=VARCHAR},
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
       </if>
-      <if test="realName != null">
-        real_name = #{realName,jdbcType=VARCHAR},
+      <if test="type != null">
+        type = #{type,jdbcType=INTEGER},
       </if>
-      <if test="password != null">
-        password = #{password,jdbcType=VARCHAR},
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
       </if>
-      <if test="phone != null">
-        phone = #{phone,jdbcType=VARCHAR},
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
       </if>
-      <if test="email != null">
-        email = #{email,jdbcType=VARCHAR},
+      <if test="sender != null">
+        sender = #{sender,jdbcType=VARCHAR},
       </if>
-      <if test="sex != null">
-        sex = #{sex,jdbcType=INTEGER},
-      </if>
-      <if test="deptId != null">
-        dept_id = #{deptId,jdbcType=INTEGER},
-      </if>
-      <if test="deptName != null">
-        dept_name = #{deptName,jdbcType=VARCHAR},
+      <if test="isRead != null">
+        is_read = #{isRead,jdbcType=INTEGER},
       </if>
       <if test="isDeleted != null">
         is_deleted = #{isDeleted,jdbcType=INTEGER},
@@ -353,16 +323,14 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.zero.model.User">
-    update t_user
-    set login_name = #{loginName,jdbcType=VARCHAR},
-      real_name = #{realName,jdbcType=VARCHAR},
-      password = #{password,jdbcType=VARCHAR},
-      phone = #{phone,jdbcType=VARCHAR},
-      email = #{email,jdbcType=VARCHAR},
-      sex = #{sex,jdbcType=INTEGER},
-      dept_id = #{deptId,jdbcType=INTEGER},
-      dept_name = #{deptName,jdbcType=VARCHAR},
+  <update id="updateByPrimaryKey" parameterType="com.zero.model.Message">
+    update t_message
+    set user_id = #{userId,jdbcType=INTEGER},
+      type = #{type,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      sender = #{sender,jdbcType=VARCHAR},
+      is_read = #{isRead,jdbcType=INTEGER},
       is_deleted = #{isDeleted,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
@@ -372,43 +340,13 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
-  <select id="login" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from t_user
-    where is_deleted = 0 and (login_name = #{loginName} or phone = #{loginName} or email = #{loginName})
-  </select>
-
-    <update id="batchDeleteUser" parameterType="map">
-    update t_user set
-      is_deleted = 1,
-      update_time = now(),
-      modifier = #{modifier,jdbcType=INTEGER}
-    where id in
-    <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
-        #{item}
+  <insert id="insertBatch">
+    insert into t_message (user_id, type,
+      title, content, sender, creater, create_time)
+    values
+    <foreach collection="list" item="user" separator=",">
+      (#{user,jdbcType=INTEGER}, #{message.type,jdbcType=INTEGER}, #{message.title,jdbcType=VARCHAR},
+      #{message.content,jdbcType=VARCHAR}, #{message.sender,jdbcType=VARCHAR}, #{creater,jdbcType=INTEGER}, now())
     </foreach>
-    </update>
-
-  <select id="findUserByRole" resultMap="BaseResultMap">
-    SELECT
-        u.*
-    FROM
-        t_user_role ur
-    LEFT JOIN t_user u ON (ur.u_id = u.id)
-    WHERE
-        u.is_deleted = 0
-    AND ur.r_id = #{roleId,jdbcType=INTEGER}
-  </select>
-
-  <select id="findUserByDeptCode" parameterType="java.lang.String" resultType="java.lang.Integer">
-    SELECT
-        u.id
-    FROM
-        t_dept d
-    inner JOIN t_user u ON (d.id = u.dept_id)
-    WHERE
-        u.is_deleted = 0
-    AND d.dept_code = #{deptCode,jdbcType=VARCHAR}
-  </select>
+  </insert>
 </mapper>

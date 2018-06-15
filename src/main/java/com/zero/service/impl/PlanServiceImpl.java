@@ -3,12 +3,14 @@ package com.zero.service.impl;
 import com.google.common.collect.Lists;
 import com.zero.common.BusinessException;
 import com.zero.common.enmu.DeletedEnum;
+import com.zero.common.enmu.MessageType;
 import com.zero.common.enmu.OrderStatus;
 import com.zero.common.enmu.PlanStatus;
 import com.zero.common.utils.BeanUtils;
 import com.zero.mapper.PlanDetailMapper;
 import com.zero.mapper.PlanMapper;
 import com.zero.mapper.PlanMaterialMapper;
+import com.zero.model.AuditDept;
 import com.zero.model.Plan;
 import com.zero.model.PlanDetail;
 import com.zero.model.PlanMaterial;
@@ -16,6 +18,7 @@ import com.zero.model.example.PlanDetailExample;
 import com.zero.model.example.PlanExample;
 import com.zero.model.example.PlanMaterialExample;
 import com.zero.model.verify.PlanDetails;
+import com.zero.service.IMessageService;
 import com.zero.service.IOrderService;
 import com.zero.service.IPlanService;
 import com.zero.service.IUserService;
@@ -26,10 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class PlanServiceImpl implements IPlanService {
@@ -45,6 +45,10 @@ public class PlanServiceImpl implements IPlanService {
     private IUserService userService;
     @Resource
     private IOrderService orderService;
+    @Resource
+    private AuditDept auditDept;
+    @Resource
+    private IMessageService messageService;
 
     @Transactional
     @Override
@@ -208,6 +212,9 @@ public class PlanServiceImpl implements IPlanService {
         plan.setStatus(PlanStatus.PRODUCE.getKey());
         plan.setUpdateTime(new Date());
         plan.setModifier(loginId);
+        plan.setAuditId(loginId);
+        plan.setAuditUser(userService.getUserName(loginId));
+        plan.setAuditDate(new Date());
         if(planMapper.updateByPrimaryKeySelective(plan) <= 0){
             LOGGER.error("修改计划单状态【{}】失败！", plan.getStatus());
             return 0;
@@ -215,6 +222,7 @@ public class PlanServiceImpl implements IPlanService {
         if(orderService.updateStatus(plan.getOrderId(), OrderStatus.PRODUCE.getKey(), OrderStatus.PLAN.getKey(), loginId) <= 0){
             LOGGER.info("修改订单状态失败！");
         }
+        messageService.insert("生产计划单审批通过", "您有一个生产计划单已经审批通过，请及时查看！", MessageType.BUSINESS.getKey(), loginId, Arrays.asList(new Integer[]{plan.getBillingId()}));
         return 1;
     }
 
@@ -231,7 +239,11 @@ public class PlanServiceImpl implements IPlanService {
         plan.setStatus(PlanStatus.AUDIT.getKey());
         plan.setUpdateTime(new Date());
         plan.setModifier(loginId);
-        return planMapper.updateByPrimaryKeySelective(plan);
+        if(planMapper.updateByPrimaryKeySelective(plan) <= 0){
+            return 0;
+        }
+        messageService.insert("审核生产计划单", "您有一个新生产计划单需要处理，请及时处理！", MessageType.BUSINESS.getKey(), loginId, auditDept.getPlan());
+        return 1;
     }
 
     @Override
@@ -263,6 +275,7 @@ public class PlanServiceImpl implements IPlanService {
         plan.setStatus(PlanStatus.REJECT.getKey());
         plan.setUpdateTime(new Date());
         plan.setModifier(loginId);
+        messageService.insert("生产计划单驳回", "您的生产计划单已驳回，请及时处理！", MessageType.BUSINESS.getKey(), loginId, Arrays.asList(new Integer[] {plan.getBillingId()}));
         return planMapper.updateByPrimaryKeySelective(plan);
     }
 }

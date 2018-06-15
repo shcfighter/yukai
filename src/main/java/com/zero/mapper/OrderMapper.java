@@ -33,4 +33,6 @@ public interface OrderMapper {
     int updateStatus(@Param("orderId") int orderId, @Param("newStatus") int newStatus, @Param("oldStatus") int oldStatus);
 
     List<Order> findOrdersAndOrderDetailList(OrderExample example);
+
+    List<Map<String, Object>> findOrderList(OrderExample example);
 }

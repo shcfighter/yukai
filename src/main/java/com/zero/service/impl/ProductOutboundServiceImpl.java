@@ -2,15 +2,18 @@ package com.zero.service.impl;
 
 import com.google.common.collect.Lists;
 import com.zero.common.enmu.DeletedEnum;
+import com.zero.common.enmu.MessageType;
 import com.zero.common.enmu.ProductStatus;
 import com.zero.common.utils.BeanUtils;
 import com.zero.mapper.ProductOutboundDetailMapper;
 import com.zero.mapper.ProductOutboundMapper;
+import com.zero.model.AuditDept;
 import com.zero.model.ProductOutbound;
 import com.zero.model.ProductOutboundDetail;
 import com.zero.model.example.ProductOutboundDetailExample;
 import com.zero.model.example.ProductOutboundExample;
 import com.zero.model.verify.ProductOutboundDetails;
+import com.zero.service.IMessageService;
 import com.zero.service.IProductOutboundService;
 import com.zero.service.IUserService;
 import org.apache.commons.lang3.StringUtils;
@@ -21,10 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -38,6 +38,10 @@ public class ProductOutboundServiceImpl implements IProductOutboundService {
     private ProductOutboundDetailMapper productOutboundDetailMapper;
     @Resource
     private IUserService userService;
+    @Resource
+    private AuditDept auditDept;
+    @Resource
+    IMessageService messageService;
 
     @Transactional
     @Override
@@ -202,6 +206,18 @@ public class ProductOutboundServiceImpl implements IProductOutboundService {
         productOutbound.setStatus(newStatus);
         productOutbound.setUpdateTime(new Date());
         productOutbound.setModifier(loginId);
-        return productOutboundMapper.updateByPrimaryKeySelective(productOutbound);
+        if(productOutboundMapper.updateByPrimaryKeySelective(productOutbound) <= 0){
+            return 0;
+        }
+        if (newStatus == ProductStatus.AUDIT.getKey()) {
+            messageService.insert("成品出库申请单入库", "您有一个新成品出库申请单将要出库，请及时处理！", MessageType.BUSINESS.getKey(), loginId, auditDept.getStorage());
+        }
+        if (newStatus == ProductStatus.FINISHED.getKey()) {
+            messageService.insert("成品出库申请单入库", "您的成品出库申请单已经出库，请及时查看！", MessageType.BUSINESS.getKey(), loginId, Arrays.asList(new Integer[]{productOutbound.getCreater()}));
+        }
+        if (newStatus == ProductStatus.AUDIT.getKey()) {
+            messageService.insert("成品出库申请单驳回", "您的成品出库申请单已被驳回，请及时处理！", MessageType.BUSINESS.getKey(), loginId, Arrays.asList(new Integer[]{productOutbound.getCreater()}));
+        }
+        return 1;
     }
 }

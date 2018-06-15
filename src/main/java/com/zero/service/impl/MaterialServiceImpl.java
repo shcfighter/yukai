@@ -107,7 +107,7 @@ public class MaterialServiceImpl implements IMaterialService {
             }
             if(purchaseOrderService.updateStatus(purchaseOrderId, PurchaseOrderStatus.FINISHED.getKey(), loginId, PurchaseOrderStatus.AUDIT.getKey()) <= 0){
                 LOGGER.info("更新采购单【{}】异常", purchaseOrderId);
-                throw new BusinessException("修改采购单失败");
+                throw new BusinessException("修改采购单状态失败");
             }
             return 1;
         }
@@ -116,11 +116,11 @@ public class MaterialServiceImpl implements IMaterialService {
         material.setUpdateTime(new Date());
         if(materialMapper.updateByPrimaryKeySelective(material) <= 0){
             LOGGER.info("修改原材料【{}】数量异常", material.getId());
-            throw new BusinessException("原材料记录修改异常");
+            throw new BusinessException("修改原材料记录异常");
         }
         if(purchaseOrderService.updateStatus(purchaseOrderId, PurchaseOrderStatus.FINISHED.getKey(), loginId, PurchaseOrderStatus.AUDIT.getKey()) <= 0){
             LOGGER.info("更新采购单【{}】异常", purchaseOrderId);
-            throw new BusinessException("修改采购单失败");
+            throw new BusinessException("修改采购单状态失败");
         }
         return 1;
     }

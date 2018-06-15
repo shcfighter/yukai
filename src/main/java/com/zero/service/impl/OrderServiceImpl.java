@@ -228,7 +228,6 @@ public class OrderServiceImpl implements IOrderService {
             example.setLimit(pageSize);
             example.setPage(pageNum);
         }
-        example.setOrderByClause(" create_time desc");
         OrderExample.Criteria criteria = example.createCriteria();
         criteria.andIsDeletedEqualTo(DeletedEnum.NO.getKey());
         if(StringUtils.isNotEmpty(orderCode)){

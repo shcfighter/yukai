@@ -558,4 +558,45 @@
     on (t3.id = t2.order_id and t2.is_deleted = 0)
     order by t1.create_time desc
     </select>
+
+  <select id="findOrderList" parameterType="com.zero.model.example.OrderExample" resultType="java.util.Map">
+    SELECT
+    t1.*,
+    t2.id detail_id,
+    t2.order_id detail_order_id,
+    t2.size_type detail_size_type,
+    t2.num detail_num,
+    t2.color detail_color,
+    t2.create_time detail_create_time,
+    t2.update_time detail_update_time,
+    t2.creater detail_creater,
+    t2.modifier detail_modifier,
+    t2.remarks detail_remarks,
+    t3.id batch_id,
+    t3.order_id batch_order_id,
+    t3.delivery_number batch_delivery_number,
+    t3.po_number batch_po_number,
+    t3.color batch_color,
+    t3.create_time batch_create_time,
+    t3.update_time batch_update_time,
+    t3.creater batch_creater,
+    t3.modifier batch_modifier,
+    t3.remarks batch_remarks
+    FROM
+    (
+    select * from t_order
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <if test="limit != null and offset != null">
+      limit #{limit} offset #{offset}
+    </if>
+    ) t1 LEFT JOIN t_order_batch t3 on(t1.id = t3.order_id and t3.is_deleted = 0)
+    left join t_order_detail t2
+    on (t3.id = t2.order_id and t2.is_deleted = 0)
+    order by t1.id desc, t2.size_type*1 asc
+  </select>
 </mapper>
