@@ -147,4 +147,15 @@ public class SampleServiceImpl implements ISampleService {
         sample.setModifier(loginId);
         return sampleMapper.updateByPrimaryKeySelective(sample);
     }
+
+    @Override
+    public boolean isExsitSampleCode(String sampleCode, Integer id) {
+        SampleExample example = new SampleExample();
+        SampleExample.Criteria criteria = example.createCriteria();
+        criteria.andSampleCodeEqualTo(sampleCode);
+        if(Objects.nonNull(id)){
+            criteria.andIdNotEqualTo(id);
+        }
+        return sampleMapper.countByExample(example) > 0 ? true : false;
+    }
 }

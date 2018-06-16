@@ -53,7 +53,7 @@ public class Order {
 
     private String remarks;
 
-    private Integer winningBid;
+    private String productName;
 
     private Integer totalNum;
 
@@ -227,12 +227,12 @@ public class Order {
         this.remarks = remarks == null ? null : remarks.trim();
     }
 
-    public Integer getWinningBid() {
-        return winningBid;
+    public String getProductName() {
+        return productName;
     }
 
-    public void setWinningBid(Integer winningBid) {
-        this.winningBid = winningBid;
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 
     public Integer getTotalNum() {

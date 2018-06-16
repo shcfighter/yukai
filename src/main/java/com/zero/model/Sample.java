@@ -37,6 +37,8 @@ public class Sample {
 
     private String remarks;
 
+    private String productName;
+
     public Integer getId() {
         return id;
     }
@@ -171,5 +173,13 @@ public class Sample {
 
     public void setRemarks(String remarks) {
         this.remarks = remarks == null ? null : remarks.trim();
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 }

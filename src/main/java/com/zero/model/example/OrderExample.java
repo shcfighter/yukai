@@ -1477,63 +1477,73 @@ public class OrderExample extends BaseExample {
             return (Criteria) this;
         }
 
-        public Criteria andWinningBidIsNull() {
-            addCriterion("winning_bid is null");
+        public Criteria andProductNameIsNull() {
+            addCriterion("product_name is null");
             return (Criteria) this;
         }
 
-        public Criteria andWinningBidIsNotNull() {
-            addCriterion("winning_bid is not null");
+        public Criteria andProductNameIsNotNull() {
+            addCriterion("product_name is not null");
             return (Criteria) this;
         }
 
-        public Criteria andWinningBidEqualTo(Integer value) {
-            addCriterion("winning_bid =", value, "winningBid");
+        public Criteria andProductNameEqualTo(String value) {
+            addCriterion("product_name =", value, "productName");
             return (Criteria) this;
         }
 
-        public Criteria andWinningBidNotEqualTo(Integer value) {
-            addCriterion("winning_bid <>", value, "winningBid");
+        public Criteria andProductNameNotEqualTo(String value) {
+            addCriterion("product_name <>", value, "productName");
             return (Criteria) this;
         }
 
-        public Criteria andWinningBidGreaterThan(Integer value) {
-            addCriterion("winning_bid >", value, "winningBid");
+        public Criteria andProductNameGreaterThan(String value) {
+            addCriterion("product_name >", value, "productName");
             return (Criteria) this;
         }
 
-        public Criteria andWinningBidGreaterThanOrEqualTo(Integer value) {
-            addCriterion("winning_bid >=", value, "winningBid");
+        public Criteria andProductNameGreaterThanOrEqualTo(String value) {
+            addCriterion("product_name >=", value, "productName");
             return (Criteria) this;
         }
 
-        public Criteria andWinningBidLessThan(Integer value) {
-            addCriterion("winning_bid <", value, "winningBid");
+        public Criteria andProductNameLessThan(String value) {
+            addCriterion("product_name <", value, "productName");
             return (Criteria) this;
         }
 
-        public Criteria andWinningBidLessThanOrEqualTo(Integer value) {
-            addCriterion("winning_bid <=", value, "winningBid");
+        public Criteria andProductNameLessThanOrEqualTo(String value) {
+            addCriterion("product_name <=", value, "productName");
             return (Criteria) this;
         }
 
-        public Criteria andWinningBidIn(List<Integer> values) {
-            addCriterion("winning_bid in", values, "winningBid");
+        public Criteria andProductNameLike(String value) {
+            addCriterion("product_name like", value, "productName");
             return (Criteria) this;
         }
 
-        public Criteria andWinningBidNotIn(List<Integer> values) {
-            addCriterion("winning_bid not in", values, "winningBid");
+        public Criteria andProductNameNotLike(String value) {
+            addCriterion("product_name not like", value, "productName");
             return (Criteria) this;
         }
 
-        public Criteria andWinningBidBetween(Integer value1, Integer value2) {
-            addCriterion("winning_bid between", value1, value2, "winningBid");
+        public Criteria andProductNameIn(List<String> values) {
+            addCriterion("product_name in", values, "productName");
             return (Criteria) this;
         }
 
-        public Criteria andWinningBidNotBetween(Integer value1, Integer value2) {
-            addCriterion("winning_bid not between", value1, value2, "winningBid");
+        public Criteria andProductNameNotIn(List<String> values) {
+            addCriterion("product_name not in", values, "productName");
+            return (Criteria) this;
+        }
+
+        public Criteria andProductNameBetween(String value1, String value2) {
+            addCriterion("product_name between", value1, value2, "productName");
+            return (Criteria) this;
+        }
+
+        public Criteria andProductNameNotBetween(String value1, String value2) {
+            addCriterion("product_name not between", value1, value2, "productName");
             return (Criteria) this;
         }
     }

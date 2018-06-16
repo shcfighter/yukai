@@ -2,15 +2,18 @@ package com.zero.service.impl;
 
 import com.zero.common.enmu.DeletedEnum;
 import com.zero.common.enmu.MaterialOutBoundStatus;
+import com.zero.common.enmu.MessageType;
 import com.zero.common.utils.BeanUtils;
 import com.zero.mapper.MaterialOutboundMapper;
 import com.zero.mapper.OutboundMaterialMapper;
+import com.zero.model.AuditDept;
 import com.zero.model.MaterialOutbound;
 import com.zero.model.OutboundMaterial;
-import com.zero.model.example.OutboundMaterialExample;
 import com.zero.model.example.MaterialOutboundExample;
+import com.zero.model.example.OutboundMaterialExample;
 import com.zero.model.verify.MaterialOutboundDetails;
 import com.zero.service.IMaterialOutboundService;
+import com.zero.service.IMessageService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -34,6 +38,10 @@ public class MaterialOutboundServiceImpl implements IMaterialOutboundService {
     private MaterialOutboundMapper materialOutboundMapper;
     @Resource
     private OutboundMaterialMapper outboundMaterialMapper;
+    @Resource
+    private AuditDept auditDept;
+    @Resource
+    IMessageService messageService;
 
     @Override
     public List<MaterialOutbound> findMaterialOutboundByPage(String materialName, String orderCode, String color, Integer status, Integer pageNum, Integer pageSize) {
@@ -161,7 +169,19 @@ public class MaterialOutboundServiceImpl implements IMaterialOutboundService {
         materialOutbound.setStatus(newStatus);
         materialOutbound.setUpdateTime(new Date());
         materialOutbound.setModifier(loginId);
-        return materialOutboundMapper.updateByPrimaryKeySelective(materialOutbound);
+        if(materialOutboundMapper.updateByPrimaryKeySelective(materialOutbound) <= 0){
+            return 0;
+        }
+        if (newStatus == MaterialOutBoundStatus.AUDIT.getKey()) {
+            messageService.insert("原材料出库申请单申请出库", "您有一个原材料出库申请单将要出库，请及时处理！", MessageType.BUSINESS.getKey(), loginId, auditDept.getStorage());
+        }
+        if (newStatus == MaterialOutBoundStatus.FINISHED.getKey()) {
+            messageService.insert("原材料出库申请单出库", "您的原材料出库申请单已经出库，请及时查看！", MessageType.BUSINESS.getKey(), loginId, Arrays.asList(new Integer[]{materialOutbound.getCreater()}));
+        }
+        if (newStatus == MaterialOutBoundStatus.REJECT.getKey()) {
+            messageService.insert("原材料出库申请单驳回", "您的原材料出库申请单已被驳回，请及时处理！", MessageType.BUSINESS.getKey(), loginId, Arrays.asList(new Integer[]{materialOutbound.getCreater()}));
+        }
+        return 1;
     }
 
     @Override

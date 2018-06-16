@@ -23,7 +23,7 @@
     <result column="creater" jdbcType="INTEGER" property="creater" />
     <result column="modifier" jdbcType="INTEGER" property="modifier" />
     <result column="remarks" jdbcType="VARCHAR" property="remarks" />
-    <result column="winning_bid" jdbcType="INTEGER" property="winningBid" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -86,7 +86,7 @@
   <sql id="Base_Column_List">
     id, sample_id, order_code, delivery_number, po_number, order_time, type, sample_code, 
     needle, style, status, material, company, brand, photo_url, is_deleted, create_time, 
-    update_time, creater, modifier, remarks, winning_bid
+    update_time, creater, modifier, remarks, product_name
   </sql>
   <select id="selectByExample" parameterType="com.zero.model.example.OrderExample" resultMap="BaseResultMap">
     select
@@ -129,7 +129,7 @@
       style, status, material, 
       company, brand, photo_url, 
       is_deleted, create_time, update_time, 
-      creater, modifier, remarks, winning_bid
+      creater, modifier, remarks, product_name
       )
     values (#{id,jdbcType=INTEGER}, #{sampleId,jdbcType=INTEGER}, #{orderCode,jdbcType=VARCHAR}, 
       #{deliveryNumber,jdbcType=VARCHAR}, #{poNumber,jdbcType=VARCHAR}, #{orderTime,jdbcType=TIMESTAMP}, 
@@ -137,7 +137,7 @@
       #{style,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{material,jdbcType=VARCHAR}, 
       #{company,jdbcType=VARCHAR}, #{brand,jdbcType=VARCHAR}, #{photoUrl,jdbcType=VARCHAR}, 
       #{isDeleted,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{creater,jdbcType=INTEGER}, #{modifier,jdbcType=INTEGER}, #{remarks,jdbcType=VARCHAR}, #{winningBid,jdbcType=INTEGER}
+      #{creater,jdbcType=INTEGER}, #{modifier,jdbcType=INTEGER}, #{remarks,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.zero.model.Order" useGeneratedKeys="true" keyProperty="id">
@@ -206,8 +206,8 @@
       <if test="remarks != null">
         remarks,
       </if>
-      <if test="winningBid != null">
-        winning_bid,
+      <if test="productName != null">
+        product_name,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -274,8 +274,8 @@
       <if test="remarks != null">
         #{remarks,jdbcType=VARCHAR},
       </if>
-      <if test="winningBid != null">
-        #{winningBid,jdbcType=INTEGER},
+      <if test="productName != null">
+        #{productName,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -351,8 +351,8 @@
       <if test="record.remarks != null">
         remarks = #{record.remarks,jdbcType=VARCHAR},
       </if>
-      <if test="record.winningBid != null">
-        winning_bid = #{record.winningBid,jdbcType=INTEGER},
+      <if test="record.productName != null">
+        product_name = #{record.productName,jdbcType=VARCHAR},
       </if>
     </set>
     <if test="_parameter != null">
@@ -382,7 +382,7 @@
       creater = #{record.creater,jdbcType=INTEGER},
       modifier = #{record.modifier,jdbcType=INTEGER},
       remarks = #{record.remarks,jdbcType=VARCHAR},
-      winning_bid = #{record.winningBid,jdbcType=INTEGER}
+    product_name = #{record.productName,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -450,8 +450,8 @@
       <if test="remarks != null">
         remarks = #{remarks,jdbcType=VARCHAR},
       </if>
-      <if test="winningBid != null">
-        winning_bid = #{winningBid,jdbcType=INTEGER},
+      <if test="productName != null">
+        product_name = #{productName,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
@@ -478,7 +478,7 @@
       creater = #{creater,jdbcType=INTEGER},
       modifier = #{modifier,jdbcType=INTEGER},
       remarks = #{remarks,jdbcType=VARCHAR},
-      winning_bid = #{winningBid,jdbcType=VARCHAR}
+      product_name = #{productName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
 

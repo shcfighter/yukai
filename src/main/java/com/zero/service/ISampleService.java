@@ -18,4 +18,6 @@ public interface ISampleService {
     int deleteSample(int id, int loginId);
 
     int updateToFinished(int id, int newStatus, int oldStatus, int loginId);
+
+    boolean isExsitSampleCode(String sampleCode, Integer id);
 }

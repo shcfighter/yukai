@@ -211,7 +211,7 @@ public class ProductApplyServiceImpl implements IProductApplyService {
         if (newStatus == ProductStatus.FINISHED.getKey()) {
             messageService.insert("成品入库申请单入库", "您的成品入库申请单已经入库，请及时查看！", MessageType.BUSINESS.getKey(), loginId, Arrays.asList(new Integer[]{productApply.getCreater()}));
         }
-        if (newStatus == ProductStatus.AUDIT.getKey()) {
+        if (newStatus == ProductStatus.REJECT.getKey()) {
             messageService.insert("成品入库申请单驳回", "您的成品入库申请单已被驳回，请及时处理！", MessageType.BUSINESS.getKey(), loginId, Arrays.asList(new Integer[]{productApply.getCreater()}));
         }
         return 1;

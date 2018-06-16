@@ -346,7 +346,7 @@
     values
     <foreach collection="list" item="user" separator=",">
       (#{user,jdbcType=INTEGER}, #{message.type,jdbcType=INTEGER}, #{message.title,jdbcType=VARCHAR},
-      #{message.content,jdbcType=VARCHAR}, #{message.sender,jdbcType=VARCHAR}, #{creater,jdbcType=INTEGER}, now())
+      #{message.content,jdbcType=VARCHAR}, #{message.sender,jdbcType=VARCHAR}, #{message.creater,jdbcType=INTEGER}, now())
     </foreach>
   </insert>
 </mapper>

@@ -54,6 +54,10 @@ public class SimpleController {
 			LOGGER.error("新增样品信息错误：{}", bindingResult.getFieldError().getDefaultMessage());
 			return Result.resultFailure(bindingResult.getFieldError().getDefaultMessage());
 		}
+		Sample sample = sampleMaterial.getSample();
+		if(sampleService.isExsitSampleCode(sample.getSampleCode(), sample.getId())){
+			return Result.resultFailure("该款号已经存在！");
+		}
 		sampleMaterial.getSample().setPhotoUrl(sampleMaterial.getSampleUrls());
 		int result = sampleService.insertOrUpdate(sampleMaterial.getSample(), sampleMaterial.getDetailList(), SessionUtils.getCurrentUserId(request));
 		if(result == 0){
