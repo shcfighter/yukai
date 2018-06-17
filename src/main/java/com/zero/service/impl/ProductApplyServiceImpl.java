@@ -202,6 +202,10 @@ public class ProductApplyServiceImpl implements IProductApplyService {
         productApply.setStatus(newStatus);
         productApply.setUpdateTime(new Date());
         productApply.setModifier(loginId);
+        if(newStatus == ProductStatus.FINISHED.getKey()){
+            productApply.setWarehouseUser(userService.getUserName(loginId));
+            productApply.setWarehouseDate(new Date());
+        }
         if (productApplyMapper.updateByPrimaryKeySelective(productApply) <= 0) {
             return 0;
         }

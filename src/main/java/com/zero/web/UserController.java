@@ -32,6 +32,11 @@ public class UserController {
 	@Resource
 	IMenuService menuService;
 
+	@GetMapping("/getUser/{id}")
+	public Result<List<User>> getUser(@PathVariable("id") int id){
+		return Result.resultSuccess(userService.getUserById(id));
+	}
+
 	@GetMapping("/findUser")
 	public Result<List<User>> findUser(String phone, String loginName, String realName,
                                        @RequestParam(value = "page", defaultValue = "1") int pageNum,

@@ -5,6 +5,7 @@ import com.zero.common.Result;
 import com.zero.common.enmu.ProductStatus;
 import com.zero.common.utils.SessionUtils;
 import com.zero.model.ProductApply;
+import com.zero.model.ProductApplyDetail;
 import com.zero.model.verify.ProductApplyDetails;
 import com.zero.service.IProductApplyDetailService;
 import com.zero.service.IProductApplyService;
@@ -93,6 +94,11 @@ public class ProductApplyController {
         result.put("productApply", productApplyService.getProductApplyById(id));
         result.put("detailList", productApplyDetailService.getProductApplyDetailByProductId(id));
         return Result.resultSuccess(result);
+    }
+
+    @GetMapping("getProductDetailById/{id}")
+    public Result<List<ProductApplyDetail>> getProductDetailById(@PathVariable("id") int id){
+        return Result.resultSuccess(productApplyDetailService.getProductApplyDetailByProductId(id));
     }
 
     @PutMapping("updateToAudit/{id}")

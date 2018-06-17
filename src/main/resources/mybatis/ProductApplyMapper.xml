@@ -9,7 +9,8 @@
     <result column="order_code" jdbcType="VARCHAR" property="orderCode" />
     <result column="product_name" jdbcType="VARCHAR" property="productName" />
     <result column="photo_url" jdbcType="VARCHAR" property="photoUrl" />
-    <result column="production_processes" jdbcType="VARCHAR" property="productionProcesses" />
+    <result column="po_num" jdbcType="VARCHAR" property="poNum" />
+    <result column="delivery_num" jdbcType="VARCHAR" property="deliveryNum" />
     <result column="billing_user" jdbcType="VARCHAR" property="billingUser" />
     <result column="warehouse_user" jdbcType="VARCHAR" property="warehouseUser" />
     <result column="warehouse_date" jdbcType="TIMESTAMP" property="warehouseDate" />
@@ -80,7 +81,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, plan_id, sample_code, order_id, order_code, product_name, photo_url, production_processes,
+    id, plan_id, sample_code, order_id, order_code, product_name, photo_url, po_num, delivery_num,
     billing_user, warehouse_user, warehouse_date, status, is_deleted, create_time, update_time,
     creater, modifier, remarks
   </sql>
@@ -121,14 +122,14 @@
   <insert id="insert" parameterType="com.zero.model.ProductApply" useGeneratedKeys="true" keyProperty="id">
     insert into t_product_apply (id, plan_id, sample_code,
       order_id, order_code, product_name,
-      photo_url, production_processes, billing_user,
+      photo_url, po_num, delivery_num, billing_user,
       warehouse_user, warehouse_date, status,
       is_deleted, create_time, update_time,
       creater, modifier, remarks
       )
     values (#{id,jdbcType=INTEGER}, #{planId,jdbcType=INTEGER}, #{sampleCode,jdbcType=VARCHAR},
       #{orderId,jdbcType=INTEGER}, #{orderCode,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR},
-      #{photoUrl,jdbcType=VARCHAR}, #{productionProcesses,jdbcType=VARCHAR}, #{billingUser,jdbcType=VARCHAR},
+      #{photoUrl,jdbcType=VARCHAR}, #{poNum,jdbcType=VARCHAR}, #{deliveryNum,jdbcType=VARCHAR}, #{billingUser,jdbcType=VARCHAR},
       #{warehouseUser,jdbcType=VARCHAR}, #{warehouseDate,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER},
       #{isDeleted,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
       #{creater,jdbcType=INTEGER}, #{modifier,jdbcType=INTEGER}, #{remarks,jdbcType=VARCHAR}
@@ -158,8 +159,11 @@
       <if test="photoUrl != null">
         photo_url,
       </if>
-      <if test="productionProcesses != null">
-        production_processes,
+      <if test="poNum != null">
+        po_num,
+      </if>
+      <if test="deliveryNum != null">
+        delivery_num,
       </if>
       <if test="billingUser != null">
         billing_user,
@@ -214,8 +218,11 @@
       <if test="photoUrl != null">
         #{photoUrl,jdbcType=VARCHAR},
       </if>
-      <if test="productionProcesses != null">
-        #{productionProcesses,jdbcType=VARCHAR},
+      <if test="poNum != null">
+        #{poNum,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryNum != null">
+        #{deliveryNum,jdbcType=VARCHAR},
       </if>
       <if test="billingUser != null">
         #{billingUser,jdbcType=VARCHAR},
@@ -279,8 +286,11 @@
       <if test="record.photoUrl != null">
         photo_url = #{record.photoUrl,jdbcType=VARCHAR},
       </if>
-      <if test="record.productionProcesses != null">
-        production_processes = #{record.productionProcesses,jdbcType=VARCHAR},
+      <if test="record.poNum != null">
+        po_num = #{record.poNum,jdbcType=VARCHAR},
+      </if>
+      <if test="record.deliveryNum != null">
+        delivery_num = #{record.deliveryNum,jdbcType=VARCHAR},
       </if>
       <if test="record.billingUser != null">
         billing_user = #{record.billingUser,jdbcType=VARCHAR},
@@ -326,7 +336,8 @@
     order_code = #{record.orderCode,jdbcType=VARCHAR},
     product_name = #{record.productName,jdbcType=VARCHAR},
     photo_url = #{record.photoUrl,jdbcType=VARCHAR},
-    production_processes = #{record.productionProcesses,jdbcType=VARCHAR},
+    po_num = #{record.poNum,jdbcType=VARCHAR},
+    delivery_num = #{record.deliveryNum,jdbcType=VARCHAR},
     billing_user = #{record.billingUser,jdbcType=VARCHAR},
     warehouse_user = #{record.warehouseUser,jdbcType=VARCHAR},
     warehouse_date = #{record.warehouseDate,jdbcType=TIMESTAMP},
@@ -362,8 +373,11 @@
       <if test="photoUrl != null">
         photo_url = #{photoUrl,jdbcType=VARCHAR},
       </if>
-      <if test="productionProcesses != null">
-        production_processes = #{productionProcesses,jdbcType=VARCHAR},
+      <if test="poNum != null">
+        po_num = #{poNum,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryNum != null">
+        delivery_num = #{deliveryNum,jdbcType=VARCHAR},
       </if>
       <if test="billingUser != null">
         billing_user = #{billingUser,jdbcType=VARCHAR},
@@ -406,7 +420,8 @@
       order_code = #{orderCode,jdbcType=VARCHAR},
       product_name = #{productName,jdbcType=VARCHAR},
       photo_url = #{photoUrl,jdbcType=VARCHAR},
-      production_processes = #{productionProcesses,jdbcType=VARCHAR},
+      po_num = #{poNum,jdbcType=VARCHAR},
+      delivery_num = #{deliveryNum,jdbcType=VARCHAR},
       billing_user = #{billingUser,jdbcType=VARCHAR},
       warehouse_user = #{warehouseUser,jdbcType=VARCHAR},
       warehouse_date = #{warehouseDate,jdbcType=TIMESTAMP},

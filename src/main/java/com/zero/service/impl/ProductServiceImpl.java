@@ -170,18 +170,18 @@ public class ProductServiceImpl implements IProductService {
             return 1;
         }
 
-        List<ProductDetail> productDetails = productDetailService.getProductDetailByProductId(productId);
+        List<ProductDetail> productDetails = productDetailService.getProductDetailByProductId(product.getId());
         List<ProductDetail> details = Lists.newArrayList();
         for(ProductApplyDetail detail : applyDetailList){
             ProductDetail updateProductDetail = new ProductDetail();
             boolean isUpdate = false;
             for (ProductDetail productDetail: productDetails) {
-                if(StringUtils.equals(detail.getSizeType(), productDetail.getSizeType())){
+                if(StringUtils.equals(detail.getSizeType(), productDetail.getSizeType()) && StringUtils.equals(detail.getColor(), productDetail.getColor())){
                     updateProductDetail = productDetail;
                     updateProductDetail.setOrderNum(productDetail.getOrderNum() + detail.getOrderNum());
                     updateProductDetail.setWarehouseNum(productDetail.getWarehouseNum() + detail.getWarehouseNum());
                     isUpdate = true;
-                    continue;
+                    break;
                 }
             }
             if(!isUpdate) {
@@ -192,20 +192,19 @@ public class ProductServiceImpl implements IProductService {
                 updateProductDetail.setWarehouseNum(detail.getWarehouseNum());
             }
             details.add(updateProductDetail);
+        }
+        ProductDetailExample example = new ProductDetailExample();
+        ProductDetailExample.Criteria criteria = example.createCriteria();
+        criteria.andProductIdEqualTo(product.getId());
+        productDetailMapper.deleteByExample(example);
 
-            ProductDetailExample example = new ProductDetailExample();
-            ProductDetailExample.Criteria criteria = example.createCriteria();
-            criteria.andProductIdEqualTo(product.getId());
-            productDetailMapper.deleteByExample(example);
-
-            if(productDetailMapper.insertBatch(details, loginId) < applyDetailList.size()){
-                LOGGER.info("新增成品库存详情失败");
-                throw new BusinessException("新增成品库存详情失败");
-            }
-            if(productApplyService.updateStatus(productId, ProductStatus.FINISHED.getKey(), loginId, ProductStatus.AUDIT.getKey()) <= 0){
-                LOGGER.info("更改成品入库申请单失败！");
-                throw new BusinessException("更改成品入库申请单失败！");
-            }
+        if(productDetailMapper.insertBatch(details, loginId) < applyDetailList.size()){
+            LOGGER.info("修改-新增成品库存详情失败");
+            throw new BusinessException("修改-新增成品库存详情失败");
+        }
+        if(productApplyService.updateStatus(productId, ProductStatus.FINISHED.getKey(), loginId, ProductStatus.AUDIT.getKey()) <= 0){
+            LOGGER.info("更改成品入库申请单失败！");
+            throw new BusinessException("更改成品入库申请单失败！");
         }
 
         return 1;

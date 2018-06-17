@@ -18,7 +18,9 @@ public class ProductApply {
 
     private String photoUrl;
 
-    private String productionProcesses;
+    private String poNum;
+
+    private String deliveryNum;
 
     private String billingUser;
 
@@ -98,12 +100,20 @@ public class ProductApply {
         this.photoUrl = photoUrl == null ? null : photoUrl.trim();
     }
 
-    public String getProductionProcesses() {
-        return productionProcesses;
+    public String getPoNum() {
+        return poNum;
     }
 
-    public void setProductionProcesses(String productionProcesses) {
-        this.productionProcesses = productionProcesses == null ? null : productionProcesses.trim();
+    public void setPoNum(String poNum) {
+        this.poNum = poNum;
+    }
+
+    public String getDeliveryNum() {
+        return deliveryNum;
+    }
+
+    public void setDeliveryNum(String deliveryNum) {
+        this.deliveryNum = deliveryNum;
     }
 
     public String getBillingUser() {

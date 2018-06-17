@@ -122,4 +122,22 @@ public class ProductDetail {
     public void setRemarks(String remarks) {
         this.remarks = remarks == null ? null : remarks.trim();
     }
+
+    @Override
+    public String toString() {
+        return "ProductDetail{" +
+                "id=" + id +
+                ", productId=" + productId +
+                ", sizeType='" + sizeType + '\'' +
+                ", orderNum=" + orderNum +
+                ", warehouseNum=" + warehouseNum +
+                ", color='" + color + '\'' +
+                ", isDeleted=" + isDeleted +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                ", creater=" + creater +
+                ", modifier=" + modifier +
+                ", remarks='" + remarks + '\'' +
+                '}';
+    }
 }

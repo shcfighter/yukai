@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zero.mapper.PurchaseOrderDetailMapper">
+  <resultMap id="BaseResultMap" type="com.zero.model.PurchaseOrderDetail">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="purchase_order_id" jdbcType="INTEGER" property="purchaseOrderId" />
+    <result column="material_name" jdbcType="VARCHAR" property="materialName" />
+    <result column="color" jdbcType="VARCHAR" property="color" />
+    <result column="ingredients" jdbcType="VARCHAR" property="ingredients" />
+    <result column="batch_no" jdbcType="VARCHAR" property="batchNo" />
+    <result column="weight" jdbcType="INTEGER" property="weight" />
+    <result column="num" jdbcType="INTEGER" property="num" />
+    <result column="company" jdbcType="VARCHAR" property="company" />
+    <result column="is_deleted" jdbcType="INTEGER" property="isDeleted" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="creater" jdbcType="INTEGER" property="creater" />
+    <result column="modifier" jdbcType="INTEGER" property="modifier" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, purchase_order_id, material_name, color, ingredients, batch_no, weight, num, 
+    company, is_deleted, create_time, update_time, creater, modifier, remarks
+  </sql>
+  <select id="selectByExample" parameterType="com.zero.model.example.PurchaseOrderDetailExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from t_purchase_order_detail
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_purchase_order_detail
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_purchase_order_detail
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.zero.model.example.PurchaseOrderDetailExample">
+    delete from t_purchase_order_detail
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.zero.model.PurchaseOrderDetail">
+    insert into t_purchase_order_detail (id, purchase_order_id, material_name, 
+      color, ingredients, batch_no, 
+      weight, num, company, 
+      is_deleted, create_time, update_time, 
+      creater, modifier, remarks
+      )
+    values (#{id,jdbcType=INTEGER}, #{purchaseOrderId,jdbcType=INTEGER}, #{materialName,jdbcType=VARCHAR}, 
+      #{color,jdbcType=VARCHAR}, #{ingredients,jdbcType=VARCHAR}, #{batchNo,jdbcType=VARCHAR}, 
+      #{weight,jdbcType=INTEGER}, #{num,jdbcType=INTEGER}, #{company,jdbcType=VARCHAR}, 
+      #{isDeleted,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{creater,jdbcType=INTEGER}, #{modifier,jdbcType=INTEGER}, #{remarks,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.zero.model.PurchaseOrderDetail">
+    insert into t_purchase_order_detail
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="purchaseOrderId != null">
+        purchase_order_id,
+      </if>
+      <if test="materialName != null">
+        material_name,
+      </if>
+      <if test="color != null">
+        color,
+      </if>
+      <if test="ingredients != null">
+        ingredients,
+      </if>
+      <if test="batchNo != null">
+        batch_no,
+      </if>
+      <if test="weight != null">
+        weight,
+      </if>
+      <if test="num != null">
+        num,
+      </if>
+      <if test="company != null">
+        company,
+      </if>
+      <if test="isDeleted != null">
+        is_deleted,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="creater != null">
+        creater,
+      </if>
+      <if test="modifier != null">
+        modifier,
+      </if>
+      <if test="remarks != null">
+        remarks,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="purchaseOrderId != null">
+        #{purchaseOrderId,jdbcType=INTEGER},
+      </if>
+      <if test="materialName != null">
+        #{materialName,jdbcType=VARCHAR},
+      </if>
+      <if test="color != null">
+        #{color,jdbcType=VARCHAR},
+      </if>
+      <if test="ingredients != null">
+        #{ingredients,jdbcType=VARCHAR},
+      </if>
+      <if test="batchNo != null">
+        #{batchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="weight != null">
+        #{weight,jdbcType=INTEGER},
+      </if>
+      <if test="num != null">
+        #{num,jdbcType=INTEGER},
+      </if>
+      <if test="company != null">
+        #{company,jdbcType=VARCHAR},
+      </if>
+      <if test="isDeleted != null">
+        #{isDeleted,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creater != null">
+        #{creater,jdbcType=INTEGER},
+      </if>
+      <if test="modifier != null">
+        #{modifier,jdbcType=INTEGER},
+      </if>
+      <if test="remarks != null">
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.zero.model.example.PurchaseOrderDetailExample" resultType="java.lang.Long">
+    select count(*) from t_purchase_order_detail
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update t_purchase_order_detail
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.purchaseOrderId != null">
+        purchase_order_id = #{record.purchaseOrderId,jdbcType=INTEGER},
+      </if>
+      <if test="record.materialName != null">
+        material_name = #{record.materialName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.color != null">
+        color = #{record.color,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ingredients != null">
+        ingredients = #{record.ingredients,jdbcType=VARCHAR},
+      </if>
+      <if test="record.batchNo != null">
+        batch_no = #{record.batchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.weight != null">
+        weight = #{record.weight,jdbcType=INTEGER},
+      </if>
+      <if test="record.num != null">
+        num = #{record.num,jdbcType=INTEGER},
+      </if>
+      <if test="record.company != null">
+        company = #{record.company,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isDeleted != null">
+        is_deleted = #{record.isDeleted,jdbcType=INTEGER},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null">
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.creater != null">
+        creater = #{record.creater,jdbcType=INTEGER},
+      </if>
+      <if test="record.modifier != null">
+        modifier = #{record.modifier,jdbcType=INTEGER},
+      </if>
+      <if test="record.remarks != null">
+        remarks = #{record.remarks,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update t_purchase_order_detail
+    set id = #{record.id,jdbcType=INTEGER},
+      purchase_order_id = #{record.purchaseOrderId,jdbcType=INTEGER},
+      material_name = #{record.materialName,jdbcType=VARCHAR},
+      color = #{record.color,jdbcType=VARCHAR},
+      ingredients = #{record.ingredients,jdbcType=VARCHAR},
+      batch_no = #{record.batchNo,jdbcType=VARCHAR},
+      weight = #{record.weight,jdbcType=INTEGER},
+      num = #{record.num,jdbcType=INTEGER},
+      company = #{record.company,jdbcType=VARCHAR},
+      is_deleted = #{record.isDeleted,jdbcType=INTEGER},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      creater = #{record.creater,jdbcType=INTEGER},
+      modifier = #{record.modifier,jdbcType=INTEGER},
+      remarks = #{record.remarks,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zero.model.PurchaseOrderDetail">
+    update t_purchase_order_detail
+    <set>
+      <if test="purchaseOrderId != null">
+        purchase_order_id = #{purchaseOrderId,jdbcType=INTEGER},
+      </if>
+      <if test="materialName != null">
+        material_name = #{materialName,jdbcType=VARCHAR},
+      </if>
+      <if test="color != null">
+        color = #{color,jdbcType=VARCHAR},
+      </if>
+      <if test="ingredients != null">
+        ingredients = #{ingredients,jdbcType=VARCHAR},
+      </if>
+      <if test="batchNo != null">
+        batch_no = #{batchNo,jdbcType=VARCHAR},
+      </if>
+      <if test="weight != null">
+        weight = #{weight,jdbcType=INTEGER},
+      </if>
+      <if test="num != null">
+        num = #{num,jdbcType=INTEGER},
+      </if>
+      <if test="company != null">
+        company = #{company,jdbcType=VARCHAR},
+      </if>
+      <if test="isDeleted != null">
+        is_deleted = #{isDeleted,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="creater != null">
+        creater = #{creater,jdbcType=INTEGER},
+      </if>
+      <if test="modifier != null">
+        modifier = #{modifier,jdbcType=INTEGER},
+      </if>
+      <if test="remarks != null">
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zero.model.PurchaseOrderDetail">
+    update t_purchase_order_detail
+    set purchase_order_id = #{purchaseOrderId,jdbcType=INTEGER},
+      material_name = #{materialName,jdbcType=VARCHAR},
+      color = #{color,jdbcType=VARCHAR},
+      ingredients = #{ingredients,jdbcType=VARCHAR},
+      batch_no = #{batchNo,jdbcType=VARCHAR},
+      weight = #{weight,jdbcType=INTEGER},
+      num = #{num,jdbcType=INTEGER},
+      company = #{company,jdbcType=VARCHAR},
+      is_deleted = #{isDeleted,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      creater = #{creater,jdbcType=INTEGER},
+      modifier = #{modifier,jdbcType=INTEGER},
+      remarks = #{remarks,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <insert id="insertBatch" parameterType="list">
+    insert into t_purchase_order_detail (purchase_order_id, material_name, ingredients, batch_no, weight, num,
+    color, company, create_time, creater) values
+    <foreach collection="list" item="detail" separator=",">
+      (#{detail.purchaseOrderId,jdbcType=INTEGER}, #{detail.materialName,jdbcType=VARCHAR}, #{detail.ingredients,jdbcType=VARCHAR},  #{detail.batchNo,jdbcType=VARCHAR},
+      #{detail.weight,jdbcType=INTEGER}, #{detail.num,jdbcType=INTEGER}, #{detail.color,jdbcType=VARCHAR}, #{detail.company,jdbcType=VARCHAR}, now(), #{loginId,jdbcType=INTEGER})
+    </foreach>
+  </insert>
+</mapper>

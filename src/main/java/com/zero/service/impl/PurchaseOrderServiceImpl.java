@@ -1,14 +1,19 @@
 package com.zero.service.impl;
 
+import com.zero.common.BusinessException;
 import com.zero.common.enmu.DeletedEnum;
 import com.zero.common.enmu.GoodsGoodsType;
 import com.zero.common.enmu.MessageType;
 import com.zero.common.enmu.PurchaseOrderStatus;
 import com.zero.common.utils.BeanUtils;
+import com.zero.mapper.PurchaseOrderDetailMapper;
 import com.zero.mapper.PurchaseOrderMapper;
 import com.zero.model.AuditDept;
 import com.zero.model.PurchaseOrder;
+import com.zero.model.PurchaseOrderDetail;
+import com.zero.model.example.PurchaseOrderDetailExample;
 import com.zero.model.example.PurchaseOrderExample;
+import com.zero.model.verify.PurchaseOrderDetails;
 import com.zero.service.IMessageService;
 import com.zero.service.IPurchaseOrderService;
 import com.zero.service.IUserService;
@@ -16,6 +21,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.util.Arrays;
@@ -33,6 +40,8 @@ public class PurchaseOrderServiceImpl implements IPurchaseOrderService {
     @Resource
     private PurchaseOrderMapper purchaseOrderMapper;
     @Resource
+    private PurchaseOrderDetailMapper purchaseOrderDetailMapper;
+    @Resource
     private IUserService userService;
     @Resource
     private IMessageService messageService;
@@ -40,7 +49,7 @@ public class PurchaseOrderServiceImpl implements IPurchaseOrderService {
     private AuditDept auditDept;
 
     @Override
-    public List<PurchaseOrder> findPurchaseOrderByPage(String purchaseCode, String orderCode, String productName, Integer status, Integer pageNum, Integer pageSize) {
+    public List<PurchaseOrder> findPurchaseOrderByPage(String purchaseCode, String orderCode, String sampleCode, Integer status, Integer pageNum, Integer pageSize) {
         PurchaseOrderExample example = new PurchaseOrderExample();
         if(Objects.nonNull(pageNum) && Objects.nonNull(pageSize)){
             example.setPage(pageNum);
@@ -54,8 +63,8 @@ public class PurchaseOrderServiceImpl implements IPurchaseOrderService {
         if(StringUtils.isNotEmpty(orderCode)){
             criteria.andOrderCodeLike("%" + orderCode + "%");
         }
-        if(StringUtils.isNotEmpty(productName)){
-            criteria.andProductNameLike("%" + productName + "%");
+        if(StringUtils.isNotEmpty(sampleCode)){
+            criteria.andSampleCodeLike("%" + sampleCode + "%");
         }
         if(Objects.nonNull(status)){
             criteria.andStatusEqualTo(status);
@@ -64,7 +73,7 @@ public class PurchaseOrderServiceImpl implements IPurchaseOrderService {
     }
 
     @Override
-    public long findPurchaseOrderRowNum(String purchaseCode, String orderCode, String productName, Integer status) {
+    public long findPurchaseOrderRowNum(String purchaseCode, String orderCode, String sampleCode, Integer status) {
         PurchaseOrderExample example = new PurchaseOrderExample();
         PurchaseOrderExample.Criteria criteria = example.createCriteria();
         criteria.andIsDeletedEqualTo(DeletedEnum.NO.getKey());
@@ -74,8 +83,8 @@ public class PurchaseOrderServiceImpl implements IPurchaseOrderService {
         if(StringUtils.isNotEmpty(orderCode)){
             criteria.andOrderCodeLike("%" + orderCode + "%");
         }
-        if(StringUtils.isNotEmpty(productName)){
-            criteria.andProductNameLike("%" + productName + "%");
+        if(StringUtils.isNotEmpty(sampleCode)){
+            criteria.andSampleCodeLike("%" + sampleCode + "%");
         }
         if(Objects.nonNull(status)){
             criteria.andStatusEqualTo(status);
@@ -83,16 +92,33 @@ public class PurchaseOrderServiceImpl implements IPurchaseOrderService {
         return purchaseOrderMapper.countByExample(example);
     }
 
+    @Transactional
     @Override
-    public int insert(PurchaseOrder purchaseOrder, int loginId) {
+    public int insert(PurchaseOrderDetails purchaseOrderDetails, int loginId) {
+        PurchaseOrder purchaseOrder = purchaseOrderDetails.getPurchaseOrder();
         purchaseOrder.setCreater(loginId);
         purchaseOrder.setCreateTime(new Date());
         purchaseOrder.setUser(userService.getUserName(loginId));
-        return purchaseOrderMapper.insertSelective(purchaseOrder);
+        if(purchaseOrderMapper.insertSelective(purchaseOrder) <= 0){
+            LOGGER.info("保存采购单失败！");
+            return 0;
+        }
+        List<PurchaseOrderDetail> list = purchaseOrderDetails.getDetailList();
+        if(CollectionUtils.isEmpty(list)){
+            return 1;
+        }
+        list.forEach(d -> d.setPurchaseOrderId(purchaseOrder.getId()));
+        if(purchaseOrderDetailMapper.insertBatch(list, loginId) <= 0){
+            LOGGER.info("保存采购单详情失败");
+            throw new BusinessException("保存采购单详情失败");
+        }
+        return 1;
     }
 
+    @Transactional
     @Override
-    public int update(PurchaseOrder purchaseOrder, int loginId) {
+    public int update(PurchaseOrderDetails purchaseOrderDetails, int loginId) {
+        PurchaseOrder purchaseOrder = purchaseOrderDetails.getPurchaseOrder();
         if(Objects.isNull(purchaseOrder) || Objects.isNull(purchaseOrder.getId())){
             return 0;
         }
@@ -103,7 +129,25 @@ public class PurchaseOrderServiceImpl implements IPurchaseOrderService {
         BeanUtils.copyProperties(purchaseOrder, purchaseOrderDb);
         purchaseOrderDb.setUpdateTime(new Date());
         purchaseOrderDb.setModifier(loginId);
-        return purchaseOrderMapper.updateByPrimaryKeySelective(purchaseOrderDb);
+        if(purchaseOrderMapper.updateByPrimaryKeySelective(purchaseOrderDb) <= 0){
+            LOGGER.info("修改采购单失败！");
+            return 0;
+        }
+        PurchaseOrderDetailExample example = new PurchaseOrderDetailExample();
+        PurchaseOrderDetailExample.Criteria criteria = example.createCriteria();
+        criteria.andPurchaseOrderIdEqualTo(purchaseOrder.getId());
+        purchaseOrderDetailMapper.deleteByExample(example);
+
+        List<PurchaseOrderDetail> list = purchaseOrderDetails.getDetailList();
+        if(CollectionUtils.isEmpty(list)){
+            return 1;
+        }
+        list.forEach(d -> d.setPurchaseOrderId(purchaseOrder.getId()));
+        if(purchaseOrderDetailMapper.insertBatch(list, loginId) <= 0){
+            LOGGER.info("保存采购单详情失败");
+            throw new BusinessException("保存采购单详情失败");
+        }
+        return 1;
     }
 
     @Override
@@ -136,6 +180,10 @@ public class PurchaseOrderServiceImpl implements IPurchaseOrderService {
         purchaseOrder.setStatus(newStatus);
         purchaseOrder.setUpdateTime(new Date());
         purchaseOrder.setModifier(loginId);
+        if(newStatus == PurchaseOrderStatus.FINISHED.getKey()){
+            purchaseOrder.setInboundDate(new Date());
+            purchaseOrder.setWarehouser(userService.getUserName(loginId));
+        }
         if(purchaseOrderMapper.updateByPrimaryKeySelective(purchaseOrder) <= 0){
             return 0;
         }

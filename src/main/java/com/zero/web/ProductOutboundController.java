@@ -6,6 +6,7 @@ import com.zero.common.enmu.ProductStatus;
 import com.zero.common.utils.SessionUtils;
 import com.zero.model.ProductApply;
 import com.zero.model.ProductOutbound;
+import com.zero.model.ProductOutboundDetail;
 import com.zero.model.verify.ProductOutboundDetails;
 import com.zero.service.IProductOutboundDetailService;
 import com.zero.service.IProductOutboundService;
@@ -94,6 +95,11 @@ public class ProductOutboundController {
         result.put("productOutbound", productOutboundService.getProductOutboundById(id));
         result.put("detailList", productOutboundDetailService.getProductOutboundDetailByProductId(id));
         return Result.resultSuccess(result);
+    }
+
+    @GetMapping("getOutboundDetailById/{id}")
+    public Result<ProductOutboundDetail> getOutboundDetailById(@PathVariable("id") int id){
+        return Result.resultSuccess(productOutboundDetailService.getProductOutboundDetailByProductId(id));
     }
 
     @PutMapping("updateToAudit/{id}")

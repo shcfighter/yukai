@@ -567,73 +567,142 @@ public class ProductApplyExample extends BaseExample {
             return (Criteria) this;
         }
 
-        public Criteria andProductionProcessesIsNull() {
-            addCriterion("production_processes is null");
+        public Criteria andDeliveryNumIsNull() {
+            addCriterion("delivery_num is null");
             return (Criteria) this;
         }
 
-        public Criteria andProductionProcessesIsNotNull() {
-            addCriterion("production_processes is not null");
+        public Criteria andDeliveryNumIsNotNull() {
+            addCriterion("delivery_num is not null");
             return (Criteria) this;
         }
 
-        public Criteria andProductionProcessesEqualTo(String value) {
-            addCriterion("production_processes =", value, "productionProcesses");
+        public Criteria andDeliveryNumEqualTo(String value) {
+            addCriterion("delivery_num =", value, "deliveryNum");
             return (Criteria) this;
         }
 
-        public Criteria andProductionProcessesNotEqualTo(String value) {
-            addCriterion("production_processes <>", value, "productionProcesses");
+        public Criteria andDeliveryNumNotEqualTo(String value) {
+            addCriterion("delivery_num <>", value, "deliveryNum");
             return (Criteria) this;
         }
 
-        public Criteria andProductionProcessesGreaterThan(String value) {
-            addCriterion("production_processes >", value, "productionProcesses");
+        public Criteria andDeliveryNumGreaterThan(String value) {
+            addCriterion("delivery_num >", value, "deliveryNum");
             return (Criteria) this;
         }
 
-        public Criteria andProductionProcessesGreaterThanOrEqualTo(String value) {
-            addCriterion("production_processes >=", value, "productionProcesses");
+        public Criteria andDeliveryNumGreaterThanOrEqualTo(String value) {
+            addCriterion("delivery_num >=", value, "deliveryNum");
             return (Criteria) this;
         }
 
-        public Criteria andProductionProcessesLessThan(String value) {
-            addCriterion("production_processes <", value, "productionProcesses");
+        public Criteria andDeliveryNumLessThan(String value) {
+            addCriterion("delivery_num <", value, "deliveryNum");
             return (Criteria) this;
         }
 
-        public Criteria andProductionProcessesLessThanOrEqualTo(String value) {
-            addCriterion("production_processes <=", value, "productionProcesses");
+        public Criteria andDeliveryNumLessThanOrEqualTo(String value) {
+            addCriterion("delivery_num <=", value, "deliveryNum");
             return (Criteria) this;
         }
 
-        public Criteria andProductionProcessesLike(String value) {
-            addCriterion("production_processes like", value, "productionProcesses");
+        public Criteria andDeliveryNumLike(String value) {
+            addCriterion("delivery_num like", value, "deliveryNum");
             return (Criteria) this;
         }
 
-        public Criteria andProductionProcessesNotLike(String value) {
-            addCriterion("production_processes not like", value, "productionProcesses");
+        public Criteria andDeliveryNumNotLike(String value) {
+            addCriterion("delivery_num not like", value, "deliveryNum");
             return (Criteria) this;
         }
 
-        public Criteria andProductionProcessesIn(List<String> values) {
-            addCriterion("production_processes in", values, "productionProcesses");
+        public Criteria andDeliveryNumIn(List<String> values) {
+            addCriterion("delivery_num in", values, "deliveryNum");
             return (Criteria) this;
         }
 
-        public Criteria andProductionProcessesNotIn(List<String> values) {
-            addCriterion("production_processes not in", values, "productionProcesses");
+        public Criteria andDeliveryNumNotIn(List<String> values) {
+            addCriterion("delivery_num not in", values, "deliveryNum");
             return (Criteria) this;
         }
 
-        public Criteria andProductionProcessesBetween(String value1, String value2) {
-            addCriterion("production_processes between", value1, value2, "productionProcesses");
+        public Criteria andDeliveryNumBetween(String value1, String value2) {
+            addCriterion("delivery_num between", value1, value2, "deliveryNum");
             return (Criteria) this;
         }
 
-        public Criteria andProductionProcessesNotBetween(String value1, String value2) {
-            addCriterion("production_processes not between", value1, value2, "productionProcesses");
+        public Criteria andDeliveryNumNotBetween(String value1, String value2) {
+            addCriterion("delivery_num not between", value1, value2, "deliveryNum");
+            return (Criteria) this;
+        }
+        public Criteria andPoNumIsNull() {
+            addCriterion("po_num is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andPoNumIsNotNull() {
+            addCriterion("po_num is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andPoNumEqualTo(String value) {
+            addCriterion("po_num =", value, "poNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andPoNumNotEqualTo(String value) {
+            addCriterion("po_num <>", value, "poNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andPoNumGreaterThan(String value) {
+            addCriterion("po_num >", value, "poNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andPoNumGreaterThanOrEqualTo(String value) {
+            addCriterion("po_num >=", value, "poNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andPoNumLessThan(String value) {
+            addCriterion("po_num <", value, "poNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andPoNumLessThanOrEqualTo(String value) {
+            addCriterion("po_num <=", value, "poNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andPoNumLike(String value) {
+            addCriterion("po_num like", value, "poNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andPoNumNotLike(String value) {
+            addCriterion("po_num not like", value, "poNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andPoNumIn(List<String> values) {
+            addCriterion("po_num in", values, "poNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andPoNumNotIn(List<String> values) {
+            addCriterion("po_num not in", values, "poNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andPoNumBetween(String value1, String value2) {
+            addCriterion("po_num between", value1, value2, "poNum");
+            return (Criteria) this;
+        }
+
+        public Criteria andPoNumNotBetween(String value1, String value2) {
+            addCriterion("po_num not between", value1, value2, "poNum");
             return (Criteria) this;
         }
 

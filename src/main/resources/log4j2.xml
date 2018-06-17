@@ -8,7 +8,7 @@
     <appenders>
         <console name="Console" target="SYSTEM_OUT">
             <Filters>
-                <ThresholdFilter level="DEBUG" onMatch="ACCEPT"
+                <ThresholdFilter level="INFO" onMatch="ACCEPT"
                                  onMismatch="DENY"/>
             </Filters>
             <PatternLayout pattern="[%d{yyyy-MM-dd HH:mm:ss:SSS}] [%p] [%t] - [%X{sid}] %l - %m%n"/>

@@ -7,10 +7,7 @@ import com.zero.common.enmu.MaterialOutBoundStatus;
 import com.zero.common.enmu.PurchaseOrderStatus;
 import com.zero.common.enmu.RecordType;
 import com.zero.mapper.MaterialMapper;
-import com.zero.model.Material;
-import com.zero.model.MaterialOutbound;
-import com.zero.model.OutboundMaterial;
-import com.zero.model.PurchaseOrder;
+import com.zero.model.*;
 import com.zero.model.example.MaterialExample;
 import com.zero.service.*;
 import org.apache.commons.collections4.CollectionUtils;
@@ -36,6 +33,8 @@ public class MaterialServiceImpl implements IMaterialService {
     private IGoodsRecordService goodsRecordService;
     @Resource
     private IPurchaseOrderService purchaseOrderService;
+    @Resource
+    private IPurchaseOrderDetailService purchaseOrderDetailService;
     @Resource
     private IMaterialOutboundService materialOutboundService;
     @Resource
@@ -88,36 +87,37 @@ public class MaterialServiceImpl implements IMaterialService {
     @Override
     public int inbound(int purchaseOrderId, int loginId, String loginName) {
         PurchaseOrder purchaseOrder = purchaseOrderService.getPurchaseOrderById(purchaseOrderId);
-        if(Objects.isNull(purchaseOrder)){
+        List<PurchaseOrderDetail> purchaseOrderDetailList = purchaseOrderDetailService.getPurchaseOrderDetailByPurchaseId(purchaseOrderId);
+        if(Objects.isNull(purchaseOrder) || CollectionUtils.isEmpty(purchaseOrderDetailList)){
             LOGGER.info("采购单【{}】不存在!", purchaseOrderId);
             return 0;
         }
-        List<Material> list = this.findMaterialPage(purchaseOrder.getProductName(), purchaseOrder.getColor(), null, null, null);
-        if (CollectionUtils.isEmpty(list)){
-            Material material = new Material();
-            material.setProductName(purchaseOrder.getProductName());
-            material.setColor(purchaseOrder.getColor());
-            material.setNum(purchaseOrder.getNum());
-            material.setIngredients(purchaseOrder.getIngredients());
-            material.setWeight(purchaseOrder.getWeight());
-            material.setCreateTime(new Date());
-            if(materialMapper.insertSelective(material) <= 0){
-                LOGGER.info("插入原材料记录异常，");
-                throw new BusinessException("原材料记录新增异常");
+        purchaseOrderDetailList.forEach(purchaseOrderDetail -> {
+            List<Material> list = this.findMaterialPage(purchaseOrderDetail.getMaterialName(), purchaseOrderDetail.getColor(), null, null, null);
+            if (CollectionUtils.isEmpty(list)){
+                Material material = new Material();
+                material.setProductName(purchaseOrderDetail.getMaterialName());
+                material.setColor(purchaseOrderDetail.getColor());
+                material.setNum(purchaseOrderDetail.getNum());
+                material.setIngredients(purchaseOrderDetail.getIngredients());
+                material.setWeight(purchaseOrderDetail.getWeight());
+                material.setCreateTime(new Date());
+                if(materialMapper.insertSelective(material) <= 0){
+                    LOGGER.info("插入原材料记录异常，");
+                    throw new BusinessException("原材料记录新增异常");
+                }
+            } else {
+                Material material = list.get(0);
+                material.setNum(material.getNum() + purchaseOrderDetail.getNum());
+                material.setWeight(material.getWeight() + purchaseOrderDetail.getWeight());
+                material.setUpdateTime(new Date());
+                if(materialMapper.updateByPrimaryKeySelective(material) <= 0){
+                    LOGGER.info("修改原材料【{}】数量异常", material.getId());
+                    throw new BusinessException("修改原材料记录异常");
+                }
             }
-            if(purchaseOrderService.updateStatus(purchaseOrderId, PurchaseOrderStatus.FINISHED.getKey(), loginId, PurchaseOrderStatus.AUDIT.getKey()) <= 0){
-                LOGGER.info("更新采购单【{}】异常", purchaseOrderId);
-                throw new BusinessException("修改采购单状态失败");
-            }
-            return 1;
-        }
-        Material material = list.get(0);
-        material.setNum(material.getNum() + purchaseOrder.getNum());
-        material.setUpdateTime(new Date());
-        if(materialMapper.updateByPrimaryKeySelective(material) <= 0){
-            LOGGER.info("修改原材料【{}】数量异常", material.getId());
-            throw new BusinessException("修改原材料记录异常");
-        }
+        });
+
         if(purchaseOrderService.updateStatus(purchaseOrderId, PurchaseOrderStatus.FINISHED.getKey(), loginId, PurchaseOrderStatus.AUDIT.getKey()) <= 0){
             LOGGER.info("更新采购单【{}】异常", purchaseOrderId);
             throw new BusinessException("修改采购单状态失败");

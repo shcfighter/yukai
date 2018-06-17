@@ -1,9 +1,12 @@
 package com.zero.web;
 
+import com.google.common.collect.Maps;
 import com.zero.common.Result;
 import com.zero.common.enmu.PurchaseOrderStatus;
 import com.zero.common.utils.SessionUtils;
 import com.zero.model.PurchaseOrder;
+import com.zero.model.verify.PurchaseOrderDetails;
+import com.zero.service.IPurchaseOrderDetailService;
 import com.zero.service.IPurchaseOrderService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController
@@ -23,10 +27,20 @@ public class PurchaseOrderController {
 
 	@Resource
 	private IPurchaseOrderService purchaseOrderService;
+	@Resource
+	private IPurchaseOrderDetailService purchaseOrderDetailService;
 
 	@GetMapping("/getPurchaseOrder/{id}")
 	public Result<PurchaseOrder> getPurchaseOrder(@PathVariable("id") int id){
 		return Result.resultSuccess(purchaseOrderService.getPurchaseOrderById(id));
+	}
+
+	@GetMapping("/getPurchaseOrderAndDetail/{id}")
+	public Result<Map<String, Object>> getPurchaseOrderAndDetail(@PathVariable("id") int id){
+		Map<String, Object> result = Maps.newHashMap();
+		result.put("purchaseOrder", purchaseOrderService.getPurchaseOrderById(id));
+		result.put("purchaseOrderDetail", purchaseOrderDetailService.getPurchaseOrderDetailByPurchaseId(id));
+		return Result.resultSuccess(result);
 	}
 
 	/**
@@ -45,26 +59,26 @@ public class PurchaseOrderController {
 	}
 
 	@PostMapping("/insertPurchaseOrder")
-	public Result<String> insertPurchaseOrder(HttpServletRequest request, @RequestBody PurchaseOrder purchaseOrder,
+	public Result<String> insertPurchaseOrder(HttpServletRequest request, @RequestBody PurchaseOrderDetails purchaseOrderDetails,
 									 BindingResult bindingResult){
 		if(bindingResult.hasErrors()){
 			LOGGER.error("新增采购单信息错误：{}", bindingResult.getFieldError().getDefaultMessage());
 			return Result.resultFailure(bindingResult.getFieldError().getDefaultMessage());
 		}
-		if(purchaseOrderService.insert(purchaseOrder, SessionUtils.getCurrentUserId(request)) <= 0){
+		if(purchaseOrderService.insert(purchaseOrderDetails, SessionUtils.getCurrentUserId(request)) <= 0){
 			return Result.resultFailure("新增采购单失败！");
 		}
 		return Result.resultSuccess("新增采购单成功！");
 	}
 
 	@PostMapping("/updatePurchaseOrder")
-	public Result<String> updatePurchaseOrder(HttpServletRequest request, @RequestBody PurchaseOrder purchaseOrder,
+	public Result<String> updatePurchaseOrder(HttpServletRequest request, @RequestBody PurchaseOrderDetails purchaseOrderDetails,
 									  BindingResult bindingResult){
 		if(bindingResult.hasErrors()){
 			LOGGER.error("修改采购单信息错误：{}", bindingResult.getFieldError().getDefaultMessage());
 			return Result.resultFailure(bindingResult.getFieldError().getDefaultMessage());
 		}
-		if(purchaseOrderService.update(purchaseOrder, SessionUtils.getCurrentUserId(request)) <= 0){
+		if(purchaseOrderService.update(purchaseOrderDetails, SessionUtils.getCurrentUserId(request)) <= 0){
 			return Result.resultFailure("修改采购单失败！");
 		}
 		return Result.resultSuccess("修改采购单成功！");
