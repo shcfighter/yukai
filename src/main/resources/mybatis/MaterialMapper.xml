@@ -326,6 +326,6 @@
   </update>
 
   <select id="selectTotal" resultType="java.lang.Long">
-    select sum(num) from t_material where is_deleted = 0
+    select IFNULL(sum(num),0) from t_material where is_deleted = 0
   </select>
 </mapper>

@@ -13,4 +13,6 @@ public class AuditDept {
 
     private String plan;
     private String storage;
+    private String productOut;
+
 }

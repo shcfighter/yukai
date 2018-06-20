@@ -210,7 +210,7 @@ public class ProductOutboundServiceImpl implements IProductOutboundService {
             return 0;
         }
         if (newStatus == ProductStatus.AUDIT.getKey()) {
-            messageService.insert("成品出库申请单入库", "您有一个新成品出库申请单将要出库，请及时处理！", MessageType.BUSINESS.getKey(), loginId, auditDept.getStorage());
+            messageService.insert("成品出库申请单入库", "您有一个新成品出库申请单将要出库，请及时处理！", MessageType.BUSINESS.getKey(), loginId, auditDept.getProductOut());
         }
         if (newStatus == ProductStatus.FINISHED.getKey()) {
             messageService.insert("成品出库申请单入库", "您的成品出库申请单已经出库，请及时查看！", MessageType.BUSINESS.getKey(), loginId, Arrays.asList(new Integer[]{productOutbound.getCreater()}));

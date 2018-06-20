@@ -1,5 +1,6 @@
 package com.zero.service.impl;
 
+import com.google.common.collect.Lists;
 import com.zero.common.enmu.DeletedEnum;
 import com.zero.common.enmu.MessageRead;
 import com.zero.mapper.MessageMapper;
@@ -8,6 +9,7 @@ import com.zero.model.Message;
 import com.zero.model.example.MessageExample;
 import com.zero.service.IMessageService;
 import com.zero.service.IUserService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,7 @@ import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 @Service
 public class MessageServiceImpl implements IMessageService {
@@ -59,7 +62,13 @@ public class MessageServiceImpl implements IMessageService {
 
     @Override
     public int insert(String title, String content, int type, int sender, String deptCode) {
-        List<Integer> receiver = userMapper.findUserByDeptCode(deptCode);
+        if(StringUtils.isEmpty(deptCode)){
+            return 0;
+        }
+        List<Integer> receiver = Lists.newArrayList();
+        Stream.of(StringUtils.split(deptCode, ",")).forEach(dept -> {
+            receiver.addAll(userMapper.findUserByDeptCode(deptCode));
+        });
         return this.insert(title, content, type, sender, receiver);
     }
 

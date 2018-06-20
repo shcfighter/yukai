@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="com.zero.model.Color">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="color_name" jdbcType="VARCHAR" property="colorName" />
+    <result column="color_code" jdbcType="VARCHAR" property="colorCode" />
     <result column="remarks" jdbcType="VARCHAR" property="remarks" />
   </resultMap>
   <sql id="Example_Where_Clause">
@@ -65,7 +66,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, color_name, remarks
+    id, color_name, color_code, remarks
   </sql>
   <select id="selectByExample" parameterType="com.zero.model.example.ColorExample" resultMap="BaseResultMap">
     select
@@ -99,10 +100,10 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.zero.model.Color">
-    insert into t_color (id, color_name, remarks
-      )
-    values (#{id,jdbcType=INTEGER}, #{colorName,jdbcType=VARCHAR}, #{remarks,jdbcType=VARCHAR}
-      )
+    insert into t_color (id, color_name, color_code, 
+      remarks)
+    values (#{id,jdbcType=INTEGER}, #{colorName,jdbcType=VARCHAR}, #{colorCode,jdbcType=VARCHAR}, 
+      #{remarks,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.zero.model.Color">
     insert into t_color
@@ -112,6 +113,9 @@
       </if>
       <if test="colorName != null">
         color_name,
+      </if>
+      <if test="colorCode != null">
+        color_code,
       </if>
       <if test="remarks != null">
         remarks,
@@ -123,6 +127,9 @@
       </if>
       <if test="colorName != null">
         #{colorName,jdbcType=VARCHAR},
+      </if>
+      <if test="colorCode != null">
+        #{colorCode,jdbcType=VARCHAR},
       </if>
       <if test="remarks != null">
         #{remarks,jdbcType=VARCHAR},
@@ -144,6 +151,9 @@
       <if test="record.colorName != null">
         color_name = #{record.colorName,jdbcType=VARCHAR},
       </if>
+      <if test="record.colorCode != null">
+        color_code = #{record.colorCode,jdbcType=VARCHAR},
+      </if>
       <if test="record.remarks != null">
         remarks = #{record.remarks,jdbcType=VARCHAR},
       </if>
@@ -156,6 +166,7 @@
     update t_color
     set id = #{record.id,jdbcType=INTEGER},
       color_name = #{record.colorName,jdbcType=VARCHAR},
+      color_code = #{record.colorCode,jdbcType=VARCHAR},
       remarks = #{record.remarks,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -167,6 +178,9 @@
       <if test="colorName != null">
         color_name = #{colorName,jdbcType=VARCHAR},
       </if>
+      <if test="colorCode != null">
+        color_code = #{colorCode,jdbcType=VARCHAR},
+      </if>
       <if test="remarks != null">
         remarks = #{remarks,jdbcType=VARCHAR},
       </if>
@@ -176,6 +190,7 @@
   <update id="updateByPrimaryKey" parameterType="com.zero.model.Color">
     update t_color
     set color_name = #{colorName,jdbcType=VARCHAR},
+      color_code = #{colorCode,jdbcType=VARCHAR},
       remarks = #{remarks,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>

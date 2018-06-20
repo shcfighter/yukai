@@ -5,6 +5,8 @@ public class Color {
 
     private String colorName;
 
+    private String colorCode;
+
     private String remarks;
 
     public Integer getId() {
@@ -21,6 +23,14 @@ public class Color {
 
     public void setColorName(String colorName) {
         this.colorName = colorName == null ? null : colorName.trim();
+    }
+
+    public String getColorCode() {
+        return colorCode;
+    }
+
+    public void setColorCode(String colorCode) {
+        this.colorCode = colorCode == null ? null : colorCode.trim();
     }
 
     public String getRemarks() {

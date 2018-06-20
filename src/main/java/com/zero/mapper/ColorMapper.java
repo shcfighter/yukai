@@ -1,8 +1,9 @@
 package com.zero.mapper;
 
 import com.zero.model.Color;
-import com.zero.model.example.ColorExample;
 import java.util.List;
+
+import com.zero.model.example.ColorExample;
 import org.apache.ibatis.annotations.Param;
 
 public interface ColorMapper {

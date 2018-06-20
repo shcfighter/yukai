@@ -234,6 +234,76 @@ public class ColorExample {
             return (Criteria) this;
         }
 
+        public Criteria andColorCodeIsNull() {
+            addCriterion("color_code is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andColorCodeIsNotNull() {
+            addCriterion("color_code is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andColorCodeEqualTo(String value) {
+            addCriterion("color_code =", value, "colorCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andColorCodeNotEqualTo(String value) {
+            addCriterion("color_code <>", value, "colorCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andColorCodeGreaterThan(String value) {
+            addCriterion("color_code >", value, "colorCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andColorCodeGreaterThanOrEqualTo(String value) {
+            addCriterion("color_code >=", value, "colorCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andColorCodeLessThan(String value) {
+            addCriterion("color_code <", value, "colorCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andColorCodeLessThanOrEqualTo(String value) {
+            addCriterion("color_code <=", value, "colorCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andColorCodeLike(String value) {
+            addCriterion("color_code like", value, "colorCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andColorCodeNotLike(String value) {
+            addCriterion("color_code not like", value, "colorCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andColorCodeIn(List<String> values) {
+            addCriterion("color_code in", values, "colorCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andColorCodeNotIn(List<String> values) {
+            addCriterion("color_code not in", values, "colorCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andColorCodeBetween(String value1, String value2) {
+            addCriterion("color_code between", value1, value2, "colorCode");
+            return (Criteria) this;
+        }
+
+        public Criteria andColorCodeNotBetween(String value1, String value2) {
+            addCriterion("color_code not between", value1, value2, "colorCode");
+            return (Criteria) this;
+        }
+
         public Criteria andRemarksIsNull() {
             addCriterion("remarks is null");
             return (Criteria) this;
