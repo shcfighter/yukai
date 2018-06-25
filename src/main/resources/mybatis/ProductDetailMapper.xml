@@ -332,6 +332,6 @@
   </insert>
 
   <select id="selectTotal" resultType="java.lang.Long">
-    select sum(warehouse_num) from t_product_detail where is_deleted = 0
+    select  IFNULL(sum(warehouse_num),0) from t_product_detail where is_deleted = 0
   </select>
 </mapper>
