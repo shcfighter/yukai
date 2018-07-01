@@ -113,7 +113,7 @@ public class PurchaseOrderController {
 	public Result<String> updateToInbound(HttpServletRequest request,
 									   @PathVariable("id") int id){
 		if(purchaseOrderService.updateStatus(id, PurchaseOrderStatus.AUDIT.getKey(), SessionUtils.getCurrentUserId(request),
-				PurchaseOrderStatus.PURCHASING.getKey()) <= 0){
+				PurchaseOrderStatus.SAVE.getKey()) <= 0){
 			return Result.resultFailure("修改采购单环节失败！");
 		}
 		return Result.resultSuccess("采购单进入入库状态！");

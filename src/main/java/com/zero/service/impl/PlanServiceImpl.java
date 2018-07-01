@@ -252,14 +252,18 @@ public class PlanServiceImpl implements IPlanService {
         if(Objects.isNull(plan)){
             return 0;
         }
-        if(PlanStatus.PRODUCE.getKey() != plan.getStatus()){
+        if(PlanStatus.SAVE.getKey() != plan.getStatus()){
             LOGGER.error("生产计划【{}】状态【{}】不正确", id, plan.getStatus());
             return -1;
         }
         plan.setStatus(PlanStatus.FINISHED.getKey());
         plan.setUpdateTime(new Date());
         plan.setModifier(loginId);
-        return planMapper.updateByPrimaryKeySelective(plan);
+        if(planMapper.updateByPrimaryKeySelective(plan) <= 0){
+            return 0;
+        }
+        messageService.insert("生产任务单", "您有一个新生产计划单需要处理，请及时处理！", MessageType.BUSINESS.getKey(), loginId, auditDept.getPlan());
+        return 1;
     }
 
     @Override

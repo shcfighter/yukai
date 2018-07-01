@@ -235,7 +235,7 @@ public class Order {
         this.productName = productName;
     }
 
-    public Integer getTotalNum() {
+    /*public Integer getTotalNum() {
         if(CollectionUtils.isEmpty(this.batchDetails)){
             return 0;
         }
@@ -254,7 +254,7 @@ public class Order {
     public void setTotalNum(Integer totalNum) {
         this.totalNum = totalNum;
     }
-
+*/
     public List<OrderBatch> getBatchDetails() {
         return batchDetails;
     }

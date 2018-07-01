@@ -11,7 +11,11 @@ public class Sample {
 
     private String sampleName;
 
-    private String style;
+    private String size;
+
+    private String weight;
+
+    private String sizeUrl;
 
     private String material;
 
@@ -71,12 +75,28 @@ public class Sample {
         this.sampleName = sampleName == null ? null : sampleName.trim();
     }
 
-    public String getStyle() {
-        return style;
+    public String getSize() {
+        return size;
     }
 
-    public void setStyle(String style) {
-        this.style = style == null ? null : style.trim();
+    public void setSize(String size) {
+        this.size = size;
+    }
+
+    public String getWeight() {
+        return weight;
+    }
+
+    public void setWeight(String weight) {
+        this.weight = weight;
+    }
+
+    public String getSizeUrl() {
+        return sizeUrl;
+    }
+
+    public void setSizeUrl(String sizeUrl) {
+        this.sizeUrl = sizeUrl;
     }
 
     public String getMaterial() {

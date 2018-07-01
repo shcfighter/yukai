@@ -6,7 +6,9 @@
     <result column="sample_code" jdbcType="VARCHAR" property="sampleCode" />
     <result column="needle" jdbcType="VARCHAR" property="needle" />
     <result column="sample_name" jdbcType="VARCHAR" property="sampleName" />
-    <result column="style" jdbcType="VARCHAR" property="style" />
+    <result column="size" jdbcType="VARCHAR" property="size" />
+    <result column="weight" jdbcType="VARCHAR" property="weight" />
+    <result column="size_url" jdbcType="VARCHAR" property="sizeUrl" />
     <result column="material" jdbcType="VARCHAR" property="material" />
     <result column="company" jdbcType="VARCHAR" property="company" />
     <result column="brand" jdbcType="VARCHAR" property="brand" />
@@ -80,7 +82,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, sample_code, needle, sample_name, style, material, company, brand, photo_url, 
+    id, sample_code, needle, sample_name, size, weight, size_url, material, company, brand, photo_url,
     color, status, is_deleted, create_time, update_time, creater, modifier, remarks, product_name
   </sql>
   <select id="selectByExample" parameterType="com.zero.model.example.SampleExample" resultMap="BaseResultMap">
@@ -116,13 +118,14 @@
   </delete>
   <insert id="insert" parameterType="com.zero.model.Sample" useGeneratedKeys="true" keyProperty="id">
     insert into t_sample (id, sample_code, needle, 
-      sample_name, style, material, 
+      sample_name, size, weight, size_url, material,
       company, brand, photo_url, 
       color, status, is_deleted, 
       create_time, update_time, creater, 
       modifier, remarks, product_name)
     values (#{id,jdbcType=INTEGER}, #{sampleCode,jdbcType=VARCHAR}, #{needle,jdbcType=VARCHAR}, 
-      #{sampleName,jdbcType=VARCHAR}, #{style,jdbcType=VARCHAR}, #{material,jdbcType=VARCHAR}, 
+      #{sampleName,jdbcType=VARCHAR}, #{size,jdbcType=VARCHAR}, #{weight,jdbcType=VARCHAR},
+      #{sizeUrl,jdbcType=VARCHAR}, #{material,jdbcType=VARCHAR},
       #{company,jdbcType=VARCHAR}, #{brand,jdbcType=VARCHAR}, #{photoUrl,jdbcType=VARCHAR}, 
       #{color,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{isDeleted,jdbcType=INTEGER}, 
       #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{creater,jdbcType=INTEGER}, 
@@ -143,8 +146,14 @@
       <if test="sampleName != null">
         sample_name,
       </if>
-      <if test="style != null">
-        style,
+      <if test="size != null">
+        size,
+      </if>
+      <if test="weight != null">
+        weight,
+      </if>
+      <if test="sizeUrl != null">
+        size_url,
       </if>
       <if test="material != null">
         material,
@@ -199,8 +208,14 @@
       <if test="sampleName != null">
         #{sampleName,jdbcType=VARCHAR},
       </if>
-      <if test="style != null">
-        #{style,jdbcType=VARCHAR},
+      <if test="size != null">
+        #{size,jdbcType=VARCHAR},
+      </if>
+      <if test="weight != null">
+        #{weight,jdbcType=VARCHAR},
+      </if>
+      <if test="sizeUrl != null">
+        #{sizeUrl,jdbcType=VARCHAR},
       </if>
       <if test="material != null">
         #{material,jdbcType=VARCHAR},
@@ -264,8 +279,14 @@
       <if test="record.sampleName != null">
         sample_name = #{record.sampleName,jdbcType=VARCHAR},
       </if>
-      <if test="record.style != null">
-        style = #{record.style,jdbcType=VARCHAR},
+      <if test="record.size != null">
+        size = #{record.size,jdbcType=VARCHAR},
+      </if>
+      <if test="record.weight != null">
+        weight = #{record.weight,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sizeUrl != null">
+        size_url = #{record.sizeUrl,jdbcType=VARCHAR},
       </if>
       <if test="record.material != null">
         material = #{record.material,jdbcType=VARCHAR},
@@ -317,7 +338,9 @@
       sample_code = #{record.sampleCode,jdbcType=VARCHAR},
       needle = #{record.needle,jdbcType=VARCHAR},
       sample_name = #{record.sampleName,jdbcType=VARCHAR},
-      style = #{record.style,jdbcType=VARCHAR},
+      size = #{record.size,jdbcType=VARCHAR},
+      weight = #{record.weight,jdbcType=VARCHAR},
+      size_url = #{record.sizeUrl,jdbcType=VARCHAR},
       material = #{record.material,jdbcType=VARCHAR},
       company = #{record.company,jdbcType=VARCHAR},
       brand = #{record.brand,jdbcType=VARCHAR},
@@ -347,8 +370,14 @@
       <if test="sampleName != null">
         sample_name = #{sampleName,jdbcType=VARCHAR},
       </if>
-      <if test="style != null">
-        style = #{style,jdbcType=VARCHAR},
+      <if test="size != null">
+        size = #{size,jdbcType=VARCHAR},
+      </if>
+      <if test="weight != null">
+        weight = #{weight,jdbcType=VARCHAR},
+      </if>
+      <if test="sizeUrl != null">
+        size_url = #{sizeUrl,jdbcType=VARCHAR},
       </if>
       <if test="material != null">
         material = #{material,jdbcType=VARCHAR},
@@ -397,7 +426,9 @@
     set sample_code = #{sampleCode,jdbcType=VARCHAR},
       needle = #{needle,jdbcType=VARCHAR},
       sample_name = #{sampleName,jdbcType=VARCHAR},
-      style = #{style,jdbcType=VARCHAR},
+      size = #{size,jdbcType=VARCHAR},
+      weight = #{weight,jdbcType=VARCHAR},
+      size_url = #{sizeUrl,jdbcType=VARCHAR},
       material = #{material,jdbcType=VARCHAR},
       company = #{company,jdbcType=VARCHAR},
       brand = #{brand,jdbcType=VARCHAR},

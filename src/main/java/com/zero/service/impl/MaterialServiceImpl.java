@@ -7,8 +7,10 @@ import com.zero.common.enmu.MaterialOutBoundStatus;
 import com.zero.common.enmu.PurchaseOrderStatus;
 import com.zero.common.enmu.RecordType;
 import com.zero.mapper.MaterialMapper;
+import com.zero.mapper.PurchaseOrderDetailMapper;
 import com.zero.model.*;
 import com.zero.model.example.MaterialExample;
+import com.zero.model.verify.MaterialInboundDetails;
 import com.zero.service.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -34,7 +36,7 @@ public class MaterialServiceImpl implements IMaterialService {
     @Resource
     private IPurchaseOrderService purchaseOrderService;
     @Resource
-    private IPurchaseOrderDetailService purchaseOrderDetailService;
+    private PurchaseOrderDetailMapper purchaseOrderDetailMapper;
     @Resource
     private IMaterialOutboundService materialOutboundService;
     @Resource
@@ -85,9 +87,13 @@ public class MaterialServiceImpl implements IMaterialService {
 
     @Transactional
     @Override
-    public int inbound(int purchaseOrderId, int loginId, String loginName) {
+    public int inbound(int purchaseOrderId, MaterialInboundDetails inboundDetails, int loginId, String loginName) {
         PurchaseOrder purchaseOrder = purchaseOrderService.getPurchaseOrderById(purchaseOrderId);
-        List<PurchaseOrderDetail> purchaseOrderDetailList = purchaseOrderDetailService.getPurchaseOrderDetailByPurchaseId(purchaseOrderId);
+        List<PurchaseOrderDetail> purchaseOrderDetailList = inboundDetails.getMaterialList();
+        purchaseOrderDetailList.forEach(d -> d.setPurchaseOrderId(purchaseOrder.getId()));
+        if(purchaseOrderDetailMapper.insertBatch(purchaseOrderDetailList, loginId) <= 0){
+            LOGGER.info("保存采购单详情失败");
+        }
         if(Objects.isNull(purchaseOrder) || CollectionUtils.isEmpty(purchaseOrderDetailList)){
             LOGGER.info("采购单【{}】不存在!", purchaseOrderId);
             return 0;

@@ -22,6 +22,8 @@ public class PurchaseOrder {
 
     private Date inboundDate;
 
+    private String purchaseUrl;
+
     private Integer status;
 
     private Integer isDeleted;
@@ -108,6 +110,14 @@ public class PurchaseOrder {
 
     public void setInboundDate(Date inboundDate) {
         this.inboundDate = inboundDate;
+    }
+
+    public String getPurchaseUrl() {
+        return purchaseUrl;
+    }
+
+    public void setPurchaseUrl(String purchaseUrl) {
+        this.purchaseUrl = purchaseUrl;
     }
 
     public Integer getStatus() {

@@ -55,6 +55,7 @@ public class PurchaseOrderServiceImpl implements IPurchaseOrderService {
             example.setPage(pageNum);
             example.setLimit(pageSize);
         }
+        example.setOrderByClause(" create_time desc");
         PurchaseOrderExample.Criteria criteria = example.createCriteria();
         criteria.andIsDeletedEqualTo(DeletedEnum.NO.getKey());
         if(StringUtils.isNotEmpty(purchaseCode)){

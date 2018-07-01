@@ -32,6 +32,11 @@ public class UserController {
 	@Resource
 	IMenuService menuService;
 
+	@GetMapping("/v")
+	public Result<String> v(){
+		return Result.resultSuccess("v1");
+	}
+
 	@GetMapping("/getUser/{id}")
 	public Result<List<User>> getUser(@PathVariable("id") int id){
 		return Result.resultSuccess(userService.getUserById(id));

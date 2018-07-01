@@ -2,6 +2,7 @@ package com.zero.web;
 
 import com.google.common.collect.Maps;
 import com.zero.common.Result;
+import com.zero.common.enmu.ProductApplyStatus;
 import com.zero.common.enmu.ProductStatus;
 import com.zero.common.utils.SessionUtils;
 import com.zero.model.ProductApply;
@@ -101,13 +102,13 @@ public class ProductApplyController {
         return Result.resultSuccess(productApplyDetailService.getProductApplyDetailByProductId(id));
     }
 
-    @PutMapping("updateToAudit/{id}")
-    public Result<String> updateToAudit(HttpServletRequest request, @PathVariable("id") int id){
-        if(productApplyService.updateStatus(id, ProductStatus.AUDIT.getKey(), SessionUtils.getCurrentUserId(request),
-                ProductStatus.SAVE.getKey(), ProductStatus.REJECT.getKey()) <= 0){
-            return Result.resultFailure("成品入库单提交失败！");
+    @PutMapping("updateToFinish/{id}")
+    public Result<String> updateToFinish(HttpServletRequest request, @PathVariable("id") int id){
+        if(productApplyService.updateStatus(id, ProductApplyStatus.FINISHED.getKey(), SessionUtils.getCurrentUserId(request),
+                ProductApplyStatus.SAVE.getKey()) <= 0){
+            return Result.resultFailure("成品出库单提交失败！");
         }
-        return Result.resultSuccess("成品入库单提交成功！");
+        return Result.resultSuccess("成品出库单提交成功！");
     }
 
     @PutMapping("updateToReject/{id}")

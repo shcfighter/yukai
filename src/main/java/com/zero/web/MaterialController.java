@@ -3,6 +3,7 @@ package com.zero.web;
 import com.zero.common.Result;
 import com.zero.common.utils.SessionUtils;
 import com.zero.model.Material;
+import com.zero.model.verify.MaterialInboundDetails;
 import com.zero.service.IMaterialService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -28,10 +29,11 @@ public class MaterialController {
                 materialService.findMaterialPage(productName, color, ingredients, pageNum, pageSize));
     }
 
-    @PutMapping("/inbound/{purchaseOrderId}")
+    @PostMapping("/inbound/{purchaseOrderId}")
     public Result<String> inbound(HttpServletRequest request,
-                                  @PathVariable int purchaseOrderId){
-        if(materialService.inbound(purchaseOrderId, SessionUtils.getCurrentUserId(request), SessionUtils.getCurrentUserName(request)) <= 0){
+                                  @PathVariable int purchaseOrderId,
+                                  @RequestBody MaterialInboundDetails inboundDetails){
+        if(materialService.inbound(purchaseOrderId, inboundDetails, SessionUtils.getCurrentUserId(request), SessionUtils.getCurrentUserName(request)) <= 0){
             return Result.resultFailure("物品入库失败，请重试");
         }
         return Result.resultSuccess("物品入库成功！");

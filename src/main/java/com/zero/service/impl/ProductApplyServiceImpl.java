@@ -3,6 +3,7 @@ package com.zero.service.impl;
 import com.google.common.collect.Lists;
 import com.zero.common.enmu.DeletedEnum;
 import com.zero.common.enmu.MessageType;
+import com.zero.common.enmu.ProductApplyStatus;
 import com.zero.common.enmu.ProductStatus;
 import com.zero.common.utils.BeanUtils;
 import com.zero.mapper.ProductApplyDetailMapper;
@@ -202,21 +203,15 @@ public class ProductApplyServiceImpl implements IProductApplyService {
         productApply.setStatus(newStatus);
         productApply.setUpdateTime(new Date());
         productApply.setModifier(loginId);
-        if(newStatus == ProductStatus.FINISHED.getKey()){
+        if(newStatus == ProductApplyStatus.FINISHED.getKey()){
             productApply.setWarehouseUser(userService.getUserName(loginId));
             productApply.setWarehouseDate(new Date());
         }
         if (productApplyMapper.updateByPrimaryKeySelective(productApply) <= 0) {
             return 0;
         }
-        if (newStatus == ProductStatus.AUDIT.getKey()) {
-            messageService.insert("成品入库申请单入库", "您有一个新成品入库申请单将要入库，请及时处理！", MessageType.BUSINESS.getKey(), loginId, auditDept.getStorage());
-        }
-        if (newStatus == ProductStatus.FINISHED.getKey()) {
-            messageService.insert("成品入库申请单入库", "您的成品入库申请单已经入库，请及时查看！", MessageType.BUSINESS.getKey(), loginId, Arrays.asList(new Integer[]{productApply.getCreater()}));
-        }
-        if (newStatus == ProductStatus.REJECT.getKey()) {
-            messageService.insert("成品入库申请单驳回", "您的成品入库申请单已被驳回，请及时处理！", MessageType.BUSINESS.getKey(), loginId, Arrays.asList(new Integer[]{productApply.getCreater()}));
+        if (newStatus == ProductApplyStatus.FINISHED.getKey()) {
+            messageService.insert("成品出入库申请单", "您的成品出入库申请单已经完成，请及时查看！", MessageType.BUSINESS.getKey(), loginId, Arrays.asList(new Integer[]{productApply.getCreater()}));
         }
         return 1;
     }

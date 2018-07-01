@@ -18,6 +18,7 @@
     <result column="creater" jdbcType="INTEGER" property="creater" />
     <result column="modifier" jdbcType="INTEGER" property="modifier" />
     <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="purchase_url" jdbcType="VARCHAR" property="purchaseUrl" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -79,7 +80,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, order_id, purchase_code, order_code, sample_code, purchase_user, user, warehouser, 
-    inbound_date, status, is_deleted, create_time, update_time, creater, modifier, remarks
+    inbound_date, status, is_deleted, create_time, update_time, creater, modifier, remarks, purchase_url
   </sql>
   <select id="selectByExample" parameterType="com.zero.model.example.PurchaseOrderExample" resultMap="BaseResultMap">
     select
@@ -118,13 +119,13 @@
       user, warehouser, inbound_date, 
       status, is_deleted, create_time, 
       update_time, creater, modifier, 
-      remarks)
+      remarks, purchase_url)
     values (#{id,jdbcType=INTEGER}, #{orderId,jdbcType=INTEGER}, #{purchaseCode,jdbcType=VARCHAR}, 
       #{orderCode,jdbcType=VARCHAR}, #{sampleCode,jdbcType=VARCHAR}, #{purchaseUser,jdbcType=VARCHAR}, 
       #{user,jdbcType=VARCHAR}, #{warehouser,jdbcType=VARCHAR}, #{inboundDate,jdbcType=TIMESTAMP}, 
       #{status,jdbcType=INTEGER}, #{isDeleted,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
       #{updateTime,jdbcType=TIMESTAMP}, #{creater,jdbcType=INTEGER}, #{modifier,jdbcType=INTEGER}, 
-      #{remarks,jdbcType=VARCHAR})
+      #{remarks,jdbcType=VARCHAR}, #{purchaseUrl,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.zero.model.PurchaseOrder" useGeneratedKeys="true" keyProperty="id">
     insert into t_purchase_order
@@ -177,6 +178,9 @@
       <if test="remarks != null">
         remarks,
       </if>
+      <if test="purchaseUrl != null">
+        purchase_url,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -226,6 +230,9 @@
       </if>
       <if test="remarks != null">
         #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseUrl != null">
+        #{purchaseUrl,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -286,6 +293,9 @@
       <if test="record.remarks != null">
         remarks = #{record.remarks,jdbcType=VARCHAR},
       </if>
+      <if test="record.purchaseUrl != null">
+        purchase_url = #{record.purchaseUrl,jdbcType=VARCHAR},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -308,7 +318,8 @@
       update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       creater = #{record.creater,jdbcType=INTEGER},
       modifier = #{record.modifier,jdbcType=INTEGER},
-      remarks = #{record.remarks,jdbcType=VARCHAR}
+      remarks = #{record.remarks,jdbcType=VARCHAR},
+    purchase_url = #{record.purchaseUrl,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -361,6 +372,9 @@
       <if test="remarks != null">
         remarks = #{remarks,jdbcType=VARCHAR},
       </if>
+      <if test="purchaseUrl != null">
+        purchase_url = #{purchaseUrl,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -380,7 +394,8 @@
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       creater = #{creater,jdbcType=INTEGER},
       modifier = #{modifier,jdbcType=INTEGER},
-      remarks = #{remarks,jdbcType=VARCHAR}
+      remarks = #{remarks,jdbcType=VARCHAR},
+      purchase_url = #{purchaseUrl,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
 
