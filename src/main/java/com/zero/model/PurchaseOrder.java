@@ -1,5 +1,7 @@
 package com.zero.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.util.Date;
 import java.util.List;
 
@@ -28,6 +30,7 @@ public class PurchaseOrder {
 
     private Integer isDeleted;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date createTime;
 
     private Date updateTime;

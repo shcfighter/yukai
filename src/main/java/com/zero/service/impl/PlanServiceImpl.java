@@ -206,15 +206,15 @@ public class PlanServiceImpl implements IPlanService {
         if(Objects.isNull(plan)){
             return 0;
         }
-        if(PlanStatus.AUDIT.getKey() != plan.getStatus().intValue()){
+        if(PlanStatus.SAVE.getKey() != plan.getStatus().intValue()){
             return -1;
         }
         plan.setStatus(PlanStatus.PRODUCE.getKey());
         plan.setUpdateTime(new Date());
         plan.setModifier(loginId);
-        plan.setAuditId(loginId);
-        plan.setAuditUser(userService.getUserName(loginId));
-        plan.setAuditDate(new Date());
+        //plan.setAuditId(loginId);
+        //plan.setAuditUser(userService.getUserName(loginId));
+        //plan.setAuditDate(new Date());
         if(planMapper.updateByPrimaryKeySelective(plan) <= 0){
             LOGGER.error("修改计划单状态【{}】失败！", plan.getStatus());
             return 0;
@@ -222,7 +222,7 @@ public class PlanServiceImpl implements IPlanService {
         if(orderService.updateStatus(plan.getOrderId(), OrderStatus.PRODUCE.getKey(), OrderStatus.PLAN.getKey(), loginId) <= 0){
             LOGGER.info("修改订单状态失败！");
         }
-        messageService.insert("生产计划单审批通过", "您有一个生产计划单已经审批通过，请及时查看！", MessageType.BUSINESS.getKey(), loginId, Arrays.asList(new Integer[]{plan.getBillingId()}));
+        messageService.insert("审核生产计划单", "您有一个新生产计划单需要处理，请及时处理！", MessageType.BUSINESS.getKey(), loginId, auditDept.getPlan());
         return 1;
     }
 
@@ -261,6 +261,9 @@ public class PlanServiceImpl implements IPlanService {
         plan.setModifier(loginId);
         if(planMapper.updateByPrimaryKeySelective(plan) <= 0){
             return 0;
+        }
+        if(orderService.updateStatus(plan.getOrderId(), OrderStatus.FINISHED.getKey(), OrderStatus.PRODUCE.getKey(), loginId) <= 0){
+            LOGGER.info("修改订单状态失败！");
         }
         messageService.insert("生产任务单", "您有一个新生产计划单需要处理，请及时处理！", MessageType.BUSINESS.getKey(), loginId, auditDept.getPlan());
         return 1;

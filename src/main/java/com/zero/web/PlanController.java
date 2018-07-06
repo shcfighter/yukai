@@ -1,10 +1,12 @@
 package com.zero.web;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.zero.common.Result;
 import com.zero.common.enmu.PlanStatus;
 import com.zero.common.utils.SessionUtils;
 import com.zero.model.Plan;
+import com.zero.model.PlanDetail;
 import com.zero.model.verify.PlanDetails;
 import com.zero.service.IPlanDetailService;
 import com.zero.service.IPlanMaterialService;
@@ -19,6 +21,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -106,6 +109,16 @@ public class PlanController {
         Map<String, Object> result = Maps.newHashMap();
         result.put("plan", planService.getPlanById(planId));
         result.put("detailList", planDetailService.getPlanDetailByOrderId(planId));
+        result.put("materialList", planMaterialService.getPlanMaterialByOrderId(planId));
+        return Result.resultSuccess(result);
+    }
+
+    @GetMapping("getPlanDetailByPlanId2/{id}")
+    public Result<List<Map<String, Object>>> getPlanDetailByPlanId2(@PathVariable("id") int planId){
+        Map<String, Object> result = Maps.newHashMap();
+        result.put("plan", planService.getPlanById(planId));
+        result.put("detailList", Optional.ofNullable(planDetailService.getPlanDetailByOrderId(planId)).orElse(Lists.newArrayList())
+                .stream().collect(Collectors.groupingBy(PlanDetail::getColor)));
         result.put("materialList", planMaterialService.getPlanMaterialByOrderId(planId));
         return Result.resultSuccess(result);
     }

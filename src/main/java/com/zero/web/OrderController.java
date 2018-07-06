@@ -8,8 +8,10 @@ import com.zero.common.utils.DateUtils;
 import com.zero.common.utils.SessionUtils;
 import com.zero.common.utils.excel.SimpleExcelExporter;
 import com.zero.model.Order;
+import com.zero.model.OrderPrice;
 import com.zero.model.verify.OrderDetails;
 import com.zero.service.IOrderDetailService;
+import com.zero.service.IOrderPriceService;
 import com.zero.service.IOrderService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -36,6 +38,8 @@ public class OrderController {
 	IOrderService orderService;
 	@Resource
 	private IOrderDetailService orderDetailService;
+	@Resource
+	private IOrderPriceService orderPriceService;
 
 	@GetMapping("/getOrder/{id}")
 	public Result<Order> getOrder(@PathVariable("id") int id){
@@ -169,6 +173,27 @@ public class OrderController {
 			LOGGER.error("订单导出失败:", ex);
 			Result.resultFailure("导出错误");
 		}
+	}
+
+	@PutMapping("/updateOrderStatus/{orderId}")
+	public Result<String> updateOrderStatus(@PathVariable("orderId") int orderId, @RequestBody OrderPrice orderPrice,
+											HttpServletRequest request){
+		if(orderPriceService.insert(orderPrice, orderId, SessionUtils.getCurrentUserId(request)) <= 0){
+			return Result.resultFailure("更新订单价格失败！");
+		}
+		return Result.resultSuccess("更新订单价格成功！");
+	}
+
+	@GetMapping("/findOrderPage2")
+	public Result<List<Order>> findOrderPage2(String orderCode, String sampleCode, Integer status,
+											 @RequestParam(value = "page", defaultValue = "1") int pageNum,
+											 @RequestParam(value = "limit", defaultValue = "10") int pageSize){
+		List<Order> list = orderService.findOrdersAndOrderDetailList(orderCode, sampleCode, status, pageNum, pageSize);
+		list.forEach(o -> {
+			o.setPriceList(orderPriceService.findOrderPrice(o.getId()));
+		});
+		return Result.resultSuccess(orderService.findOrderRowNum(orderCode, sampleCode, status),
+				list);
 	}
 
 }

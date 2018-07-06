@@ -6,6 +6,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -58,6 +59,8 @@ public class Order {
     private Integer totalNum;
 
     private List<OrderBatch> batchDetails;
+
+    private List<OrderPrice> priceList;
 
     public Integer getId() {
         return id;
@@ -235,7 +238,7 @@ public class Order {
         this.productName = productName;
     }
 
-    /*public Integer getTotalNum() {
+    public Integer getTotalNum() {
         if(CollectionUtils.isEmpty(this.batchDetails)){
             return 0;
         }
@@ -244,7 +247,7 @@ public class Order {
             List<OrderDetail> list = b.getDetails();
             if(!CollectionUtils.isEmpty(list)){
                 list.forEach(d -> {
-                    num.getAndAdd(d.getNum());
+                    num.getAndAdd(Objects.isNull(d.getNum()) ? 0 : d.getNum());
                 });
             }
         });
@@ -254,13 +257,20 @@ public class Order {
     public void setTotalNum(Integer totalNum) {
         this.totalNum = totalNum;
     }
-*/
     public List<OrderBatch> getBatchDetails() {
         return batchDetails;
     }
 
     public void setBatchDetails(List<OrderBatch> batchDetails) {
         this.batchDetails = batchDetails;
+    }
+
+    public List<OrderPrice> getPriceList() {
+        return priceList;
+    }
+
+    public void setPriceList(List<OrderPrice> priceList) {
+        this.priceList = priceList;
     }
 
     @Override
