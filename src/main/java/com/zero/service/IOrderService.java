@@ -9,7 +9,7 @@ public interface IOrderService {
 
     List<Order> findOrderByPage(String orderCode, String sampleCode, List<Integer> status, Integer pageNum, Integer pageSize);
 
-    long findOrderRowNum(String orderCode, String sampleCode, Integer status);
+    long findOrderRowNum(String orderCode, String sampleCode, List<Integer> status);
 
     int insert(OrderDetails orderDetails, int loginId);
 
@@ -21,5 +21,5 @@ public interface IOrderService {
 
     Order getOrderById(int id);
 
-    List<Order> findOrdersAndOrderDetailList(String orderCode, String sampleCode, Integer status, Integer pageNum, Integer pageSize);
+    List<Order> findOrdersAndOrderDetailList(String orderCode, String sampleCode, List<Integer> status, Integer pageNum, Integer pageSize);
 }

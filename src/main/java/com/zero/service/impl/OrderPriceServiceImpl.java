@@ -7,6 +7,7 @@ import com.zero.model.OrderPrice;
 import com.zero.model.example.OrderPriceExample;
 import com.zero.service.IOrderPriceService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -28,8 +29,13 @@ public class OrderPriceServiceImpl implements IOrderPriceService {
         return orderPriceMapper.selectByExample(example);
     }
 
+    @Transactional
     @Override
     public int insertBatch(List<OrderPrice> list, int orderId, int loginId) {
+        OrderPriceExample example = new OrderPriceExample();
+        OrderPriceExample.Criteria criteria = example.createCriteria();
+        criteria.andOrderIdEqualTo(orderId);
+        orderPriceMapper.deleteByExample(example);
         return orderPriceMapper.insertBatch(list, orderId, loginId);
     }
 

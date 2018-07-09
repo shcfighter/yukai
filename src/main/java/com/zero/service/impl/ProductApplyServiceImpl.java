@@ -1,10 +1,7 @@
 package com.zero.service.impl;
 
 import com.google.common.collect.Lists;
-import com.zero.common.enmu.DeletedEnum;
-import com.zero.common.enmu.MessageType;
-import com.zero.common.enmu.ProductApplyStatus;
-import com.zero.common.enmu.ProductStatus;
+import com.zero.common.enmu.*;
 import com.zero.common.utils.BeanUtils;
 import com.zero.mapper.ProductApplyDetailMapper;
 import com.zero.mapper.ProductApplyMapper;
@@ -16,6 +13,7 @@ import com.zero.model.example.ProductApplyDetailExample;
 import com.zero.model.example.ProductApplyExample;
 import com.zero.model.verify.ProductApplyDetails;
 import com.zero.service.IMessageService;
+import com.zero.service.IOrderService;
 import com.zero.service.IProductApplyService;
 import com.zero.service.IUserService;
 import org.apache.commons.lang3.StringUtils;
@@ -39,7 +37,7 @@ public class ProductApplyServiceImpl implements IProductApplyService {
     @Resource
     private IUserService userService;
     @Resource
-    private AuditDept auditDept;
+    private IOrderService orderService;
     @Resource
     IMessageService messageService;
 
@@ -190,6 +188,7 @@ public class ProductApplyServiceImpl implements IProductApplyService {
         return productApplyMapper.countByExample(example);
     }
 
+    @Transactional
     @Override
     public int updateStatus(int id, int newStatus, int loginId,  Integer ...oldStatus) {
         ProductApply productApply = this.getProductApplyById(id);
@@ -209,6 +208,9 @@ public class ProductApplyServiceImpl implements IProductApplyService {
         }
         if (productApplyMapper.updateByPrimaryKeySelective(productApply) <= 0) {
             return 0;
+        }
+        if(Objects.nonNull(productApply.getOrderId())){
+            orderService.updateStatus(productApply.getOrderId(), OrderStatus.FINISHED.getKey(), OrderStatus.PRODUCE.getKey(), loginId);
         }
         if (newStatus == ProductApplyStatus.FINISHED.getKey()) {
             messageService.insert("成品出入库申请单", "您的成品出入库申请单已经完成，请及时查看！", MessageType.BUSINESS.getKey(), loginId, Arrays.asList(new Integer[]{productApply.getCreater()}));

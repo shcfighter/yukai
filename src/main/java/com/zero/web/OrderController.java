@@ -24,6 +24,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -55,11 +56,15 @@ public class OrderController {
 	}
 
 	@GetMapping("/findOrderPage")
-	public Result<List<Order>> findOrderPage(String orderCode, String sampleCode, Integer status,
+	public Result<List<Order>> findOrderPage(String orderCode, String sampleCode, String status,
 										   @RequestParam(value = "page", defaultValue = "1") int pageNum,
 										   @RequestParam(value = "limit", defaultValue = "10") int pageSize){
-		return Result.resultSuccess(orderService.findOrderRowNum(orderCode, sampleCode, status),
-				orderService.findOrdersAndOrderDetailList(orderCode, sampleCode, status, pageNum, pageSize));
+		List<Integer> statuss = Lists.newArrayList();
+		if(StringUtils.isNotEmpty(status)){
+			statuss.addAll(Arrays.asList(StringUtils.split(status, ",")).stream().map(Integer::parseInt).collect(Collectors.toList()));
+		}
+		return Result.resultSuccess(orderService.findOrderRowNum(orderCode, sampleCode, statuss),
+				orderService.findOrdersAndOrderDetailList(orderCode, sampleCode, statuss, pageNum, pageSize));
 	}
 
 	@GetMapping("/searchOrder")
@@ -175,25 +180,53 @@ public class OrderController {
 		}
 	}
 
-	@PutMapping("/updateOrderStatus/{orderId}")
-	public Result<String> updateOrderStatus(@PathVariable("orderId") int orderId, @RequestBody OrderPrice orderPrice,
+	@PostMapping("/updateOrderPrice/{orderId}")
+	public Result<String> updateOrderPrice(@PathVariable("orderId") int orderId, @RequestBody List<OrderPrice> orderPriceList,
 											HttpServletRequest request){
-		if(orderPriceService.insert(orderPrice, orderId, SessionUtils.getCurrentUserId(request)) <= 0){
+		if(orderPriceService.insertBatch(orderPriceList, orderId, SessionUtils.getCurrentUserId(request)) <= 0){
 			return Result.resultFailure("更新订单价格失败！");
 		}
 		return Result.resultSuccess("更新订单价格成功！");
 	}
 
-	@GetMapping("/findOrderPage2")
-	public Result<List<Order>> findOrderPage2(String orderCode, String sampleCode, Integer status,
-											 @RequestParam(value = "page", defaultValue = "1") int pageNum,
-											 @RequestParam(value = "limit", defaultValue = "10") int pageSize){
-		List<Order> list = orderService.findOrdersAndOrderDetailList(orderCode, sampleCode, status, pageNum, pageSize);
-		list.forEach(o -> {
-			o.setPriceList(orderPriceService.findOrderPrice(o.getId()));
-		});
-		return Result.resultSuccess(orderService.findOrderRowNum(orderCode, sampleCode, status),
-				list);
+	@GetMapping("/findOrderPrice/{orderId}")
+	public Result<List<OrderPrice>> findOrderPrice(@PathVariable("orderId") int orderId){
+		List<OrderPrice> list = orderPriceService.findOrderPrice(orderId);
+		OrderPrice orderPrice = new OrderPrice();
+		orderPrice.setOrderId(orderId);
+		orderPrice.setOrderStatus(33);
+        BigDecimal total = BigDecimal.ZERO;
+        for (OrderPrice op: list) {
+            total = total.add(op.getOrderPrice());
+        }
+		orderPrice.setOrderPrice(total);
+		list.add(orderPrice);
+		return Result.resultSuccess(list);
 	}
 
+	@GetMapping("/findOrderPage2")
+	public Result<List<Order>> findOrderPage2(String orderCode, String sampleCode, String status,
+											 @RequestParam(value = "page", defaultValue = "1") int pageNum,
+											 @RequestParam(value = "limit", defaultValue = "10") int pageSize){
+		List<Integer> statuss = Lists.newArrayList();
+		if(StringUtils.isNotEmpty(status)){
+			statuss.addAll(Arrays.asList(StringUtils.split(status, ",")).stream().map(Integer::parseInt).collect(Collectors.toList()));
+		}
+		List<Order> list = orderService.findOrdersAndOrderDetailList(orderCode, sampleCode, statuss, pageNum, pageSize);
+		list.forEach(o -> {
+			List<OrderPrice> priceList = orderPriceService.findOrderPrice(o.getId());
+			OrderPrice orderPrice = new OrderPrice();
+			orderPrice.setOrderId(o.getId());
+			orderPrice.setOrderStatus(33);
+			BigDecimal total = BigDecimal.ZERO;
+            for (OrderPrice op: priceList) {
+                total = total.add(op.getOrderPrice());
+            }
+            orderPrice.setOrderPrice(total);
+			priceList.add(orderPrice);
+			o.setPriceList(priceList);
+		});
+		return Result.resultSuccess(orderService.findOrderRowNum(orderCode, sampleCode, statuss),
+				list);
+	}
 }

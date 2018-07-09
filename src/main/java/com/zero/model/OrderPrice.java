@@ -1,5 +1,6 @@
 package com.zero.model;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class OrderPrice {
@@ -9,7 +10,7 @@ public class OrderPrice {
 
     private Integer orderStatus;
 
-    private Long orderPrice;
+    private BigDecimal orderPrice;
 
     private Integer isDeleted;
 
@@ -47,11 +48,11 @@ public class OrderPrice {
         this.orderStatus = orderStatus;
     }
 
-    public Long getOrderPrice() {
+    public BigDecimal getOrderPrice() {
         return orderPrice;
     }
 
-    public void setOrderPrice(Long orderPrice) {
+    public void setOrderPrice(BigDecimal orderPrice) {
         this.orderPrice = orderPrice;
     }
 

@@ -62,7 +62,7 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     @Override
-    public long findOrderRowNum(String orderCode, String sampleCode, Integer status) {
+    public long findOrderRowNum(String orderCode, String sampleCode, List<Integer> status) {
         OrderExample example = new OrderExample();
         OrderExample.Criteria criteria = example.createCriteria();
         criteria.andIsDeletedEqualTo(DeletedEnum.NO.getKey());
@@ -72,8 +72,8 @@ public class OrderServiceImpl implements IOrderService {
         if(StringUtils.isNotEmpty(sampleCode)){
             criteria.andSampleCodeLike("%" + sampleCode + "%");
         }
-        if (Objects.nonNull(status)) {
-            criteria.andStatusEqualTo(status);
+        if (!CollectionUtils.isEmpty(status)) {
+            criteria.andStatusIn(status);
         }
         return orderMapper.countByExample(example);
     }
@@ -222,7 +222,7 @@ public class OrderServiceImpl implements IOrderService {
     }
 
     @Override
-    public List<Order> findOrdersAndOrderDetailList(String orderCode, String sampleCode, Integer status, Integer pageNum, Integer pageSize) {
+    public List<Order> findOrdersAndOrderDetailList(String orderCode, String sampleCode, List<Integer> status, Integer pageNum, Integer pageSize) {
         OrderExample example = new OrderExample();
         if(Objects.nonNull(pageNum) && Objects.nonNull(pageSize)){
             example.setLimit(pageSize);
@@ -236,8 +236,8 @@ public class OrderServiceImpl implements IOrderService {
         if(StringUtils.isNotEmpty(sampleCode)){
             criteria.andSampleCodeLike("%" + sampleCode + "%");
         }
-        if (Objects.nonNull(status)) {
-            criteria.andStatusEqualTo(status);
+        if (!CollectionUtils.isEmpty(status)) {
+            criteria.andStatusIn(status);
         }
         return orderMapper.findOrdersAndOrderDetailList(example);
     }

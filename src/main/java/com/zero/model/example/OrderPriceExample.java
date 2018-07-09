@@ -1,5 +1,6 @@
 package com.zero.model.example;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -295,52 +296,52 @@ public class OrderPriceExample {
             return (Criteria) this;
         }
 
-        public Criteria andOrderPriceEqualTo(Long value) {
+        public Criteria andOrderPriceEqualTo(BigDecimal value) {
             addCriterion("order_price =", value, "orderPrice");
             return (Criteria) this;
         }
 
-        public Criteria andOrderPriceNotEqualTo(Long value) {
+        public Criteria andOrderPriceNotEqualTo(BigDecimal value) {
             addCriterion("order_price <>", value, "orderPrice");
             return (Criteria) this;
         }
 
-        public Criteria andOrderPriceGreaterThan(Long value) {
+        public Criteria andOrderPriceGreaterThan(BigDecimal value) {
             addCriterion("order_price >", value, "orderPrice");
             return (Criteria) this;
         }
 
-        public Criteria andOrderPriceGreaterThanOrEqualTo(Long value) {
+        public Criteria andOrderPriceGreaterThanOrEqualTo(BigDecimal value) {
             addCriterion("order_price >=", value, "orderPrice");
             return (Criteria) this;
         }
 
-        public Criteria andOrderPriceLessThan(Long value) {
+        public Criteria andOrderPriceLessThan(BigDecimal value) {
             addCriterion("order_price <", value, "orderPrice");
             return (Criteria) this;
         }
 
-        public Criteria andOrderPriceLessThanOrEqualTo(Long value) {
+        public Criteria andOrderPriceLessThanOrEqualTo(BigDecimal value) {
             addCriterion("order_price <=", value, "orderPrice");
             return (Criteria) this;
         }
 
-        public Criteria andOrderPriceIn(List<Long> values) {
+        public Criteria andOrderPriceIn(List<BigDecimal> values) {
             addCriterion("order_price in", values, "orderPrice");
             return (Criteria) this;
         }
 
-        public Criteria andOrderPriceNotIn(List<Long> values) {
+        public Criteria andOrderPriceNotIn(List<BigDecimal> values) {
             addCriterion("order_price not in", values, "orderPrice");
             return (Criteria) this;
         }
 
-        public Criteria andOrderPriceBetween(Long value1, Long value2) {
+        public Criteria andOrderPriceBetween(BigDecimal value1, BigDecimal value2) {
             addCriterion("order_price between", value1, value2, "orderPrice");
             return (Criteria) this;
         }
 
-        public Criteria andOrderPriceNotBetween(Long value1, Long value2) {
+        public Criteria andOrderPriceNotBetween(BigDecimal value1, BigDecimal value2) {
             addCriterion("order_price not between", value1, value2, "orderPrice");
             return (Criteria) this;
         }
